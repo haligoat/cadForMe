@@ -9,3 +9,5 @@ __pycache__/
 # scratch work and screenshots kept on this Mac only
 .scratch/
 views/
+# the current project is per machine
+projects/.current

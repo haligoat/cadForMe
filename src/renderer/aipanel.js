@@ -4,7 +4,7 @@ import { S, emit, rebuild, saveNow, onExternalChange, undo, refreshVcs, refreshL
 import { sendToOnshape, onshapeStatus } from "./onshapedlg.js";
 import { runDrcFor } from "./drc.js";
 
-const AI = { refs: { dir: "", items: [] }, prompt: "", running: false, log: [], opts: { autoFix: true, commit: true, onshape: false, drc: true }, available: null, osKeys: false, last: null, cfg: null, keyDraft: "", modelDraft: null };
+const AI = { refs: { dir: "", items: [] }, prompt: "", running: false, log: [], opts: { autoFix: true, onshape: false, drc: true }, available: null, osKeys: false, last: null, cfg: null, keyDraft: "", modelDraft: null };
 let subscribed = false;
 const CHIPS = ["Model the part in the reference image", "Make it 20% bigger", "Add four mounting holes near the corners", "Round all the outside corners", "Make the thickness a variable called thickness", "Fix the errors", "Explain this part (no edits)"];
 
@@ -77,10 +77,6 @@ export async function runAi(prompt) {
     const errs = errorsNow();
     const out = { summary: res.summary, errors: errs, committed: false, sent: null };
     if (errs.length) { push({ kind: "error", text: `Still has ${errs.length} error(s): ${errs[0]}` }); AI.last = out; return; }
-    if (AI.opts.commit && (await window.cad.invoke("vcs:status")).changes.length) {
-      await window.cad.invoke("vcs:commit", `AI: ${prompt.replace(/\s+/g, " ").slice(0, 72)}`); out.committed = true; await refreshVcs(); await refreshLog();
-      push({ kind: "tool", name: "Commit", detail: "Saved to version history" });
-    }
     if (AI.opts.onshape) {
       push({ kind: "tool", name: "Onshape", detail: "Sending…" });
       const r = await sendToOnshape(S.partPath);
@@ -125,7 +121,7 @@ export function renderAi(root) {
     ta,
     refsStrip(),
     h("div", { class: "syncbar" }, CHIPS.map((c) => h("button", { class: "btn sm ghost", style: { border: "1px solid var(--line)", whiteSpace: "normal", textAlign: "left", maxWidth: "100%" }, disabled: !S.part || AI.running, onclick: () => { AI.prompt = c; emit(); } }, c))),
-    h("div", {}, opt("autoFix", "Fix errors automatically (up to 2 tries)"), opt("commit", "Commit when done"), opt("drc", "Run the design check (DRC) on the part when done"), opt("onshape", linked ? "Send to Onshape when done" : "Send to Onshape when done (connect Onshape first)", !linked, "Pushes the result to the linked Onshape Part Studio")),
+    h("div", {}, opt("autoFix", "Fix errors automatically (up to 2 tries)"), opt("drc", "Run the design check (DRC) on the part when done"), opt("onshape", linked ? "Send to Onshape when done" : "Send to Onshape when done (connect Onshape first)", !linked, "Pushes the result to the linked Onshape Part Studio")),
     AI.running ? h("button", { class: "btn danger", onclick: () => window.cad.invoke("ai:cancel") }, "Stop")
       : h("button", { id: "ai-run", class: "btn primary", disabled: !S.part || !AI.prompt.trim(), onclick: () => runAi(AI.prompt) }, icon("check"), "Run  ⌘↵"),
     AI.log.length ? h("div", { class: "section", style: { margin: "0 -12px" } }, h("header", {}, AI.running ? "Working…" : "Result"),
@@ -137,5 +133,5 @@ export function renderAi(root) {
       h("button", { class: "btn primary", onclick: async () => { try { await window.cad.invoke("ai:login"); } catch (e) { toast(e.message, "err"); } } }, "Sign in to Claude Code…")) : null,
     !AI.running && AI.last ? h("div", { class: "syncbar" },
       h("button", { class: "btn sm", onclick: undo }, icon("undo"), "Undo AI change"),
-      h("button", { class: "btn sm", onclick: () => { S.tab = "vc"; emit(); } }, "Review in Version control")) : null));
+      h("button", { class: "btn sm", onclick: () => { S.tab = "vc"; emit(); } }, "Releases")) : null));
 }

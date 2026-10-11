@@ -1,5 +1,5 @@
 // MCP server (stdio, JSON-RPC 2.0) so Claude Code and the Claude desktop app can drive cadForMe: read and write parts,
-// look at the image references, run the design check, fix import names, open the window, and send parts to Onshape.
+// look at the image references, run the design check, fix import names, open the window, import Onshape documents, push/pull, and make releases.
 // Start it with `cadforme mcp` (see .mcp.json and the README for the desktop app's config).
 import fs from "node:fs";
 import path from "node:path";
@@ -12,9 +12,15 @@ export async function serveMcp({ project } = {}) {
   // stdout carries the protocol only; anything else that prints (the geometry kernel) goes to stderr
   const out = process.stdout.write.bind(process.stdout);
   console.log = console.info = console.warn = (...a) => process.stderr.write(`${a.join(" ")}\n`);
-  const dirOf = (args) => core.ensureProject(args?.project ?? project ?? process.env.CADFORME_PROJECT ?? core.DEFAULT_PROJECT);
+  const dirOf = (args) => core.ensureProject(core.projectDir(args?.project ?? project ?? process.env.CADFORME_PROJECT));
   const text = (t) => ({ content: [{ type: "text", text: typeof t === "string" ? t : JSON.stringify(t, null, 2) }] });
   const TOOLS = [
+    { name: "list_projects", description: "List the projects (folders in projects/ of the cadForMe repo) and which one is current. Tools without a `project` argument work on the current project.", schema: {},
+      run: () => text({ folder: core.PROJECTS_DIR, projects: core.listProjects().map(({ name, parts, current }) => ({ name, parts, ...(current ? { current } : {}) })) }) },
+    { name: "new_project", description: "Create a new project folder in projects/ and make it the current project. Start one for each new design.", schema: { name: { type: "string" } }, required: ["name"],
+      run: (a) => text(`Created project ${core.createProject(a.name)}; it is now the current project.`) },
+    { name: "use_project", description: "Make an existing project the current one.", schema: { name: { type: "string" } }, required: ["name"],
+      run: (a) => { const dir = core.projectDir(a.name); if (!fs.existsSync(dir)) throw new Error(`No project "${a.name}". Projects: ${core.listProjects().map((p) => p.name).join(", ") || "none yet"}`); core.setCurrentProject(dir); return text(`Current project: ${dir}`); } },
     { name: "list_parts", description: "List the part files in the cadForMe project, with each part's name.", schema: {},
       run: (a) => { const dir = dirOf(a); return text({ project: dir, parts: core.listParts(dir).map((p) => ({ part: p, name: core.readPart(dir, p).name ?? null })) }); } },
     { name: "get_format", description: "The cadForMe part file format and modelling rules. Read this before writing a part.", schema: {},
@@ -51,12 +57,22 @@ export async function serveMcp({ project } = {}) {
       run: (a) => { const dir = dirOf(a); return text(core.nameImports(dir, core.resolvePart(dir, a.part), { write: !!a.write, all: !!a.all })); } },
     { name: "open_gui", description: "Open the cadForMe window (3D view, AI panel, image references) on the project, optionally on one part.", schema: { part: { type: "string" } },
       run: (a) => { const dir = dirOf(a); core.openGui(dir, { part: a.part ? core.resolvePart(dir, a.part) : undefined, detach: true }); return text("Opened the cadForMe window."); } },
-    { name: "onshape_push", description: "Send a part to its linked Onshape Part Studio as native, editable features (sketches, extrudes, booleans...). preview=true only lists what would change. Uses the Onshape keys saved in the cadForMe app.", schema: { part: { type: "string" }, preview: { type: "boolean" } }, required: ["part"],
-      run: async (a) => { const dir = dirOf(a); return text(await core.appCommand(dir, a.preview ? "onshape:preview" : "onshape:push", core.resolvePart(dir, a.part))); } },
+    { name: "onshape_connect", description: "Save the user's Onshape API keys (verified with Onshape first; stored in ~/.config/cadforme/onshape.json, outside the repo). Give accessKey and secretKey exactly as the user pasted them. Never repeat the keys back. Alternatively the user can set ONSHAPE_ACCESS_KEY and ONSHAPE_SECRET_KEY.", schema: { accessKey: { type: "string" }, secretKey: { type: "string" }, baseUrl: { type: "string", description: "Only for Onshape enterprise accounts" } }, required: ["accessKey", "secretKey"],
+      run: async (a) => text(`Connected to Onshape as ${(await core.connectOnshape(a)).user || "your account"}. Keys saved outside the repo.`) },
+    { name: "onshape_status", description: "Whether Onshape keys are available, and which Onshape parts are linked in the project.", schema: {},
+      run: (a) => { const dir = dirOf(a); return text({ connected: !!core.loadKeys(), linkedParts: core.linkedParts(dir).map((p) => ({ part: p.rel, document: p.link.did })) }); } },
+    { name: "onshape_import", description: "Import an Onshape document from its link into its own project, projects/<document name> (made current; pass `project` to import into an existing one instead): every Part Studio becomes an editable part (all sketches, constraints, dimensions, variables, planes, extrudes, fillets, chamfers, shells) and every Assembly comes in as geometry. Onshape features cadForMe can't edit are kept as untouched placeholders and listed. A link to one tab imports just that tab. Already-imported parts are skipped.", schema: { url: { type: "string" } }, required: ["url"],
+      run: async (a) => text(core.importReport(a.project ? await core.importOnshape(dirOf(a), a.url) : await core.importOnshapeProject(a.url))) },
+    { name: "onshape_push", description: "Send a part to its linked Onshape Part Studio as native, editable features (sketches, extrudes, booleans...). preview=true only lists what would change.", schema: { part: { type: "string" }, preview: { type: "boolean" } }, required: ["part"],
+      run: async (a) => { const dir = dirOf(a); return text(await core.pushPart(dir, core.resolvePart(dir, a.part), { preview: !!a.preview })); } },
     { name: "onshape_pull", description: "Bring edits made in Onshape back into a linked part (3-way merge).", schema: { part: { type: "string" } }, required: ["part"],
-      run: async (a) => { const dir = dirOf(a); return text(await core.appCommand(dir, "onshape:pull", core.resolvePart(dir, a.part))); } },
+      run: async (a) => { const dir = dirOf(a); return text(await core.pullPart(dir, core.resolvePart(dir, a.part))); } },
+    { name: "release", description: "Make a release: a named Onshape version (a frozen snapshot, restorable in Onshape) described by what changed here since the previous release. Push first so Onshape is up to date. This replaces git for tracking changes.", schema: { name: { type: "string" } },
+      run: async (a) => { const e = await core.makeRelease(dirOf(a), a.name); return text(`Release "${e.name}" created in Onshape.\n${e.url}\n\n${e.changes.length ? e.changes.join("\n") : "No changes since the previous release"}`); } },
+    { name: "releases", description: "List the releases (Onshape versions) of the linked document, newest first, with what changed in each.", schema: {},
+      run: async (a) => text((await core.releases(dirOf(a))).map((r) => `${r.name}  ${r.at}${r.by ? `  by ${r.by}` : ""}\n${r.description ? r.description.split("\n").map((l) => `    ${l}`).join("\n") : "    (no description)"}`).join("\n\n") || "No releases yet") },
   ];
-  const projectArg = { project: { type: "string", description: "Project folder (default: designs/ in the cadForMe repo)" } };
+  const projectArg = { project: { type: "string", description: "Project name (a folder in projects/) or a folder path. Default: the current project (see list_projects)" } };
   const list = TOOLS.map((t) => ({ name: t.name, description: t.description, inputSchema: { type: "object", properties: { ...t.schema, ...projectArg }, ...(t.required ? { required: t.required } : {}) } }));
 
   const reply = (id, result) => out(`${JSON.stringify({ jsonrpc: "2.0", id, result })}\n`);

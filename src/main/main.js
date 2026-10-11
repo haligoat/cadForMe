@@ -3,15 +3,12 @@ import { app, BrowserWindow, ipcMain, dialog, protocol, net, safeStorage, Menu, 
 import { spawn, execFileSync } from "node:child_process";
 import { OnshapeClient } from "../onshape/client.js";
 import * as onshape from "../onshape/sync.js";
+import * as odoc from "../onshape/document.js";
 import { PROVIDERS, complete, extractPart } from "../../dist/ai-providers.mjs"; // bundled with its SDK dependencies by scripts/build.mjs
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import crypto from "node:crypto";
-import * as repo from "../vcs/repo.js";
-import * as sync from "../vcs/sync.js";
-import { parseRemote } from "../vcs/remote.js";
-import { diffPart } from "../vcs/partmerge.js";
 import { formatPart } from "../kernel/format.js";
 import { importName } from "../kernel/stepnames.js";
 
@@ -31,23 +28,9 @@ const readJSON = (f, d) => { try { return JSON.parse(fs.readFileSync(f, "utf8"))
 const writeJSON = (f, v) => { fs.mkdirSync(path.dirname(f), { recursive: true }); fs.writeFileSync(f, JSON.stringify(v, null, 2)); };
 const settings = () => readJSON(userFile("settings.json"), { author: { name: "", email: "" }, recent: [] });
 
-function getToken() {
-  try {
-    const f = userFile("github-token.bin");
-    if (!fs.existsSync(f) || !safeStorage.isEncryptionAvailable()) return null;
-    return safeStorage.decryptString(fs.readFileSync(f));
-  } catch { return null; }
-}
-function setToken(t) {
-  const f = userFile("github-token.bin");
-  if (!t) { fs.rmSync(f, { force: true }); return; }
-  if (!safeStorage.isEncryptionAvailable()) throw new Error("macOS Keychain encryption isn't available, so the token can't be stored safely");
-  fs.mkdirSync(path.dirname(f), { recursive: true });
-  fs.writeFileSync(f, safeStorage.encryptString(t), { mode: 0o600 });
-}
-
 // Onshape API keys (Keychain-encrypted, like the GitHub token)
 function getOnshapeKeys() {
+  try { const k = JSON.parse(fs.readFileSync(path.join(process.env.CADFORME_HOME ?? path.join(app.getPath("home"), ".config", "cadforme"), "onshape.json"), "utf8")); if (k.accessKey && k.secretKey) return k; } catch { /* not connected through the terminal */ }
   try { const f = userFile("onshape-keys.bin"); if (!fs.existsSync(f) || !safeStorage.isEncryptionAvailable()) return null; return JSON.parse(safeStorage.decryptString(fs.readFileSync(f))); } catch { return null; }
 }
 function setOnshapeKeys(k) {
@@ -270,6 +253,7 @@ feature that uses them. See docs/FORMAT.md in the cadForMe app repo for all feat
 function openProject(dir) {
   if (project?.watcher) project.watcher.close();
   project = { dir, watcher: null };
+  rememberCurrent(dir);
   const timers = new Map();
   try {
     project.watcher = fs.watch(dir, { recursive: true }, (_ev, rel) => {
@@ -295,56 +279,22 @@ function openProject(dir) {
 
 function projectInfo() {
   const dir = need();
-  return { dir, name: path.basename(dir), parts: listParts(dir), config: repo.readConfig(dir), hasToken: !!getToken() };
+  return { dir, name: path.basename(dir), parts: listParts(dir), config: {}, hasToken: false };
 }
-
-function remoteFor(spec) {
-  const dir = need();
-  const s = spec ?? repo.readConfig(dir).remote;
-  if (!s) throw new Error("No remote set. Connect this project to GitHub first");
-  return parseRemote(s, { token: getToken() });
-}
-
-function partAt(dir, id, rel) {
-  if (!id) return null;
-  const files = repo.filesAt(dir, id);
-  return rel in files ? JSON.parse(files[rel].toString("utf8")) : null;
-}
-function describeChanges(dir, aId, bId) {
-  return repo.changesBetween(dir, aId, bId).map((c) => ({
-    ...c,
-    items: c.path.endsWith(".part.json") ? safeDiff(() => diffPart(partAt(dir, aId, c.path), partAt(dir, bId, c.path))) : [],
-  }));
-}
-const safeDiff = (f) => { try { return f(); } catch { return [{ kind: "changed", scope: "meta", id: "", text: "File changed (couldn't read as a part)" }]; } };
 
 // ---------- IPC ----------
 const handlers = {
-  "settings:get": () => ({ ...settings(), hasToken: !!getToken() }),
+  "settings:get": () => ({ ...settings(), hasToken: false }),
   "settings:set": (_e, patch) => { const s = { ...settings(), ...patch }; writeJSON(userFile("settings.json"), s); return s; },
-  "settings:setToken": (_e, t) => { setToken(typeof t === "string" ? t.trim() : null); return !!getToken(); },
 
   "project:pick": async () => {
     const r = await dialog.showOpenDialog(win, { properties: ["openDirectory", "createDirectory"], title: "Open Folder", buttonLabel: "Open" });
     return r.canceled ? null : r.filePaths[0];
   },
+  // No git and no history store: a project is just a folder with parts/. Onshape versions ("releases") track changes.
   "project:open": (_e, dir) => {
-    if (!repo.isRepo(dir)) return { needsInit: true, dir };
-    return openProject(dir);
-  },
-  "project:init": (_e, dir, { sample = true } = {}) => {
-    const s = settings();
-    repo.initRepo(dir, { author: s.author?.name ? s.author : { name: process.env.USER ?? "me" } });
     fs.mkdirSync(path.join(dir, "parts"), { recursive: true });
-    if (sample) fs.writeFileSync(path.join(dir, "parts", "bracket.part.json"), formatPart(SAMPLE));
-    fs.writeFileSync(path.join(dir, "AGENTS.md"), AGENTS_MD);
     ensureFormatDoc(dir);
-    if (sample) repo.commit(dir, { message: "Start project" });
-    return openProject(dir);
-  },
-  "project:clone": async (_e, { spec, dir, branch }) => {
-    const remote = parseRemote(spec, { token: getToken() });
-    await sync.clone(dir, remote, spec, { branch, author: settings().author?.name ? settings().author : { name: process.env.USER ?? "me" } });
     return openProject(dir);
   },
   "project:info": () => projectInfo(),
@@ -379,65 +329,8 @@ const handlers = {
   "fs:rename": (_e, from, to) => { fs.mkdirSync(path.dirname(resolveIn(to)), { recursive: true }); fs.renameSync(resolveIn(from), resolveIn(to)); },
   "fs:reveal": () => shell.showItemInFolder(need()),
 
-  "vcs:status": () => repo.status(need()),
-  "vcs:commit": (_e, message) => repo.commit(need(), { message }),
-  "vcs:log": () => {
-    const dir = need();
-    const tips = {};
-    for (const b of repo.listBranches(dir)) (tips[repo.getBranch(dir, b)] ??= []).push(b);
-    for (const b of repo.listRemoteBranches(dir)) (tips[repo.getRemoteTip(dir, b)] ??= []).push(`origin/${b}`);
-    // show history of every branch, merged by time
-    const seen = new Map();
-    for (const b of repo.listBranches(dir)) for (const c of repo.log(dir, repo.getBranch(dir, b), 100)) seen.set(c.id, c);
-    return { commits: [...seen.values()].sort((a, b) => b.time.localeCompare(a.time)), tips, head: repo.headCommit(dir) };
-  },
-  "vcs:branches": () => {
-    const dir = need();
-    return { current: repo.currentBranch(dir), local: repo.listBranches(dir), remote: repo.listRemoteBranches(dir) };
-  },
-  "vcs:createBranch": (_e, name, from) => repo.createBranch(need(), name, from ? { from } : {}),
-  "vcs:switchBranch": (_e, name) => {
-    const dir = need();
-    const remoteOnly = !repo.getBranch(dir, name) && repo.getRemoteTip(dir, name);
-    if (remoteOnly) repo.createBranch(dir, name, { from: remoteOnly, switchTo: false });
-    repo.switchBranch(dir, name);
-  },
-  "vcs:deleteBranch": (_e, name) => repo.deleteBranch(need(), name),
-  "vcs:discard": () => repo.discardChanges(need()),
-  "vcs:commitDiff": (_e, id) => {
-    const dir = need();
-    const c = repo.readCommit(dir, id);
-    return describeChanges(dir, c.parents[0] ?? null, id);
-  },
-  "vcs:workingDiff": () => {
-    const dir = need();
-    const st = repo.status(dir);
-    return st.changes.map((c) => {
-      let items = [];
-      if (c.path.endsWith(".part.json")) {
-        items = safeDiff(() => diffPart(partAt(dir, st.head, c.path), c.status === "deleted" ? null : JSON.parse(fs.readFileSync(path.join(dir, c.path), "utf8"))));
-      }
-      return { ...c, items };
-    });
-  },
-  "vcs:fileAt": (_e, id, rel) => { const f = repo.filesAt(need(), id)[rel]; return f ? f.toString("utf8") : null; },
-  "vcs:restoreFile": (_e, id, rel) => {
-    const f = repo.filesAt(need(), id)[rel];
-    if (!f) throw new Error("That file didn't exist in that version");
-    const full = resolveIn(rel);
-    fs.mkdirSync(path.dirname(full), { recursive: true });
-    fs.writeFileSync(full, f);
-  },
-  "vcs:setAuto": (_e, on) => { repo.setConfig(need(), { autoOnshape: !!on }); return projectInfo(); },
-  "vcs:setRemote": async (_e, spec) => {
-    if (spec) parseRemote(spec, { token: getToken() ?? "x" });
-    repo.setConfig(need(), { remote: spec || null });
-    return projectInfo();
-  },
-  "vcs:fetch": async () => { const r = await sync.fetchRemote(need(), remoteFor()); return { packs: r.packs }; },
-  "vcs:push": async () => sync.push(need(), remoteFor()),
-  "vcs:pull": async (_e, resolutions) => sync.pull(need(), remoteFor(), { resolutions }),
-
+  "release:list": async () => odoc.listReleases(need(), osClient()),
+  "release:make": async (_e, name) => odoc.createRelease(need(), osClient(), name),
   "onshape:status": () => { const k = getOnshapeKeys(); return { hasKeys: !!k, baseUrl: k?.baseUrl ?? "https://cad.onshape.com" }; },
   "onshape:setKeys": async (_e, k) => {
     if (!k) { setOnshapeKeys(null); return { hasKeys: false }; }
@@ -447,6 +340,7 @@ const handlers = {
     if (!keys.accessKey) throw new Error("The access key is missing");
     const who = await new OnshapeClient(keys).req("GET", "/users/sessioninfo"); // verifies the keys before saving
     setOnshapeKeys(keys);
+    try { const f = path.join(process.env.CADFORME_HOME ?? path.join(app.getPath("home"), ".config", "cadforme"), "onshape.json"); fs.mkdirSync(path.dirname(f), { recursive: true, mode: 0o700 }); fs.writeFileSync(f, JSON.stringify(keys), { mode: 0o600 }); } catch { /* the window still has them */ }
     return { hasKeys: true, user: who?.name ?? who?.email ?? "" };
   },
   "onshape:info": (_e, rel) => { const i = onshape.linkInfo(need(), rel); return i.linked ? { ...i, url: onshape.onshapeUrl(i, getOnshapeKeys()?.baseUrl) } : i; },
@@ -496,12 +390,6 @@ const handlers = {
     return true;
   },
   "ai:edit": (_e, req) => (aiProvider() === "claude-code" ? runClaude(win, req) : apiEdit(win, req)),
-  "ai:commitMessage": async (_e, changes) => {
-    const provider = aiProvider();
-    if (provider === "claude-code") throw new Error("Commit messages need an API key provider (pick Claude, Gemini or OpenAI in the AI tab)");
-    const text = await complete(provider, getAiKeys()[provider] ?? {}, "You write git-style commit messages for a CAD project. Reply with ONE line, imperative mood, at most 72 characters, no quotes, no trailing period.", `Changes:\n${changes}`);
-    return text.trim().split("\n")[0].replace(/^["']|["']$/g, "").slice(0, 72);
-  },
   "ai:run": (_e, req) => runClaude(win, req),
   "ai:cancel": () => { aiProc?.kill("SIGTERM"); },
   // Design check results, per part file, so unchanged parts are never checked again.
@@ -539,8 +427,18 @@ for (const [ch, fn] of Object.entries(handlers)) {
 }
 
 // ---------- cadForMe folder + File menu ----------
-// Projects live in ~/cadForMe by default; the File menu lists them, recent projects, and opens any folder or part file.
-const PROJECTS_DIR = path.join(ROOT, "designs");   // this repo's own projects, not the old ~/cadSlop folder
+// Projects live in projects/ in this repo (one folder each); the File menu lists them, recent projects, and opens any
+// folder or part file. projects/.current names the project in use, shared with the terminal and MCP server (src/cli/core.js).
+const PROJECTS_DIR = path.join(ROOT, "projects");
+const CURRENT_FILE = path.join(PROJECTS_DIR, ".current");
+function currentProjectDir() {
+  let name; try { name = fs.readFileSync(CURRENT_FILE, "utf8").trim(); } catch { /* none yet */ }
+  return path.join(PROJECTS_DIR, name || "default");
+}
+function rememberCurrent(dir) {
+  const rel = path.relative(PROJECTS_DIR, dir);
+  if (rel && !rel.startsWith("..") && !path.isAbsolute(rel) && !rel.includes(path.sep)) try { fs.writeFileSync(CURRENT_FILE, `${rel}\n`); } catch { /* read-only */ }
+}
 const isProject = (d) => { try { return fs.existsSync(path.join(d, ".cadslop")) || fs.existsSync(path.join(d, "parts")); } catch { return false; } };
 function listProjects() {
   try { fs.mkdirSync(PROJECTS_DIR, { recursive: true }); } catch { /* read-only home? */ }
@@ -584,10 +482,10 @@ function buildMenu() {
       { label: "New Project…", accelerator: "CmdOrCtrl+Shift+N", click: newProject },
       { label: "Open Folder…", accelerator: "CmdOrCtrl+O", click: pickAndOpen },
       { label: "Open Recent", submenu: recent.length ? [...recent.map((d) => ({ label: path.basename(d), sublabel: d, click: () => openInApp(d) })), { type: "separator" }, { label: "Clear Menu", click: () => { const st = settings(); st.recent = []; writeJSON(userFile("settings.json"), st); buildMenu(); } }] : [{ label: "No recent projects", enabled: false }] },
-      { label: "cadForMe Folder", submenu: [
+      { label: "Projects", submenu: [
         ...(projects.length ? projects.map((d) => ({ label: path.basename(d), click: () => openInApp(d) })) : [{ label: "No projects yet", enabled: false }]),
         { type: "separator" },
-        { label: "Show cadForMe Folder in Finder", click: () => { fs.mkdirSync(PROJECTS_DIR, { recursive: true }); shell.openPath(PROJECTS_DIR); } },
+        { label: "Show Projects Folder in Finder", click: () => { fs.mkdirSync(PROJECTS_DIR, { recursive: true }); shell.openPath(PROJECTS_DIR); } },
       ] },
       { type: "separator" },
       { label: "Show Project in Finder", click: () => { if (project?.dir) shell.openPath(project.dir); } },
@@ -639,10 +537,11 @@ app.whenReady().then(() => {
   // `open -a cadForMe <path>` / the cadForMe menu-bar app / a path on the command line
   const argPath = process.argv.slice(1).find((a) => !a.startsWith("-") && a !== "." && fs.existsSync(a) && path.resolve(a) !== ROOT);
   if (argPath) openInApp(argPath);
+  else if (!process.env.CADSLOP_TEST && isProject(currentProjectDir())) openInApp(currentProjectDir());
   if (process.env.CADSLOP_TEST) import(pathToFileURL(path.join(ROOT, "scripts/uitest-driver.mjs")).toString()).then((m) => m.default({ app, win, ipcMain, settings, openProject, handlers, osClient }));
   app.on("activate", () => { if (!BrowserWindow.getAllWindows().length) createWindow(); });
 });
 app.on("open-file", (e, p) => { e.preventDefault(); if (app.isReady() && win) openInApp(p); else pendingOpen = resolveOpen(p); });
 app.on("window-all-closed", () => app.quit());
 
-export { getToken };
+

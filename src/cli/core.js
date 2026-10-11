@@ -10,20 +10,58 @@ import { fileURLToPath } from "node:url";
 import { DEFAULT_RULES, drcKey, drcSteps } from "../kernel/drcinfo.js";
 import { importName, hasAutoName, conventionalName } from "../kernel/stepnames.js";
 import { formatPart, parsePart } from "../kernel/format.js";
-import * as repo from "../vcs/repo.js";
+import os from "node:os";
+import { OnshapeClient, parseDocumentUrl } from "../onshape/client.js";
+import * as onshape from "../onshape/sync.js";
+import * as odoc from "../onshape/document.js";
 
 export const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
-export const DEFAULT_PROJECT = path.join(ROOT, "designs");
+// Every project is a folder in projects/ (parts/, exports/, optional image-references/). The one in use is remembered in
+// projects/.current so the terminal, the MCP server and the window all land on the same project.
+export const PROJECTS_DIR = path.join(ROOT, "projects");
+const CURRENT_FILE = path.join(PROJECTS_DIR, ".current");
 const IMAGE_EXT = /\.(png|jpe?g|gif|webp|heic)$/i;
+export const projectSlug = (s) => String(s).trim().replace(/[^\w.-]+/g, "-").replace(/^[-.]+|-+$/g, "") || "project";
 
-/** A project folder ready to open: created with a parts/ folder and version history if it's new. */
-export function ensureProject(dir = DEFAULT_PROJECT) {
-  dir = path.resolve(dir);
-  fs.mkdirSync(path.join(dir, "parts"), { recursive: true });
-  if (!repo.isRepo(dir)) repo.initRepo(dir, { author: { name: gitName() } });
+/** "bracket" -> projects/bracket; a path (with a slash, or absolute) is used as is; nothing -> the current project. */
+export function projectDir(nameOrPath) {
+  if (!nameOrPath) return currentProject();
+  const s = String(nameOrPath);
+  return path.isAbsolute(s) || /[\\/]/.test(s) || s === "." || s === ".." ? path.resolve(s) : path.join(PROJECTS_DIR, projectSlug(s));
+}
+export function currentProject() {
+  let name; try { name = fs.readFileSync(CURRENT_FILE, "utf8").trim(); } catch { /* none yet */ }
+  return name ? projectDir(name) : path.join(PROJECTS_DIR, "default");
+}
+/** Remember a project as the current one (only folders inside projects/ are remembered). */
+export function setCurrentProject(dir) {
+  const rel = path.relative(PROJECTS_DIR, path.resolve(dir));
+  if (!rel || rel.startsWith("..") || path.isAbsolute(rel) || rel.includes(path.sep)) return;
+  fs.mkdirSync(PROJECTS_DIR, { recursive: true });
+  fs.writeFileSync(CURRENT_FILE, `${rel}\n`);
+}
+export function listProjects() {
+  fs.mkdirSync(PROJECTS_DIR, { recursive: true });
+  const cur = currentProject();
+  return fs.readdirSync(PROJECTS_DIR, { withFileTypes: true }).filter((e) => e.isDirectory() && !e.name.startsWith("."))
+    .map((e) => { const dir = path.join(PROJECTS_DIR, e.name); return { name: e.name, dir, parts: fs.existsSync(path.join(dir, "parts")) ? listParts(dir).length : 0, current: dir === cur }; });
+}
+/** A new project folder in projects/, made current. */
+export function createProject(name) {
+  if (!name) throw new Error("A new project needs a name");
+  const dir = projectDir(projectSlug(name));
+  if (fs.existsSync(dir)) throw new Error(`Project "${path.basename(dir)}" already exists`);
+  ensureProject(dir);
+  setCurrentProject(dir);
   return dir;
 }
-function gitName() { try { return execFileSync("git", ["config", "user.name"], { encoding: "utf8" }).trim() || "me"; } catch { return process.env.USER ?? "me"; } }
+
+/** A project folder ready to open: just a folder with parts/ (no git, no history store; Onshape holds the history). */
+export function ensureProject(dir = currentProject()) {
+  dir = path.resolve(dir);
+  fs.mkdirSync(path.join(dir, "parts"), { recursive: true });
+  return dir;
+}
 
 export function listParts(dir, rel = "", out = []) {
   for (const e of fs.readdirSync(path.join(dir, rel), { withFileTypes: true })) {
@@ -216,22 +254,57 @@ export function openGui(dir, { part, detach = false } = {}) {
   return child;
 }
 
-const APP_COMMANDS = new Set(["onshape:preview", "onshape:push", "onshape:pull", "onshape:info", "onshape:assembly"]);
-/** Run one of the app's Onshape commands without a window (it uses the keys saved in the app). */
-export function appCommand(dir, cmd, ...args) {
-  if (!APP_COMMANDS.has(cmd)) return Promise.reject(new Error(`Unknown app command ${cmd}`));
-  ensureBuilt();
-  return new Promise((resolve, reject) => {
-    const child = spawn(electronBin(), [ROOT], { cwd: ROOT, env: { ...process.env, CADFORME_CMD: JSON.stringify({ cmd, project: dir, args }) }, stdio: ["ignore", "pipe", "pipe"] });
-    let out = "", err = "";
-    child.stdout.on("data", (d) => { out += d; });
-    child.stderr.on("data", (d) => { err += d; });
-    child.on("error", reject);
-    child.on("close", () => {
-      const line = out.split("\n").reverse().find((l) => l.startsWith("{\"cadforme\""));
-      if (!line) { reject(new Error(`The app didn't answer.${err ? ` ${err.trim().split("\n").slice(-3).join(" ")}` : ""}`)); return; }
-      const r = JSON.parse(line);
-      r.ok ? resolve(r.result) : reject(new Error(r.error));
-    });
-  });
+// ---------- Onshape (keys, import, push, pull, releases) ----------
+// Keys live outside the repo, in ~/.config/cadforme/onshape.json (owner-only file), or in the ONSHAPE_ACCESS_KEY /
+// ONSHAPE_SECRET_KEY environment variables. The window reads the same file, so connecting once covers everything.
+export const keysFile = () => path.join(process.env.CADFORME_HOME ?? path.join(os.homedir(), ".config", "cadforme"), "onshape.json");
+
+export function loadKeys() {
+  if (process.env.ONSHAPE_ACCESS_KEY && process.env.ONSHAPE_SECRET_KEY) return { accessKey: process.env.ONSHAPE_ACCESS_KEY, secretKey: process.env.ONSHAPE_SECRET_KEY, baseUrl: process.env.ONSHAPE_URL || "https://cad.onshape.com" };
+  try { const k = JSON.parse(fs.readFileSync(keysFile(), "utf8")); return k.accessKey && k.secretKey ? k : null; } catch { return null; }
+}
+
+/** Check the keys with Onshape, then save them. Returns the account name (never the keys). */
+export async function connectOnshape({ accessKey, secretKey, baseUrl }) {
+  const keys = { accessKey: String(accessKey ?? "").trim(), secretKey: String(secretKey ?? "").trim(), baseUrl: String(baseUrl || "https://cad.onshape.com").trim() };
+  if (!keys.accessKey || !keys.secretKey) throw new Error("Both the access key and the secret key are needed. Onshape shows the secret only once when you create the API key; if it wasn't saved, create a new key (dev-portal.onshape.com -> API keys)");
+  const who = await new OnshapeClient(keys).req("GET", "/users/sessioninfo");   // rejects wrong keys before anything is saved
+  fs.mkdirSync(path.dirname(keysFile()), { recursive: true, mode: 0o700 });
+  fs.writeFileSync(keysFile(), JSON.stringify(keys), { mode: 0o600 });
+  return { user: who?.name ?? who?.email ?? "", saved: keysFile() };
+}
+export const disconnectOnshape = () => fs.rmSync(keysFile(), { force: true });
+export function osClient() {
+  const k = loadKeys();
+  if (!k) throw new Error("Onshape isn't connected. Give me the API access key and secret key (onshape_connect), or set ONSHAPE_ACCESS_KEY and ONSHAPE_SECRET_KEY");
+  return new OnshapeClient(k);
+}
+
+export const importOnshape = (dir, url, opts) => odoc.importDocument(dir, osClient(), url, opts);
+/** Import an Onshape document into its own project, projects/<document name>, and make that project current. */
+export async function importOnshapeProject(url, opts) {
+  const client = osClient();
+  const doc = await client.getDocument(parseDocumentUrl(url).did);
+  const dir = ensureProject(projectDir(projectSlug(doc.name || "onshape-import")));
+  setCurrentProject(dir);
+  return { project: dir, ...(await odoc.importDocument(dir, client, url, opts)) };
+}
+export const pushPart = (dir, rel, { preview = false } = {}) => onshape.pushToOnshape(dir, osClient(), rel, { dryRun: preview });
+export const pullPart = (dir, rel) => onshape.pullFromOnshape(dir, osClient(), rel);
+export const makeRelease = (dir, name) => odoc.createRelease(dir, osClient(), name);
+export const releases = (dir) => odoc.listReleases(dir, osClient());
+export const linkedParts = odoc.linkedParts;
+
+/** Text summary of an import. */
+export function importReport(r) {
+  const lines = [`${r.document || "Document"}: ${r.results.filter((x) => x.status === "imported").length} of ${r.results.length} imported`];
+  if (r.project) lines.push(`Project: ${r.project}`);
+  for (const x of r.results) {
+    if (x.status === "imported") {
+      lines.push(`  ✓ ${x.element} -> ${x.rel}: ${x.features} features${x.kind === "ASSEMBLY" ? " (assembly, geometry only)" : ` (${x.editable} editable${x.placeholders.length ? `, ${x.placeholders.length} Onshape-only kept as placeholders` : ""})`}`);
+      for (const n of x.placeholders.slice(0, 8)) lines.push(`      placeholder: ${n}`);
+      if (x.placeholders.length > 8) lines.push(`      ...and ${x.placeholders.length - 8} more`);
+    } else lines.push(`  ${x.status === "skipped" ? "-" : "✗"} ${x.element}: ${x.reason}`);
+  }
+  return lines.join("\n");
 }

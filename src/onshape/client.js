@@ -7,6 +7,13 @@ export function parseOnshapeUrl(link) {
   return { did: m[1], wvm: m[2].toLowerCase(), wid: m[3], eid: m[4] };
 }
 
+/** A link to a whole document (any tab, or none): { did, wvm, wid?, eid? }. Version (v) and microversion links are read-only snapshots. */
+export function parseDocumentUrl(link) {
+  const m = String(link).match(/documents\/([0-9a-f]{24})(?:\/([wvm])\/([0-9a-f]{24}))?(?:\/e\/([0-9a-f]{24}))?/i);
+  if (!m) throw new Error("That doesn't look like an Onshape document link. Copy the address bar URL of the document (cad.onshape.com/documents/...)");
+  return { did: m[1], wvm: m[2]?.toLowerCase(), wid: m[3], eid: m[4] };
+}
+
 export class OnshapeError extends Error { constructor(msg, status) { super(msg); this.status = status; } }
 
 export class OnshapeClient {
@@ -45,6 +52,9 @@ export class OnshapeClient {
   deleteFeature(ref, fid) { return this.req("DELETE", `${this.ps(ref)}/features/featureid/${encodeURIComponent(fid)}`); }
   createDocument(name) { return this.req("POST", "/documents", { name, isPublic: false }); }
   createPartStudio(did, wid, name) { return this.req("POST", `/partstudios/d/${did}/w/${wid}`, { name }); }
+  getDocument(did) { return this.req("GET", `/documents/${did}`); }
+  listVersions(did) { return this.req("GET", `/documents/d/${did}/versions`); }
+  createVersion(did, wid, name, description = "") { return this.req("POST", `/documents/d/${did}/versions`, { name, description, documentId: did, workspaceId: wid }); }
   listWorkspaces(did) { return this.req("GET", `/documents/d/${did}/workspaces`); }
   createWorkspace(did, name, parentId) { return this.req("POST", `/documents/d/${did}/workspaces`, { name, parentId }); }
   evalFeatureScript(ref, script) { return this.req("POST", `${this.ps(ref)}/featurescript`, { script, queries: {} }); }
