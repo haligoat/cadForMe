@@ -109,3 +109,73 @@ export async function listReleases(dir, client) {
   }
   return out.sort((a, b) => String(b.at).localeCompare(String(a.at)));
 }
+
+// ---------- STEP assembly upload ----------
+/** Tab folders of a document as [{ name, nodeId, elementIds }] (Onshape's API can read them, not create them). */
+export async function tabFolders(client, did, wid) {
+  const r = await client.req("GET", `/documents/d/${did}/w/${wid}/contents`);
+  const out = [];
+  const walk = (g) => {
+    for (const k of g.groups ?? []) {
+      if (!String(k.btType).startsWith("BTElementGroup")) continue;
+      out.push({ name: k.groupName, nodeId: k.nodeId, elementIds: JSON.stringify(k).match(/"elementId":"(\w+)"/g)?.map((x) => x.slice(13, -1)) ?? [] });
+      walk(k);
+    }
+  };
+  walk(r.folders ?? {});
+  return out;
+}
+
+/**
+ * Upload a STEP assembly (e.g. one made by `cadforme step-assembly`) into an Onshape document the way Onshape's Import
+ * does: one Assembly per (sub)assembly, the parts in a Part Studio, appearances kept. Waits for the translation, then
+ * drops the " (1)" suffixes Onshape adds when a tab name already existed (only where the plain name is free), and
+ * records the new tabs in <project>/onshape-import.json. Polls slowly (15 s) to go easy on the API call budget.
+ */
+export async function importStepAssembly(dir, client, url, filePath, { folder, onProgress = () => {}, pollMs = 15000, maxWaitMs = 2 * 3600e3 } = {}) {
+  const doc = parseDocumentUrl(url);
+  const wid = doc.wvm && doc.wvm !== "w" ? null : doc.wid ?? (await client.getDocument(doc.did)).defaultWorkspace?.id;
+  if (!wid) throw new Error("That link points to a version, which is read-only. Use a workspace link");
+  const before = new Map((await client.listElements(doc.did, wid)).map((e) => [e.id, e.name]));
+  let group;
+  if (folder) {
+    group = (await tabFolders(client, doc.did, wid)).find((f) => f.name.toLowerCase() === folder.toLowerCase());
+    if (!group) throw new Error(`No tab folder "${folder}" in that document. Create it in Onshape first (the API can't make folders)`);
+  }
+  const name = path.basename(filePath).replace(/\.(step|stp)$/i, "") + ".step";
+  onProgress(`Uploading ${name} (${Math.round(fs.statSync(filePath).size / 1e6)} MB)`);
+  const tr = await client.translateFile(doc.did, wid, { name, bytes: fs.readFileSync(filePath), options: { importAppearances: true, ...(group ? { locationGroupId: group.nodeId } : {}) } });
+  const tid = tr.translationId ?? tr.id;
+  let st = tr.translationId ? { requestState: "ACTIVE" } : tr;
+  for (const t0 = Date.now(); !["DONE", "FAILED"].includes(st.requestState);) {
+    if (Date.now() - t0 > maxWaitMs) throw new Error(`Onshape is still translating ${name}; check the document later`);
+    await new Promise((r) => setTimeout(r, pollMs));
+    st = await client.getTranslation(tid);
+    onProgress(`Onshape is translating ${name}: ${String(st.requestState).toLowerCase()}`);
+  }
+  if (st.requestState !== "DONE") throw new Error(`Onshape couldn't translate ${name}: ${st.failureReason ?? st.requestState}`);
+  const made = (await client.listElements(doc.did, wid)).filter((e) => !before.has(e.id));
+  const taken = new Set([...before.values(), ...made.map((e) => e.name)]);
+  const renamed = [];
+  for (const e of made.filter((x) => ["ASSEMBLY", "PARTSTUDIO"].includes(x.elementType))) {
+    const plain = e.name.replace(/ \(\d+\)(?= parts$|$)/, "");
+    if (plain === e.name || taken.has(plain)) continue;
+    const md = await client.req("GET", `/metadata/d/${doc.did}/w/${wid}/e/${e.id}`);
+    const prop = (md.properties ?? []).find((p) => p.name === "Name");
+    if (!prop) continue;
+    await client.req("POST", `/metadata/d/${doc.did}/w/${wid}/e/${e.id}`, { properties: [{ propertyId: prop.propertyId, value: plain }] });
+    taken.delete(e.name); taken.add(plain); renamed.push({ from: e.name, to: plain }); e.name = plain;
+  }
+  const inFolder = group ? new Set((await tabFolders(client, doc.did, wid)).find((f) => f.nodeId === group.nodeId)?.elementIds ?? []) : new Set();
+  const top = made.find((e) => e.elementType === "ASSEMBLY");   // Onshape lists the top-level assembly first
+  const result = {
+    did: doc.did, wid, file: name, at: new Date().toISOString(),
+    tabs: made.map((e) => ({ type: e.elementType, name: e.name, eid: e.id })),
+    renamed, folder: group ? { name: group.name, placed: made.filter((e) => inFolder.has(e.id)).length } : null,
+    url: top ? `https://cad.onshape.com/documents/${doc.did}/w/${wid}/e/${top.id}` : `https://cad.onshape.com/documents/${doc.did}/w/${wid}`,
+  };
+  const log = path.join(dir, "onshape-import.json");
+  let prev = []; try { const j = JSON.parse(fs.readFileSync(log, "utf8")); prev = Array.isArray(j) ? j : [j]; } catch { /* first upload */ }
+  fs.writeFileSync(log, JSON.stringify([...prev, result], null, 2));
+  return result;
+}

@@ -1,0 +1,1759 @@
+[
+ {
+  "name": "Robot part 38",
+  "count": 4,
+  "colour": "#f6f6f3",
+  "vol": 0.037097572230640016,
+  "groups": [
+   "None",
+   "Side B front drive pod",
+   "Side B rear drive pod"
+  ]
+ },
+ {
+  "name": "Robot part 24",
+  "count": 8,
+  "colour": "#f6f6f3",
+  "vol": 0.03834569703095692,
+  "groups": [
+   "None",
+   "Side B front drive pod",
+   "Side B rear drive pod"
+  ]
+ },
+ {
+  "name": "Robot part 26",
+  "count": 4,
+  "colour": "#f6f6f3",
+  "vol": 0.12324302885249208,
+  "groups": [
+   "None",
+   "Side B front drive pod",
+   "Side B rear drive pod"
+  ]
+ },
+ {
+  "name": "Robot part 39",
+  "count": 4,
+  "colour": "#f6f6f3",
+  "vol": 0.1462820866345303,
+  "groups": [
+   "None",
+   "Side B front drive pod",
+   "Side B rear drive pod"
+  ]
+ },
+ {
+  "name": "Robot part 43",
+  "count": 8,
+  "colour": "#f6f6f3",
+  "vol": 0.24792275035351904,
+  "groups": [
+   "None",
+   "Side B front drive pod",
+   "Side B rear drive pod"
+  ]
+ },
+ {
+  "name": "Robot part 45",
+  "count": 2,
+  "colour": "#f6f6f3",
+  "vol": 0.26207064734664065,
+  "groups": [
+   "Side B front drive pod",
+   "Side B rear drive pod"
+  ]
+ },
+ {
+  "name": "Robot part 23",
+  "count": 2,
+  "colour": "#f6f6f3",
+  "vol": 0.26215978247244853,
+  "groups": [
+   "None"
+  ]
+ },
+ {
+  "name": "Robot part 13",
+  "count": 4,
+  "colour": "#f6f6f3",
+  "vol": 0.26287222998731313,
+  "groups": [
+   "None",
+   "Side B front drive pod",
+   "Side B rear drive pod"
+  ]
+ },
+ {
+  "name": "Robot part 27",
+  "count": 4,
+  "colour": "#f6f6f3",
+  "vol": 0.3102220488230592,
+  "groups": [
+   "None",
+   "Side B front drive pod",
+   "Side B rear drive pod"
+  ]
+ },
+ {
+  "name": "Robot part 44",
+  "count": 4,
+  "colour": "#f6f6f3",
+  "vol": 0.3133105879950786,
+  "groups": [
+   "None",
+   "Side B front drive pod",
+   "Side B rear drive pod"
+  ]
+ },
+ {
+  "name": "Robot part 34",
+  "count": 2,
+  "colour": "#f6f6f3",
+  "vol": 0.3181494267773788,
+  "groups": [
+   "Side B front drive pod",
+   "Side B rear drive pod"
+  ]
+ },
+ {
+  "name": "Robot part 28",
+  "count": 4,
+  "colour": "#f6f6f3",
+  "vol": 0.3189377014372837,
+  "groups": [
+   "None"
+  ]
+ },
+ {
+  "name": "Robot part 10",
+  "count": 2,
+  "colour": "#f6f6f3",
+  "vol": 0.31966438185294865,
+  "groups": [
+   "None"
+  ]
+ },
+ {
+  "name": "Robot part 30",
+  "count": 4,
+  "colour": "#f6f6f3",
+  "vol": 0.32033071988936346,
+  "groups": [
+   "None",
+   "Side B front drive pod",
+   "Side B rear drive pod"
+  ]
+ },
+ {
+  "name": "Robot part 41",
+  "count": 4,
+  "colour": "#f6f6f3",
+  "vol": 0.3207237412647245,
+  "groups": [
+   "Side B front drive pod",
+   "Side B rear drive pod"
+  ]
+ },
+ {
+  "name": "Robot part 20",
+  "count": 4,
+  "colour": "#f6f6f3",
+  "vol": 0.3418286049797754,
+  "groups": [
+   "None",
+   "Side B front drive pod",
+   "Side B rear drive pod"
+  ]
+ },
+ {
+  "name": "Robot part 50",
+  "count": 4,
+  "colour": "#f6f6f3",
+  "vol": 0.3432836567338331,
+  "groups": [
+   "Side B front drive pod",
+   "Side B rear drive pod"
+  ]
+ },
+ {
+  "name": "Robot part 21",
+  "count": 4,
+  "colour": "#f6f6f3",
+  "vol": 0.34500687567052646,
+  "groups": [
+   "None"
+  ]
+ },
+ {
+  "name": "Robot part 22",
+  "count": 2,
+  "colour": "#f6f6f3",
+  "vol": 0.3451409065688497,
+  "groups": [
+   "None"
+  ]
+ },
+ {
+  "name": "Robot part 42",
+  "count": 2,
+  "colour": "#f6f6f3",
+  "vol": 0.34580203473183463,
+  "groups": [
+   "Side B front drive pod",
+   "Side B rear drive pod"
+  ]
+ },
+ {
+  "name": "Robot part 36",
+  "count": 4,
+  "colour": "#f6f6f3",
+  "vol": 0.36034013529274034,
+  "groups": [
+   "None",
+   "Side B front drive pod",
+   "Side B rear drive pod"
+  ]
+ },
+ {
+  "name": "Robot part 35",
+  "count": 2,
+  "colour": "#f6f6f3",
+  "vol": 0.4074875897712844,
+  "groups": [
+   "Side B front drive pod",
+   "Side B rear drive pod"
+  ]
+ },
+ {
+  "name": "Robot part 9",
+  "count": 2,
+  "colour": "#f6f6f3",
+  "vol": 0.40958838042290324,
+  "groups": [
+   "None"
+  ]
+ },
+ {
+  "name": "Robot part 8",
+  "count": 12,
+  "colour": "#f6f6f3",
+  "vol": 0.41788905759043177,
+  "groups": [
+   "None",
+   "Side B front drive pod",
+   "Side B rear drive pod"
+  ]
+ },
+ {
+  "name": "Robot part 33",
+  "count": 8,
+  "colour": "#f6f6f3",
+  "vol": 0.4274070382567484,
+  "groups": [
+   "None",
+   "Side B front drive pod",
+   "Side B rear drive pod"
+  ]
+ },
+ {
+  "name": "Robot part 40",
+  "count": 2,
+  "colour": "#f6f6f3",
+  "vol": 0.4617137656949518,
+  "groups": [
+   "Side B front drive pod",
+   "Side B rear drive pod"
+  ]
+ },
+ {
+  "name": "Robot part 19",
+  "count": 2,
+  "colour": "#f6f6f3",
+  "vol": 0.46383281191784925,
+  "groups": [
+   "None"
+  ]
+ },
+ {
+  "name": "Robot part 29",
+  "count": 4,
+  "colour": "#f6f6f3",
+  "vol": 0.47468184715098655,
+  "groups": [
+   "None",
+   "Side B front drive pod",
+   "Side B rear drive pod"
+  ]
+ },
+ {
+  "name": "Robot part 49",
+  "count": 4,
+  "colour": "#f6f6f3",
+  "vol": 0.4749762985840234,
+  "groups": [
+   "None",
+   "Side B front drive pod",
+   "Side B rear drive pod"
+  ]
+ },
+ {
+  "name": "Robot part 51",
+  "count": 4,
+  "colour": "#f6f6f3",
+  "vol": 0.6662314743785038,
+  "groups": [
+   "Side B front drive pod",
+   "Side B rear drive pod"
+  ]
+ },
+ {
+  "name": "Robot part 25",
+  "count": 4,
+  "colour": "#f6f6f3",
+  "vol": 0.6664578617936119,
+  "groups": [
+   "None"
+  ]
+ },
+ {
+  "name": "Robot part 48",
+  "count": 2,
+  "colour": "#f6f6f3",
+  "vol": 0.8085839815870589,
+  "groups": [
+   "Side B front drive pod",
+   "Side B rear drive pod"
+  ]
+ },
+ {
+  "name": "Robot part 31",
+  "count": 2,
+  "colour": "#f6f6f3",
+  "vol": 0.8103946104534057,
+  "groups": [
+   "None"
+  ]
+ },
+ {
+  "name": "Robot part 46",
+  "count": 4,
+  "colour": "#f6f6f3",
+  "vol": 0.8689981390779464,
+  "groups": [
+   "None",
+   "Side B front drive pod",
+   "Side B rear drive pod"
+  ]
+ },
+ {
+  "name": "Robot part 37",
+  "count": 2,
+  "colour": "#f6f6f3",
+  "vol": 0.8734045739489308,
+  "groups": [
+   "Side B front drive pod",
+   "Side B rear drive pod"
+  ]
+ },
+ {
+  "name": "Robot part 18 (2)",
+  "count": 2,
+  "colour": "#f6f6f3",
+  "vol": 0.8735823976920563,
+  "groups": [
+   "None"
+  ]
+ },
+ {
+  "name": "Robot part 15",
+  "count": 2,
+  "colour": "#f6f6f3",
+  "vol": 0.8778089288918727,
+  "groups": [
+   "None"
+  ]
+ },
+ {
+  "name": "Robot part 47",
+  "count": 2,
+  "colour": "#f6f6f3",
+  "vol": 0.8794513322109514,
+  "groups": [
+   "Side B front drive pod",
+   "Side B rear drive pod"
+  ]
+ },
+ {
+  "name": "Robot part 12",
+  "count": 4,
+  "colour": "#f6f6f3",
+  "vol": 1.9025604366750013,
+  "groups": [
+   "None",
+   "Side B front drive pod",
+   "Side B rear drive pod"
+  ]
+ },
+ {
+  "name": "Robot part 14",
+  "count": 4,
+  "colour": "#f6f6f3",
+  "vol": 2.0172866298080114,
+  "groups": [
+   "None",
+   "Side B front drive pod",
+   "Side B rear drive pod"
+  ]
+ },
+ {
+  "name": "Robot part 17",
+  "count": 4,
+  "colour": "#f6f6f3",
+  "vol": 2.380676050238586,
+  "groups": [
+   "None",
+   "Side B front drive pod",
+   "Side B rear drive pod"
+  ]
+ },
+ {
+  "name": "goBILDA 1611",
+  "count": 36,
+  "colour": null,
+  "vol": 2.5266187266761233,
+  "groups": [
+   "Transfer"
+  ]
+ },
+ {
+  "name": "Robot part 16",
+  "count": 4,
+  "colour": "#f6f6f3",
+  "vol": 3.283999058673944,
+  "groups": [
+   "None",
+   "Side B front drive pod",
+   "Side B rear drive pod"
+  ]
+ },
+ {
+  "name": "Robot part 11",
+  "count": 2,
+  "colour": "#f6f6f3",
+  "vol": 3.642726005138078,
+  "groups": [
+   "None"
+  ]
+ },
+ {
+  "name": "Robot part 32",
+  "count": 2,
+  "colour": "#f6f6f3",
+  "vol": 3.6434902199573416,
+  "groups": [
+   "Side B front drive pod",
+   "Side B rear drive pod"
+  ]
+ },
+ {
+  "name": "Pin (1)",
+  "count": 4,
+  "colour": null,
+  "vol": 4.0288000000005395,
+  "groups": [
+   "Static Pollen Shooter v1"
+  ]
+ },
+ {
+  "name": "M3 Washers",
+  "count": 72,
+  "colour": "#a0a0a0",
+  "vol": 5.540984042567903,
+  "groups": [
+   "None",
+   "Side B front drive pod",
+   "Side B rear drive pod"
+  ]
+ },
+ {
+  "name": "M3 Washer",
+  "count": 8,
+  "colour": "#a0a0a0",
+  "vol": 5.796238445873027,
+  "groups": [
+   "None",
+   "Side B front drive pod",
+   "Side B rear drive pod"
+  ]
+ },
+ {
+  "name": "M3 Lock Nut (2)",
+  "count": 36,
+  "colour": "#a0a0a0",
+  "vol": 10.751418228299347,
+  "groups": [
+   "None",
+   "Side B front drive pod",
+   "Side B rear drive pod"
+  ]
+ },
+ {
+  "name": "99461A915_Phillips Rounded Head Thread-Forming Screws (1)",
+  "count": 2,
+  "colour": null,
+  "vol": 20.867966557138292,
+  "groups": [
+   "Static Pollen Shooter v1"
+  ]
+ },
+ {
+  "name": "2000-0025-0003 Top Label v1",
+  "count": 1,
+  "colour": null,
+  "vol": 23.55257188014671,
+  "groups": [
+   "Static Pollen Shooter v1"
+  ]
+ },
+ {
+  "name": "Robot part 7",
+  "count": 1,
+  "colour": null,
+  "vol": 36.04980563620083,
+  "groups": [
+   "None"
+  ]
+ },
+ {
+  "name": "Transfer shaft",
+  "count": 9,
+  "colour": null,
+  "vol": 39.76609408915917,
+  "groups": [
+   "Transfer"
+  ]
+ },
+ {
+  "name": "SR-DRIVE-SUNGEAR-01",
+  "count": 4,
+  "colour": "#a0a0a0",
+  "vol": 40.87733396611962,
+  "groups": [
+   "None",
+   "Side B front drive pod",
+   "Side B rear drive pod"
+  ]
+ },
+ {
+  "name": "MF63ZZ Flange Ball Bearing 3x6x2.5mm",
+  "count": 8,
+  "colour": "#a0a0a0",
+  "vol": 59.4289846291801,
+  "groups": [
+   "None",
+   "Side B front drive pod",
+   "Side B rear drive pod"
+  ]
+ },
+ {
+  "name": "M3 Button Head x 5mm",
+  "count": 12,
+  "colour": "#a0a0a0",
+  "vol": 61.29726516330169,
+  "groups": [
+   "None",
+   "Side B front drive pod",
+   "Side B rear drive pod"
+  ]
+ },
+ {
+  "name": "M3 Lock Nut (3)",
+  "count": 18,
+  "colour": "#a0a0a0",
+  "vol": 64.00166126701423,
+  "groups": [
+   "Side B front drive pod",
+   "Side B rear drive pod"
+  ]
+ },
+ {
+  "name": "M3 Lock Nut",
+  "count": 18,
+  "colour": "#a0a0a0",
+  "vol": 64.00166126705881,
+  "groups": [
+   "None"
+  ]
+ },
+ {
+  "name": "Wire Seal",
+  "count": 1,
+  "colour": null,
+  "vol": 65.82944673918735,
+  "groups": [
+   "Static Pollen Shooter v1"
+  ]
+ },
+ {
+  "name": "Screw",
+  "count": 4,
+  "colour": null,
+  "vol": 71.20073661967558,
+  "groups": [
+   "Static Pollen Shooter v1"
+  ]
+ },
+ {
+  "name": "3mm x 12mm Pin",
+  "count": 4,
+  "colour": "#a0a0a0",
+  "vol": 81.24204486688063,
+  "groups": [
+   "None",
+   "Side B front drive pod",
+   "Side B rear drive pod"
+  ]
+ },
+ {
+  "name": "5000-0002-0001 motor shaft",
+  "count": 1,
+  "colour": null,
+  "vol": 86.36977097535515,
+  "groups": [
+   "Static Pollen Shooter v1"
+  ]
+ },
+ {
+  "name": "2000-0025-0003 Side Label v1",
+  "count": 1,
+  "colour": null,
+  "vol": 88.73495559215462,
+  "groups": [
+   "Static Pollen Shooter v1"
+  ]
+ },
+ {
+  "name": "5000-0002-4008-Product-Sticker",
+  "count": 1,
+  "colour": null,
+  "vol": 91.24542406229892,
+  "groups": [
+   "Static Pollen Shooter v1"
+  ]
+ },
+ {
+  "name": "683ZZ Ball Bearing 3mm x 7mm x 3mm",
+  "count": 72,
+  "colour": "#a0a0a0",
+  "vol": 94.2477796071184,
+  "groups": [
+   "None",
+   "Side B front drive pod",
+   "Side B rear drive pod"
+  ]
+ },
+ {
+  "name": "M4 nut",
+  "count": 135,
+  "colour": "#f2a541",
+  "vol": 95.48284824439204,
+  "groups": [
+   "Proof-of-fit M4 fasteners"
+  ]
+ },
+ {
+  "name": "M4 nut (2)",
+  "count": 4,
+  "colour": "#2b2d42",
+  "vol": 95.48284824596728,
+  "groups": [
+   "Proof-of-fit M4 fasteners"
+  ]
+ },
+ {
+  "name": "M3 Flat Head X 12mm",
+  "count": 12,
+  "colour": "#a0a0a0",
+  "vol": 98.17467863841347,
+  "groups": [
+   "None",
+   "Side B front drive pod",
+   "Side B rear drive pod"
+  ]
+ },
+ {
+  "name": "Axle Part",
+  "count": 2,
+  "colour": "#7f7f7f",
+  "vol": 101.57202606418251,
+  "groups": [
+   "None",
+   "Transfer motor"
+  ]
+ },
+ {
+  "name": "M3 Flat Head x 16mm",
+  "count": 8,
+  "colour": "#a0a0a0",
+  "vol": 126.4487815669466,
+  "groups": [
+   "None",
+   "Side B front drive pod",
+   "Side B rear drive pod"
+  ]
+ },
+ {
+  "name": "H25T Spline",
+  "count": 1,
+  "colour": null,
+  "vol": 185.50542355586356,
+  "groups": [
+   "Static Pollen Shooter v1"
+  ]
+ },
+ {
+  "name": "M4 screw (5)",
+  "count": 3,
+  "colour": "#e9c46a",
+  "vol": 199.30263794373718,
+  "groups": [
+   "Proof-of-fit M4 fasteners"
+  ]
+ },
+ {
+  "name": "Plastic (1)",
+  "count": 1,
+  "colour": null,
+  "vol": 232.4247154458346,
+  "groups": [
+   "Static Pollen Shooter v1"
+  ]
+ },
+ {
+  "name": "Transfer motor coupler (goBILDA 4007-4008-4008 hyper coupler) (2)",
+  "count": 4,
+  "colour": null,
+  "vol": 252.13152846599868,
+  "groups": [
+   "Transfer"
+  ]
+ },
+ {
+  "name": "M4 screw (6)",
+  "count": 3,
+  "colour": "#e9c46a",
+  "vol": 256.0083853410317,
+  "groups": [
+   "Proof-of-fit M4 fasteners"
+  ]
+ },
+ {
+  "name": "Cavity1",
+  "count": 1,
+  "colour": null,
+  "vol": 263.54639633036624,
+  "groups": [
+   "Static Pollen Shooter v1"
+  ]
+ },
+ {
+  "name": "M4 screw (7)",
+  "count": 8,
+  "colour": "#2b2d42",
+  "vol": 280.9589141958414,
+  "groups": [
+   "Proof-of-fit M4 fasteners"
+  ]
+ },
+ {
+  "name": "M4 screw (8)",
+  "count": 74,
+  "colour": "#f2a541",
+  "vol": 292.30006367530024,
+  "groups": [
+   "Proof-of-fit M4 fasteners"
+  ]
+ },
+ {
+  "name": "M4 screw (2)",
+  "count": 16,
+  "colour": "#f2a541",
+  "vol": 295.7024085191381,
+  "groups": [
+   "Proof-of-fit M4 fasteners"
+  ]
+ },
+ {
+  "name": "M4 screw (9)",
+  "count": 4,
+  "colour": "#2b2d42",
+  "vol": 301.3729832588676,
+  "groups": [
+   "Proof-of-fit M4 fasteners"
+  ]
+ },
+ {
+  "name": "M3 x 45mm Button Head (4)",
+  "count": 2,
+  "colour": "#a0a0a0",
+  "vol": 318.33214293796107,
+  "groups": [
+   "Side B front drive pod",
+   "Side B rear drive pod"
+  ]
+ },
+ {
+  "name": "M3 x 45mm Button Head",
+  "count": 2,
+  "colour": "#a0a0a0",
+  "vol": 318.4496360864807,
+  "groups": [
+   "None"
+  ]
+ },
+ {
+  "name": "M3 x 45mm Button Head (6)",
+  "count": 8,
+  "colour": "#a0a0a0",
+  "vol": 318.91428703872793,
+  "groups": [
+   "Side B front drive pod",
+   "Side B rear drive pod"
+  ]
+ },
+ {
+  "name": "M3 x 45mm Button Head (3)",
+  "count": 8,
+  "colour": "#a0a0a0",
+  "vol": 319.031979182349,
+  "groups": [
+   "None"
+  ]
+ },
+ {
+  "name": "M3 x 45mm Button Head (2)",
+  "count": 8,
+  "colour": "#a0a0a0",
+  "vol": 319.26550500759356,
+  "groups": [
+   "None"
+  ]
+ },
+ {
+  "name": "M3 x 45mm Button Head (5)",
+  "count": 8,
+  "colour": "#a0a0a0",
+  "vol": 319.46858515298567,
+  "groups": [
+   "Side B front drive pod",
+   "Side B rear drive pod"
+  ]
+ },
+ {
+  "name": "M4 screw (4)",
+  "count": 10,
+  "colour": "#e4572e",
+  "vol": 324.0552822177855,
+  "groups": [
+   "Proof-of-fit M4 fasteners"
+  ]
+ },
+ {
+  "name": "M4 screw (3)",
+  "count": 28,
+  "colour": "#e4572e",
+  "vol": 329.7258569575149,
+  "groups": [
+   "Proof-of-fit M4 fasteners"
+  ]
+ },
+ {
+  "name": "8x14x5mm Bearing - Round Bore (GB)",
+  "count": 4,
+  "colour": null,
+  "vol": 512.7459879949846,
+  "groups": [
+   "Static Pollen Shooter v1"
+  ]
+ },
+ {
+  "name": "goBILDA 1611 (2)",
+  "count": 18,
+  "colour": null,
+  "vol": 518.9542473618633,
+  "groups": [
+   "Transfer"
+  ]
+ },
+ {
+  "name": "M4 screw",
+  "count": 3,
+  "colour": "#e4572e",
+  "vol": 529.3300877959919,
+  "groups": [
+   "Proof-of-fit M4 fasteners"
+  ]
+ },
+ {
+  "name": "1501 Series M4 x 0.7mm Standoff (6mm OD, 28mm Length) 1501-0006-0280",
+  "count": 4,
+  "colour": null,
+  "vol": 573.1484844010001,
+  "groups": [
+   "Static Pollen Shooter v1"
+  ]
+ },
+ {
+  "name": "Transfer motor standoff (goBILDA 1501-0006-0320, M4 x 32 mm)",
+  "count": 3,
+  "colour": "#e9c46a",
+  "vol": 684.4686405067952,
+  "groups": [
+   "Transfer"
+  ]
+ },
+ {
+  "name": "base",
+  "count": 1,
+  "colour": null,
+  "vol": 875.9784926620515,
+  "groups": [
+   "Static Pollen Shooter v1"
+  ]
+ },
+ {
+  "name": "Robot part (3)",
+  "count": 2,
+  "colour": "#80c059",
+  "vol": 1583.1863528711258,
+  "groups": [
+   "None"
+  ]
+ },
+ {
+  "name": "Robot part (4)",
+  "count": 2,
+  "colour": "#80c059",
+  "vol": 1583.1863555529428,
+  "groups": [
+   "Side B front drive pod",
+   "Side B rear drive pod"
+  ]
+ },
+ {
+  "name": "20t Gt2-2 Pulley - 1/8in Round (GB)",
+  "count": 1,
+  "colour": null,
+  "vol": 1597.295730343861,
+  "groups": [
+   "Static Pollen Shooter v1"
+  ]
+ },
+ {
+  "name": "20t Gt2-2 Pulley - 8mm REX (GB)",
+  "count": 1,
+  "colour": null,
+  "vol": 1730.1842559915756,
+  "groups": [
+   "Static Pollen Shooter v1"
+  ]
+ },
+ {
+  "name": "[LS] GT2-2 belt 156 teeth",
+  "count": 1,
+  "colour": null,
+  "vol": 1859.7826614040457,
+  "groups": [
+   "Static Pollen Shooter v1"
+  ]
+ },
+ {
+  "name": "Transfer shaft 1 bearing plate A",
+  "count": 19,
+  "colour": "#404040",
+  "vol": 1880.4114467859342,
+  "groups": [
+   "None",
+   "Transfer"
+  ]
+ },
+ {
+  "name": "5203 Shaft",
+  "count": 2,
+  "colour": "#7f7f7f",
+  "vol": 1884.4797118719778,
+  "groups": [
+   "None",
+   "Transfer motor"
+  ]
+ },
+ {
+  "name": "Moving Hood Gear",
+  "count": 1,
+  "colour": null,
+  "vol": 2124.2354211694087,
+  "groups": [
+   "Static Pollen Shooter v1"
+  ]
+ },
+ {
+  "name": "Tread",
+  "count": 18,
+  "colour": "#f6f6f3",
+  "vol": 2637.890839094564,
+  "groups": [
+   "None"
+  ]
+ },
+ {
+  "name": "Tread (2)",
+  "count": 18,
+  "colour": "#f6f6f3",
+  "vol": 2637.890839100579,
+  "groups": [
+   "Side B front drive pod",
+   "Side B rear drive pod"
+  ]
+ },
+ {
+  "name": "SR-DRIVE-PLANETGEAR-01",
+  "count": 4,
+  "colour": "#191919",
+  "vol": 2689.8158017964643,
+  "groups": [
+   "None",
+   "Side B front drive pod",
+   "Side B rear drive pod"
+  ]
+ },
+ {
+  "name": "SR-WHEEL-PLATE-01",
+  "count": 4,
+  "colour": "#191919",
+  "vol": 2821.936286146372,
+  "groups": [
+   "None"
+  ]
+ },
+ {
+  "name": "SR-WHEEL-PLATE-01 (2)",
+  "count": 4,
+  "colour": "#191919",
+  "vol": 2821.9362861618156,
+  "groups": [
+   "Side B front drive pod",
+   "Side B rear drive pod"
+  ]
+ },
+ {
+  "name": "Inner (2)",
+  "count": 18,
+  "colour": "#b3b3b3",
+  "vol": 2996.1973042613768,
+  "groups": [
+   "Side B front drive pod",
+   "Side B rear drive pod"
+  ]
+ },
+ {
+  "name": "Inner",
+  "count": 18,
+  "colour": "#b3b3b3",
+  "vol": 2996.1973049038097,
+  "groups": [
+   "None"
+  ]
+ },
+ {
+  "name": "Transfer shaft 3 gecko wheel (Swyft 2.5in)",
+  "count": 26,
+  "colour": null,
+  "vol": 3041.043617875872,
+  "groups": [
+   "None",
+   "Transfer"
+  ]
+ },
+ {
+  "name": "SR-DRIVE-BLOCK-03",
+  "count": 2,
+  "colour": "#191919",
+  "vol": 3247.3271227739406,
+  "groups": [
+   "None"
+  ]
+ },
+ {
+  "name": "SR-DRIVE-BLOCK-03 (2)",
+  "count": 2,
+  "colour": "#191919",
+  "vol": 3247.3271227793794,
+  "groups": [
+   "Side B front drive pod",
+   "Side B rear drive pod"
+  ]
+ },
+ {
+  "name": "Motor Sleeve",
+  "count": 3,
+  "colour": "#fab601",
+  "vol": 3359.0268724076705,
+  "groups": [
+   "None",
+   "Static Pollen Shooter v1",
+   "Transfer motor"
+  ]
+ },
+ {
+  "name": "1516 Series 8mm REX\u00ae Standoff (M4 x 0.7mm Threads, 88mm Length) 1516-4008-0880",
+  "count": 2,
+  "colour": null,
+  "vol": 3515.3870410418485,
+  "groups": [
+   "Static Pollen Shooter v1"
+  ]
+ },
+ {
+  "name": "SR-DRIVE-PLATE-02",
+  "count": 4,
+  "colour": "#191919",
+  "vol": 3527.174973180521,
+  "groups": [
+   "None",
+   "Side B front drive pod",
+   "Side B rear drive pod"
+  ]
+ },
+ {
+  "name": "Robot part (2)",
+  "count": 2,
+  "colour": "#80c059",
+  "vol": 3665.5343419124365,
+  "groups": [
+   "None"
+  ]
+ },
+ {
+  "name": "Robot part (5)",
+  "count": 2,
+  "colour": "#80c059",
+  "vol": 3665.8063870196615,
+  "groups": [
+   "Side B front drive pod",
+   "Side B rear drive pod"
+  ]
+ },
+ {
+  "name": "Drive pod",
+  "count": 4,
+  "colour": "#191919",
+  "vol": 4061.4575275453417,
+  "groups": [
+   "None"
+  ]
+ },
+ {
+  "name": "goBILDA 2106-4008-1040",
+  "count": 3,
+  "colour": null,
+  "vol": 4114.292227675698,
+  "groups": [
+   "Transfer"
+  ]
+ },
+ {
+  "name": "6708ZZ Bearings 40mm x 50mm x 6mm",
+  "count": 8,
+  "colour": "#a0a0a0",
+  "vol": 4222.908613097937,
+  "groups": [
+   "None",
+   "Side B front drive pod",
+   "Side B rear drive pod"
+  ]
+ },
+ {
+  "name": "Transfer motor coupler (goBILDA 4007-4008-4008 hyper coupler)",
+  "count": 1,
+  "colour": null,
+  "vol": 4319.845034088241,
+  "groups": [
+   "Transfer"
+  ]
+ },
+ {
+  "name": "Sonic Hub - 8mm  REX  (GB)",
+  "count": 1,
+  "colour": null,
+  "vol": 4349.124461241735,
+  "groups": [
+   "Static Pollen Shooter v1"
+  ]
+ },
+ {
+  "name": "goBILDA 2106-4008-1120",
+  "count": 4,
+  "colour": null,
+  "vol": 4453.623621854915,
+  "groups": [
+   "Transfer"
+  ]
+ },
+ {
+  "name": "120mm Steel Shaft - 8mm REX (GB)",
+  "count": 1,
+  "colour": null,
+  "vol": 4908.080585762925,
+  "groups": [
+   "Static Pollen Shooter v1"
+  ]
+ },
+ {
+  "name": "5000-0002-0001 body",
+  "count": 1,
+  "colour": null,
+  "vol": 5115.280800930895,
+  "groups": [
+   "Static Pollen Shooter v1"
+  ]
+ },
+ {
+  "name": "Botcase",
+  "count": 1,
+  "colour": null,
+  "vol": 5387.888304497783,
+  "groups": [
+   "Static Pollen Shooter v1"
+  ]
+ },
+ {
+  "name": "Robot part 3",
+  "count": 1,
+  "colour": "#f6f6f3",
+  "vol": 5450.382984174336,
+  "groups": [
+   "None"
+  ]
+ },
+ {
+  "name": "Swyft 1.5in",
+  "count": 23,
+  "colour": null,
+  "vol": 6325.092902030922,
+  "groups": [
+   "None",
+   "Transfer"
+  ]
+ },
+ {
+  "name": "Robot part 6",
+  "count": 1,
+  "colour": null,
+  "vol": 6327.017187947624,
+  "groups": [
+   "None"
+  ]
+ },
+ {
+  "name": "Transfer shaft (2)",
+  "count": 2,
+  "colour": null,
+  "vol": 6828.943381122165,
+  "groups": [
+   "Transfer"
+  ]
+ },
+ {
+  "name": "SR-DRIVE-RINGGEAR-01",
+  "count": 2,
+  "colour": "#191919",
+  "vol": 6955.996537184899,
+  "groups": [
+   "None"
+  ]
+ },
+ {
+  "name": "SR-DRIVE-RINGGEAR-01 (2)",
+  "count": 2,
+  "colour": "#191919",
+  "vol": 6955.996537209972,
+  "groups": [
+   "Side B front drive pod",
+   "Side B rear drive pod"
+  ]
+ },
+ {
+  "name": "Robot part 1",
+  "count": 1,
+  "colour": "#f6f6f3",
+  "vol": 6996.63803605,
+  "groups": [
+   "None"
+  ]
+ },
+ {
+  "name": "Robot part 4",
+  "count": 2,
+  "colour": "#f6f6f3",
+  "vol": 7120.35052008804,
+  "groups": [
+   "None"
+  ]
+ },
+ {
+  "name": "Robot part 2",
+  "count": 1,
+  "colour": "#f6f6f3",
+  "vol": 7147.530820578772,
+  "groups": [
+   "None"
+  ]
+ },
+ {
+  "name": "Intake shaft support A (3D-printed PETG, on the transfer plate)",
+  "count": 1,
+  "colour": "#e4572e",
+  "vol": 7939.824052909038,
+  "groups": [
+   "Transfer"
+  ]
+ },
+ {
+  "name": "Intake shaft support B (3D-printed PETG, on the transfer plate)",
+  "count": 1,
+  "colour": "#e4572e",
+  "vol": 7939.8240529093255,
+  "groups": [
+   "Transfer"
+  ]
+ },
+ {
+  "name": "Inner Hood Plate",
+  "count": 2,
+  "colour": null,
+  "vol": 8675.095473887573,
+  "groups": [
+   "Static Pollen Shooter v1"
+  ]
+ },
+ {
+  "name": "Topcase",
+  "count": 1,
+  "colour": null,
+  "vol": 9087.628878308142,
+  "groups": [
+   "Static Pollen Shooter v1"
+  ]
+ },
+ {
+  "name": "Part 5",
+  "count": 1,
+  "colour": null,
+  "vol": 9751.63481417822,
+  "groups": [
+   "Static Pollen Shooter v1"
+  ]
+ },
+ {
+  "name": "Bracket B, transfer plate to rear channel #22 (3D-printed PETG)",
+  "count": 1,
+  "colour": "#e4572e",
+  "vol": 10647.893831132471,
+  "groups": [
+   "Transfer"
+  ]
+ },
+ {
+  "name": "Bracket A, transfer plate to rear channel #22 (3D-printed PETG)",
+  "count": 1,
+  "colour": "#e4572e",
+  "vol": 10647.893831132471,
+  "groups": [
+   "Transfer"
+  ]
+ },
+ {
+  "name": "SR-DRIVE-BLOCK-02 (2)",
+  "count": 2,
+  "colour": "#191919",
+  "vol": 11402.73984325394,
+  "groups": [
+   "Side B front drive pod",
+   "Side B rear drive pod"
+  ]
+ },
+ {
+  "name": "SR-DRIVE-BLOCK-02",
+  "count": 2,
+  "colour": "#191919",
+  "vol": 11402.739843256675,
+  "groups": [
+   "None"
+  ]
+ },
+ {
+  "name": "Part 6",
+  "count": 1,
+  "colour": null,
+  "vol": 12066.393378875739,
+  "groups": [
+   "Static Pollen Shooter v1"
+  ]
+ },
+ {
+  "name": "Part 7",
+  "count": 1,
+  "colour": null,
+  "vol": 12066.876842792753,
+  "groups": [
+   "Static Pollen Shooter v1"
+  ]
+ },
+ {
+  "name": "SR-DRIVE-BLOCK-01 (2)",
+  "count": 2,
+  "colour": "#191919",
+  "vol": 12788.170318743507,
+  "groups": [
+   "Side B front drive pod",
+   "Side B rear drive pod"
+  ]
+ },
+ {
+  "name": "SR-DRIVE-BLOCK-01",
+  "count": 2,
+  "colour": "#191919",
+  "vol": 12788.170318747803,
+  "groups": [
+   "None"
+  ]
+ },
+ {
+  "name": "Bracket B, transfer plate to cross channel #8 (3D-printed PETG)",
+  "count": 1,
+  "colour": "#e4572e",
+  "vol": 12896.393831132518,
+  "groups": [
+   "Transfer"
+  ]
+ },
+ {
+  "name": "Bracket A, transfer plate to cross channel #8 (3D-printed PETG)",
+  "count": 1,
+  "colour": "#e4572e",
+  "vol": 12896.393831132522,
+  "groups": [
+   "Transfer"
+  ]
+ },
+ {
+  "name": "Robot part (6)",
+  "count": 2,
+  "colour": "#80c059",
+  "vol": 14175.638175186623,
+  "groups": [
+   "Side B front drive pod",
+   "Side B rear drive pod"
+  ]
+ },
+ {
+  "name": "Robot part",
+  "count": 2,
+  "colour": "#80c059",
+  "vol": 14175.638175192349,
+  "groups": [
+   "None"
+  ]
+ },
+ {
+  "name": "Swyft 2.5in",
+  "count": 3,
+  "colour": null,
+  "vol": 14961.598628413165,
+  "groups": [
+   "Transfer"
+  ]
+ },
+ {
+  "name": "Intake shaft (7 mm hex)",
+  "count": 1,
+  "colour": "#c3c9d1",
+  "vol": 15310.22223276484,
+  "groups": [
+   "None"
+  ]
+ },
+ {
+  "name": "Cross channel (under the shooter) (2)",
+  "count": 1,
+  "colour": null,
+  "vol": 15840.66089333266,
+  "groups": [
+   "None"
+  ]
+ },
+ {
+  "name": "Cross channel (under the shooter)",
+  "count": 1,
+  "colour": null,
+  "vol": 15858.816340088442,
+  "groups": [
+   "None"
+  ]
+ },
+ {
+  "name": "Midcase",
+  "count": 1,
+  "colour": null,
+  "vol": 15982.578316369314,
+  "groups": [
+   "Static Pollen Shooter v1"
+  ]
+ },
+ {
+  "name": "Bumper bracket A (3D-printed PETG)",
+  "count": 1,
+  "colour": "#e4572e",
+  "vol": 16108.448540379994,
+  "groups": [
+   "None"
+  ]
+ },
+ {
+  "name": "Bumper bracket B (3D-printed PETG)",
+  "count": 1,
+  "colour": "#e4572e",
+  "vol": 16108.448540379999,
+  "groups": [
+   "None"
+  ]
+ },
+ {
+  "name": "Shooter tower channel A",
+  "count": 1,
+  "colour": "#191919",
+  "vol": 17543.94869759592,
+  "groups": [
+   "None"
+  ]
+ },
+ {
+  "name": "Shooter tower channel B",
+  "count": 1,
+  "colour": "#191919",
+  "vol": 17585.14385220065,
+  "groups": [
+   "None"
+  ]
+ },
+ {
+  "name": "Transfer motor plate (3D-printed PETG, minimal mount)",
+  "count": 1,
+  "colour": "#e4572e",
+  "vol": 18040.30761893652,
+  "groups": [
+   "Transfer"
+  ]
+ },
+ {
+  "name": "Outer Hood Plate",
+  "count": 2,
+  "colour": null,
+  "vol": 19364.384143480096,
+  "groups": [
+   "Static Pollen Shooter v1"
+  ]
+ },
+ {
+  "name": "endcap",
+  "count": 1,
+  "colour": null,
+  "vol": 20489.62462130582,
+  "groups": [
+   "Static Pollen Shooter v1"
+  ]
+ },
+ {
+  "name": "Intake motor mount",
+  "count": 1,
+  "colour": "#e4572e",
+  "vol": 21063.6638033827,
+  "groups": [
+   "None"
+  ]
+ },
+ {
+  "name": "Robot part 18",
+  "count": 2,
+  "colour": "#80c059",
+  "vol": 22214.333448296078,
+  "groups": [
+   "None",
+   "Transfer motor"
+  ]
+ },
+ {
+  "name": "<am-5851_yellow Neutral Pollen Half>-<CirPattern3>",
+  "count": 1,
+  "colour": null,
+  "vol": 22299.122378512548,
+  "groups": [
+   "Static Pollen Shooter v1"
+  ]
+ },
+ {
+  "name": "72mm SWYFT Flywheel",
+  "count": 2,
+  "colour": null,
+  "vol": 23977.263450729297,
+  "groups": [
+   "Static Pollen Shooter v1"
+  ]
+ },
+ {
+  "name": "5203 gearbox",
+  "count": 2,
+  "colour": "#404040",
+  "vol": 26135.754800365787,
+  "groups": [
+   "None",
+   "Transfer motor"
+  ]
+ },
+ {
+  "name": "Drive channel",
+  "count": 2,
+  "colour": "#191919",
+  "vol": 35388.786916045945,
+  "groups": [
+   "None"
+  ]
+ },
+ {
+  "name": "Robot part 5",
+  "count": 1,
+  "colour": "#f6f6f3",
+  "vol": 40646.98394044808,
+  "groups": [
+   "None"
+  ]
+ },
+ {
+  "name": "Front bumper (Swyft 17-hole 48 mm U-channel, SR-CHANNEL-L48-17)",
+  "count": 1,
+  "colour": "#adb5bd",
+  "vol": 43127.502202681135,
+  "groups": [
+   "None"
+  ]
+ },
+ {
+  "name": "Transfer floor piece 1 (3D-printed PETG)",
+  "count": 1,
+  "colour": "#e4572e",
+  "vol": 54645.45953684081,
+  "groups": [
+   "Transfer"
+  ]
+ },
+ {
+  "name": "Hood",
+  "count": 1,
+  "colour": null,
+  "vol": 63526.85043973137,
+  "groups": [
+   "Static Pollen Shooter v1"
+  ]
+ },
+ {
+  "name": "Join1",
+  "count": 1,
+  "colour": null,
+  "vol": 66767.03783705737,
+  "groups": [
+   "Static Pollen Shooter v1"
+  ]
+ },
+ {
+  "name": "Transfer floor piece 2 (3D-printed PETG)",
+  "count": 1,
+  "colour": "#e4572e",
+  "vol": 88986.73965908316,
+  "groups": [
+   "Transfer"
+  ]
+ },
+ {
+  "name": "Transfer side plate A (3 mm, new profile)",
+  "count": 1,
+  "colour": "#3d5a80",
+  "vol": 115378.85308420945,
+  "groups": [
+   "Transfer"
+  ]
+ },
+ {
+  "name": "Transfer side plate B (3 mm, new profile)",
+  "count": 1,
+  "colour": "#3d5a80",
+  "vol": 115872.46828312105,
+  "groups": [
+   "Transfer"
+  ]
+ },
+ {
+  "name": "Transfer floor piece 3 (3D-printed PETG)",
+  "count": 1,
+  "colour": "#e4572e",
+  "vol": 153595.49363221988,
+  "groups": [
+   "Transfer"
+  ]
+ },
+ {
+  "name": "Shooter mount plate (SWYFT ring mount)",
+  "count": 1,
+  "colour": "#fab601",
+  "vol": 189251.6840164259,
+  "groups": [
+   "None"
+  ]
+ },
+ {
+  "name": "Funnel side B (3D-printed PETG, one solid)",
+  "count": 1,
+  "colour": "#e4572e",
+  "vol": 211118.37822025837,
+  "groups": [
+   "None"
+  ]
+ },
+ {
+  "name": "Funnel side A (3D-printed PETG, one solid)",
+  "count": 1,
+  "colour": "#e4572e",
+  "vol": 225939.28880699578,
+  "groups": [
+   "None"
+  ]
+ },
+ {
+  "name": "Side plate A",
+  "count": 1,
+  "colour": "#cbe7be",
+  "vol": 294808.6254391637,
+  "groups": [
+   "None"
+  ]
+ },
+ {
+  "name": "Side plate B",
+  "count": 1,
+  "colour": "#cbe7be",
+  "vol": 294937.04673177545,
+  "groups": [
+   "None"
+  ]
+ }
+]

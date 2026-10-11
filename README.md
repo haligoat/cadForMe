@@ -23,6 +23,14 @@ cadforme               # opens the window on the current project
 - The AI models the way you would in Onshape: dimensioned sketches + extrudes, cuts for holes, shapes on the same plane in one
   sketch, and **at most 3-5 variables** per part (only sizes you'd really change). Everything else is a sketch dimension.
 
+## Big STEP file to an Onshape assembly
+```
+cadforme step-assembly robot.step                 # 590 MB flat export -> 137 MB assembly, 184 parts placed 1,134 times
+cadforme upload exports/robot-assembly.step <document link> [--folder "Imports"]
+```
+Identical bodies become one part used many times, `Group: part` names become subassemblies, names and colours are kept,
+and every body is checked against the original. Onshape makes one Assembly per subassembly and a Part Studio with the parts.
+
 ## Design check (DRC)
 The **DRC** button (top bar), the palette ("Design check"), and every AI edit run it. Per part it checks: build errors, loose
 pieces, thin spots (< 1.2 mm), screw holes too tight for M2-M8, printer bed fit (256 mm), variable count, and what can't go to

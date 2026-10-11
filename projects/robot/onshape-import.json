@@ -1,0 +1,88 @@
+{
+  "did": "cd4c75647dc7c4138d4378e7",
+  "wid": "c09b9927832b89622ec98f08",
+  "folder": "9Tt/hDSdc+WcLNBm",
+  "translation": "DONE",
+  "tabs": [
+    {
+      "type": "ASSEMBLY",
+      "name": "Robot",
+      "eid": "c84b79441ebfd2079617085d"
+    },
+    {
+      "type": "ASSEMBLY",
+      "name": "Side B front drive pod",
+      "eid": "662c9c39aed4aa37ed976da8"
+    },
+    {
+      "type": "ASSEMBLY",
+      "name": "Side B rear drive pod",
+      "eid": "9bee1186306a6e96d7af5304"
+    },
+    {
+      "type": "ASSEMBLY",
+      "name": "Transfer",
+      "eid": "ec5ebd27342d3f9161cdc6b8"
+    },
+    {
+      "type": "ASSEMBLY",
+      "name": "Static Pollen Shooter v1 (robot)",
+      "eid": "d8165509b60f2af5493c9f27"
+    },
+    {
+      "type": "ASSEMBLY",
+      "name": "Proof-of-fit M4 fasteners",
+      "eid": "1c8941a9b0b5011686ad2ac4"
+    },
+    {
+      "type": "ASSEMBLY",
+      "name": "Transfer motor",
+      "eid": "18c6739c9cf0fd3ce50c96a7"
+    },
+    {
+      "type": "PARTSTUDIO",
+      "name": "Robot parts",
+      "eid": "24a1019ea5215f07d4afc99f"
+    },
+    {
+      "type": "BLOB",
+      "name": "Robot.step",
+      "eid": "d83d1c109e46b378e5cc47e7"
+    },
+    {
+      "type": "BILLOFMATERIALS",
+      "name": "BOM : Static Pollen Shooter v1 (2)",
+      "eid": "5adcc2009c7b1ac0d8edacbe"
+    },
+    {
+      "type": "BILLOFMATERIALS",
+      "name": "BOM : Proof-of-fit M4 fasteners (1)",
+      "eid": "2becf095e91fef09acb57cab"
+    },
+    {
+      "type": "BILLOFMATERIALS",
+      "name": "BOM : Transfer (1)",
+      "eid": "8a57f091b6f9437d8326ad33"
+    },
+    {
+      "type": "BILLOFMATERIALS",
+      "name": "BOM : Transfer motor (1)",
+      "eid": "bef5bbc7f9c5f146a1556fb4"
+    },
+    {
+      "type": "BILLOFMATERIALS",
+      "name": "BOM : Side B front drive pod (1)",
+      "eid": "0571d3cfc30a93faa9a75140"
+    },
+    {
+      "type": "BILLOFMATERIALS",
+      "name": "BOM : Side B rear drive pod (1)",
+      "eid": "d9d84fddacb74087277d4d7e"
+    },
+    {
+      "type": "BILLOFMATERIALS",
+      "name": "BOM : Robot (1)",
+      "eid": "3410432a56dbb30016ffeb1c"
+    }
+  ]
+}

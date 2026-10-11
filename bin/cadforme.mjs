@@ -15,6 +15,8 @@ cadforme refs                     list the image references
 cadforme names <part> [--write]   give imported files conventional names (preview without --write)
 cadforme connect <access> <secret>  save Onshape API keys (or set ONSHAPE_ACCESS_KEY / ONSHAPE_SECRET_KEY)
 cadforme import <document link>   import an Onshape document into projects/<document name>
+cadforme step-assembly <file.step> [--group Name=regex]  rebuild a big flat STEP as an assembly (shared parts, subassemblies)
+cadforme upload <file.step> <document link> [--folder name]  import a STEP assembly into an Onshape document
 cadforme push <part> [--preview]  send a part to its Onshape Part Studio as native features
 cadforme pull <part>              bring Onshape edits back into a part
 cadforme release [name]           make a release (named Onshape version + what changed)
@@ -27,8 +29,9 @@ const argv = process.argv.slice(2);
 const flag = (f) => { const i = argv.indexOf(f); if (i < 0) return false; argv.splice(i, 1); return true; };
 const opt = (f) => { const i = argv.indexOf(f); if (i < 0) return undefined; const v = argv[i + 1]; argv.splice(i, 2); return v; };
 const force = flag("--force"), write = flag("--write"), preview = flag("--preview"), all = flag("--all"), json = flag("--json");
-const projectOpt = opt("--project");
-const COMMANDS = new Set(["open", "projects", "new", "use", "parts", "drc", "refs", "names", "push", "pull", "connect", "import", "release", "releases", "mcp", "help"]);
+const projectOpt = opt("--project"), folderOpt = opt("--folder");
+const groupOpts = []; for (let g; (g = opt("--group")) !== undefined;) groupOpts.push(g);
+const COMMANDS = new Set(["open", "projects", "new", "use", "parts", "drc", "refs", "names", "push", "pull", "connect", "import", "step-assembly", "upload", "release", "releases", "mcp", "help"]);
 let cmd = argv[0] && COMMANDS.has(argv[0]) ? argv.shift() : argv[0] === "--help" || argv[0] === "-h" ? "help" : "open";
 // `cadforme open X`: X is a project when it names one (or a folder) and isn't a part of the current project
 const isProjectArg = (a) => a && !a.endsWith(".part.json") && !core.listParts(core.ensureProject()).some((p) => path.basename(p, ".part.json") === a) && fs.existsSync(core.projectDir(a));
@@ -79,6 +82,19 @@ try {
     }
     case "connect": { const r = await core.connectOnshape({ accessKey: argv[0], secretKey: argv[1] }); console.log(`Connected as ${r.user || "your account"}. Keys saved to ${r.saved}`); break; }
     case "import": { if (!argv[0]) throw new Error("cadforme import <Onshape document link>"); const opts = { onProgress: (m) => console.error(m) }; console.log(core.importReport(projectOpt ? await core.importOnshape(dir(), argv[0], opts) : await core.importOnshapeProject(argv[0], opts))); break; }
+    case "step-assembly": {
+      if (!argv[0]) throw new Error("cadforme step-assembly <file.step> [--group Name=regex]");
+      const groups = Object.fromEntries(groupOpts.map((g) => { const i = g.indexOf("="); if (i < 1) throw new Error(`--group needs Name=regex, got ${g}`); return [g.slice(0, i), g.slice(i + 1)]; }));
+      const { stepToAssembly, stepAssemblyReport } = await import("../src/cli/stepasm.js");
+      const r = await stepToAssembly(dir(), argv[0], { groups, onProgress: (m) => console.error(m) });
+      console.log(stepAssemblyReport(r)); process.exitCode = r.ok ? 0 : 1;
+      break;
+    }
+    case "upload": {
+      if (!argv[0] || !argv[1]) throw new Error("cadforme upload <file.step> <Onshape document link> [--folder name]");
+      console.log(core.uploadReport(await core.uploadStepAssembly(dir(), path.resolve(argv[0]), argv[1], { folder: folderOpt, onProgress: (m) => console.error(m) })));
+      break;
+    }
     case "push": case "pull": {
       const d = dir();
       if (!argv[0]) throw new Error(`Which part? cadforme ${cmd} <part>`);

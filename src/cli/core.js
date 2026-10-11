@@ -284,6 +284,13 @@ export function osClient() {
 }
 
 export const importOnshape = (dir, url, opts) => odoc.importDocument(dir, osClient(), url, opts);
+export const uploadStepAssembly = (dir, file, url, opts) => odoc.importStepAssembly(dir, osClient(), url, path.resolve(dir, file), opts);
+export function uploadReport(r) {
+  const kinds = {}; for (const t of r.tabs) kinds[t.type] = (kinds[t.type] ?? 0) + 1;
+  return [`Imported ${r.file}: ${Object.entries(kinds).map(([k, n]) => `${n} ${k.toLowerCase()}`).join(", ")}`, r.url,
+    ...(r.renamed.length ? [`Renamed: ${r.renamed.map((x) => `${x.from} -> ${x.to}`).join(", ")}`] : []),
+    ...(r.folder ? [r.folder.placed ? `${r.folder.placed} tabs placed in folder "${r.folder.name}"` : `Onshape didn't put the tabs in folder "${r.folder.name}"; drag them in from the tab manager (the API can't move tabs)`] : [])].join("\n");
+}
 /** Import an Onshape document into its own project, projects/<document name>, and make that project current. */
 export async function importOnshapeProject(url, opts) {
   const client = osClient();

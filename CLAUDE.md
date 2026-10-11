@@ -18,6 +18,12 @@ All work is saved in `projects/`, one folder per project (`projects/<name>/parts
 3. Edit parts (below), then `onshape_push` to send changes back as native features, `onshape_pull` to bring Onshape edits in.
 4. `release` makes a named Onshape version with a summary of what changed since the last release; `releases` lists them. That is how changes are tracked here.
 
+## Big STEP file -> Onshape assembly
+A flat STEP export (one body per copy, no structure) imports into Onshape as a mess. Rebuild it first:
+1. `step_to_assembly` with the file (CLI: `node bin/cadforme.mjs step-assembly <file.step> [--group Transfer='\btransfer\b']`). Identical bodies become one part used many times, `Group: part` names become subassemblies, names and colours are kept, and every body is checked against the original (the report must say "every solid in place"). Output: `exports/<name>-assembly.step` in the project. The first run sets up OpenCascade for Python (needs python3).
+2. Ask which Onshape document it goes in (it adds about 10 tabs), then `onshape_upload_step` with the file and the link (CLI: `upload <file> <link> [--folder name]`). The API can't create tab folders or move tabs into them: if the user wants a folder, they create it and drag the tabs in.
+3. Parts that come from STEP have no feature history in Onshape; they are edited with features on top (sketch on faces, cut, move face).
+
 ## Subagents: one job each
 Split every design job between subagents (Claude Code: the agents in `.claude/agents/`; other tools: their own subagents, or do the roles yourself one after another in this order). You, the lead, don't write geometry. You plan, hand out the work and check the result.
 
