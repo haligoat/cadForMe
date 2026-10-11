@@ -1,0 +1,1732 @@
+{
+ "name": "Transfer floor piece 1",
+ "variables": {},
+ "features": [
+  {
+   "id": "txs75",
+   "type": "sketch",
+   "name": "Transfer floor piece 1 (3D-printed PETG) profile",
+   "plane": "XZ",
+   "offset": -192.4,
+   "geom": [
+    {
+     "id": "p1",
+     "t": "point",
+     "x": -140,
+     "y": -137
+    },
+    {
+     "id": "p4",
+     "t": "point",
+     "x": 13.82,
+     "y": -95.78
+    },
+    {
+     "id": "p7",
+     "t": "point",
+     "x": 16.41,
+     "y": -105.44
+    },
+    {
+     "id": "p10",
+     "t": "point",
+     "x": -137.41,
+     "y": -146.66
+    },
+    {
+     "id": "l13",
+     "t": "line",
+     "a": "p1",
+     "b": "p4"
+    },
+    {
+     "id": "l14",
+     "t": "line",
+     "a": "p4",
+     "b": "p7"
+    },
+    {
+     "id": "l15",
+     "t": "line",
+     "a": "p7",
+     "b": "p10"
+    },
+    {
+     "id": "l16",
+     "t": "line",
+     "a": "p10",
+     "b": "p1"
+    }
+   ],
+   "cons": [
+    {
+     "id": "d2",
+     "t": "dim",
+     "k": "x",
+     "a": "p1",
+     "v": -140
+    },
+    {
+     "id": "d3",
+     "t": "dim",
+     "k": "y",
+     "a": "p1",
+     "v": -137
+    },
+    {
+     "id": "d5",
+     "t": "dim",
+     "k": "x",
+     "a": "p4",
+     "v": 13.82
+    },
+    {
+     "id": "d6",
+     "t": "dim",
+     "k": "y",
+     "a": "p4",
+     "v": -95.78
+    },
+    {
+     "id": "d8",
+     "t": "dim",
+     "k": "x",
+     "a": "p7",
+     "v": 16.41
+    },
+    {
+     "id": "d9",
+     "t": "dim",
+     "k": "y",
+     "a": "p7",
+     "v": -105.44
+    },
+    {
+     "id": "d11",
+     "t": "dim",
+     "k": "x",
+     "a": "p10",
+     "v": -137.41
+    },
+    {
+     "id": "d12",
+     "t": "dim",
+     "k": "y",
+     "a": "p10",
+     "v": -146.66
+    }
+   ]
+  },
+  {
+   "id": "txe76",
+   "type": "extrude",
+   "name": "Transfer floor piece 1 (3D-printed PETG)",
+   "sketch": "txs75",
+   "distance": 86.80000000000001,
+   "flip": false,
+   "mode": "new"
+  },
+  {
+   "id": "txc77",
+   "type": "cylinder",
+   "name": "Floor curve outer (R160)",
+   "position": [
+    -25,
+    105.6,
+    49.11
+   ],
+   "direction": [
+    0,
+    1,
+    0
+   ],
+   "r": 160,
+   "h": 86.80000000000001,
+   "mode": "new"
+  },
+  {
+   "id": "txc78",
+   "type": "cylinder",
+   "name": "Floor curve inner (R150, cutter)",
+   "position": [
+    -25,
+    104.6,
+    49.11
+   ],
+   "direction": [
+    0,
+    1,
+    0
+   ],
+   "r": 150,
+   "h": 88.80000000000001,
+   "mode": "new"
+  },
+  {
+   "id": "txx79",
+   "type": "boolean",
+   "name": "Floor curve: hollow to R150",
+   "a": 1,
+   "b": 2,
+   "op": "subtract"
+  },
+  {
+   "id": "txs80",
+   "type": "sketch",
+   "name": "Floor curve wedge profile",
+   "plane": "XZ",
+   "offset": -193.4,
+   "geom": [
+    {
+     "id": "p1",
+     "t": "point",
+     "x": -25,
+     "y": 49.11
+    },
+    {
+     "id": "p4",
+     "t": "point",
+     "x": 26.76,
+     "y": -144.08
+    },
+    {
+     "id": "p7",
+     "t": "point",
+     "x": 228.87,
+     "y": -145.7
+    },
+    {
+     "id": "p10",
+     "t": "point",
+     "x": 175,
+     "y": 49.11
+    },
+    {
+     "id": "l13",
+     "t": "line",
+     "a": "p1",
+     "b": "p4"
+    },
+    {
+     "id": "l14",
+     "t": "line",
+     "a": "p4",
+     "b": "p7"
+    },
+    {
+     "id": "l15",
+     "t": "line",
+     "a": "p7",
+     "b": "p10"
+    },
+    {
+     "id": "l16",
+     "t": "line",
+     "a": "p10",
+     "b": "p1"
+    }
+   ],
+   "cons": [
+    {
+     "id": "d2",
+     "t": "dim",
+     "k": "x",
+     "a": "p1",
+     "v": -25
+    },
+    {
+     "id": "d3",
+     "t": "dim",
+     "k": "y",
+     "a": "p1",
+     "v": 49.11
+    },
+    {
+     "id": "d5",
+     "t": "dim",
+     "k": "x",
+     "a": "p4",
+     "v": 26.76
+    },
+    {
+     "id": "d6",
+     "t": "dim",
+     "k": "y",
+     "a": "p4",
+     "v": -144.08
+    },
+    {
+     "id": "d8",
+     "t": "dim",
+     "k": "x",
+     "a": "p7",
+     "v": 228.87
+    },
+    {
+     "id": "d9",
+     "t": "dim",
+     "k": "y",
+     "a": "p7",
+     "v": -145.7
+    },
+    {
+     "id": "d11",
+     "t": "dim",
+     "k": "x",
+     "a": "p10",
+     "v": 175
+    },
+    {
+     "id": "d12",
+     "t": "dim",
+     "k": "y",
+     "a": "p10",
+     "v": 49.11
+    }
+   ]
+  },
+  {
+   "id": "txe81",
+   "type": "extrude",
+   "name": "Floor curve wedge",
+   "sketch": "txs80",
+   "distance": 88.80000000000001,
+   "flip": false,
+   "mode": "new"
+  },
+  {
+   "id": "txx82",
+   "type": "boolean",
+   "name": "Floor curve: keep the 75\u00b0 wedge",
+   "a": 1,
+   "b": 2,
+   "op": "intersect"
+  },
+  {
+   "id": "txx83",
+   "type": "boolean",
+   "name": "Floor: ramp + curve",
+   "a": 0,
+   "b": 1,
+   "op": "union"
+  },
+  {
+   "id": "txs84",
+   "type": "sketch",
+   "name": "Floor wall profile",
+   "plane": "XZ",
+   "offset": -192.4,
+   "geom": [
+    {
+     "id": "p1",
+     "t": "point",
+     "x": 125,
+     "y": 49.11
+    },
+    {
+     "id": "p4",
+     "t": "point",
+     "x": 125,
+     "y": 59
+    },
+    {
+     "id": "p7",
+     "t": "point",
+     "x": 135,
+     "y": 59
+    },
+    {
+     "id": "p10",
+     "t": "point",
+     "x": 135,
+     "y": 49.11
+    },
+    {
+     "id": "l13",
+     "t": "line",
+     "a": "p1",
+     "b": "p4"
+    },
+    {
+     "id": "l14",
+     "t": "line",
+     "a": "p4",
+     "b": "p7"
+    },
+    {
+     "id": "l15",
+     "t": "line",
+     "a": "p7",
+     "b": "p10"
+    },
+    {
+     "id": "l16",
+     "t": "line",
+     "a": "p10",
+     "b": "p1"
+    }
+   ],
+   "cons": [
+    {
+     "id": "d2",
+     "t": "dim",
+     "k": "x",
+     "a": "p1",
+     "v": 125
+    },
+    {
+     "id": "d3",
+     "t": "dim",
+     "k": "y",
+     "a": "p1",
+     "v": 49.11
+    },
+    {
+     "id": "d5",
+     "t": "dim",
+     "k": "x",
+     "a": "p4",
+     "v": 125
+    },
+    {
+     "id": "d6",
+     "t": "dim",
+     "k": "y",
+     "a": "p4",
+     "v": 59
+    },
+    {
+     "id": "d8",
+     "t": "dim",
+     "k": "x",
+     "a": "p7",
+     "v": 135
+    },
+    {
+     "id": "d9",
+     "t": "dim",
+     "k": "y",
+     "a": "p7",
+     "v": 59
+    },
+    {
+     "id": "d11",
+     "t": "dim",
+     "k": "x",
+     "a": "p10",
+     "v": 135
+    },
+    {
+     "id": "d12",
+     "t": "dim",
+     "k": "y",
+     "a": "p10",
+     "v": 49.11
+    }
+   ]
+  },
+  {
+   "id": "txe85",
+   "type": "extrude",
+   "name": "Floor: + wall",
+   "sketch": "txs84",
+   "distance": 86.80000000000001,
+   "flip": false,
+   "mode": "add"
+  },
+  {
+   "id": "txb87",
+   "type": "box",
+   "name": "Transfer floor piece 1: trim to its length",
+   "position": [
+    -100.25,
+    150,
+    -137.5
+   ],
+   "w": 80.5,
+   "d": 120,
+   "h": 217.5,
+   "mode": "intersect"
+  },
+  {
+   "id": "txc89",
+   "type": "cylinder",
+   "name": "Transfer floor piece 1: M4 clearance hole",
+   "position": [
+    -90.41,
+    105.5,
+    -128.89
+   ],
+   "direction": [
+    0,
+    1,
+    0
+   ],
+   "r": 2.2,
+   "h": 14.1,
+   "mode": "cut"
+  },
+  {
+   "id": "txs91_0",
+   "type": "sketch",
+   "name": "Nut pocket (cutter) profile (polygon 1)",
+   "plane": "XZ",
+   "offset": -113.55,
+   "geom": [
+    {
+     "id": "p1",
+     "t": "point",
+     "x": -86.2372,
+     "y": -127.7719
+    },
+    {
+     "id": "p4",
+     "t": "point",
+     "x": -89.2919,
+     "y": -124.7172
+    },
+    {
+     "id": "p7",
+     "t": "point",
+     "x": -93.4647,
+     "y": -125.8353
+    },
+    {
+     "id": "p10",
+     "t": "point",
+     "x": -94.5828,
+     "y": -130.0081
+    },
+    {
+     "id": "p13",
+     "t": "point",
+     "x": -91.5281,
+     "y": -133.0628
+    },
+    {
+     "id": "p16",
+     "t": "point",
+     "x": -87.3553,
+     "y": -131.9447
+    },
+    {
+     "id": "l19",
+     "t": "line",
+     "a": "p1",
+     "b": "p4"
+    },
+    {
+     "id": "l20",
+     "t": "line",
+     "a": "p4",
+     "b": "p7"
+    },
+    {
+     "id": "l21",
+     "t": "line",
+     "a": "p7",
+     "b": "p10"
+    },
+    {
+     "id": "l22",
+     "t": "line",
+     "a": "p10",
+     "b": "p13"
+    },
+    {
+     "id": "l23",
+     "t": "line",
+     "a": "p13",
+     "b": "p16"
+    },
+    {
+     "id": "l24",
+     "t": "line",
+     "a": "p16",
+     "b": "p1"
+    }
+   ],
+   "cons": [
+    {
+     "id": "d2",
+     "t": "dim",
+     "k": "x",
+     "a": "p1",
+     "v": -86.2372
+    },
+    {
+     "id": "d3",
+     "t": "dim",
+     "k": "y",
+     "a": "p1",
+     "v": -127.7719
+    },
+    {
+     "id": "d5",
+     "t": "dim",
+     "k": "x",
+     "a": "p4",
+     "v": -89.2919
+    },
+    {
+     "id": "d6",
+     "t": "dim",
+     "k": "y",
+     "a": "p4",
+     "v": -124.7172
+    },
+    {
+     "id": "d8",
+     "t": "dim",
+     "k": "x",
+     "a": "p7",
+     "v": -93.4647
+    },
+    {
+     "id": "d9",
+     "t": "dim",
+     "k": "y",
+     "a": "p7",
+     "v": -125.8353
+    },
+    {
+     "id": "d11",
+     "t": "dim",
+     "k": "x",
+     "a": "p10",
+     "v": -94.5828
+    },
+    {
+     "id": "d12",
+     "t": "dim",
+     "k": "y",
+     "a": "p10",
+     "v": -130.0081
+    },
+    {
+     "id": "d14",
+     "t": "dim",
+     "k": "x",
+     "a": "p13",
+     "v": -91.5281
+    },
+    {
+     "id": "d15",
+     "t": "dim",
+     "k": "y",
+     "a": "p13",
+     "v": -133.0628
+    },
+    {
+     "id": "d17",
+     "t": "dim",
+     "k": "x",
+     "a": "p16",
+     "v": -87.3553
+    },
+    {
+     "id": "d18",
+     "t": "dim",
+     "k": "y",
+     "a": "p16",
+     "v": -131.9447
+    }
+   ]
+  },
+  {
+   "id": "txe92_0",
+   "type": "extrude",
+   "name": "Transfer floor piece 1: captive M4 nut pocket + slot (Nut pocket (cutter) (polygon 1))",
+   "sketch": "txs91_0",
+   "distance": 3.6,
+   "flip": true,
+   "mode": "cut"
+  },
+  {
+   "id": "txs91_1",
+   "type": "sketch",
+   "name": "Nut pocket (cutter) profile (rect 2)",
+   "plane": "XZ",
+   "offset": -113.55,
+   "geom": [
+    {
+     "id": "p1",
+     "t": "point",
+     "x": -93.9804,
+     "y": -129.8499
+    },
+    {
+     "id": "p4",
+     "t": "point",
+     "x": -92.4275,
+     "y": -135.6454
+    },
+    {
+     "id": "p7",
+     "t": "point",
+     "x": -85.2796,
+     "y": -133.7301
+    },
+    {
+     "id": "p10",
+     "t": "point",
+     "x": -86.8325,
+     "y": -127.9346
+    },
+    {
+     "id": "l13",
+     "t": "line",
+     "a": "p1",
+     "b": "p4"
+    },
+    {
+     "id": "l14",
+     "t": "line",
+     "a": "p4",
+     "b": "p7"
+    },
+    {
+     "id": "l15",
+     "t": "line",
+     "a": "p7",
+     "b": "p10"
+    },
+    {
+     "id": "l16",
+     "t": "line",
+     "a": "p10",
+     "b": "p1"
+    }
+   ],
+   "cons": [
+    {
+     "id": "d2",
+     "t": "dim",
+     "k": "x",
+     "a": "p1",
+     "v": -93.9804
+    },
+    {
+     "id": "d3",
+     "t": "dim",
+     "k": "y",
+     "a": "p1",
+     "v": -129.8499
+    },
+    {
+     "id": "d5",
+     "t": "dim",
+     "k": "x",
+     "a": "p4",
+     "v": -92.4275
+    },
+    {
+     "id": "d6",
+     "t": "dim",
+     "k": "y",
+     "a": "p4",
+     "v": -135.6454
+    },
+    {
+     "id": "d8",
+     "t": "dim",
+     "k": "x",
+     "a": "p7",
+     "v": -85.2796
+    },
+    {
+     "id": "d9",
+     "t": "dim",
+     "k": "y",
+     "a": "p7",
+     "v": -133.7301
+    },
+    {
+     "id": "d11",
+     "t": "dim",
+     "k": "x",
+     "a": "p10",
+     "v": -86.8325
+    },
+    {
+     "id": "d12",
+     "t": "dim",
+     "k": "y",
+     "a": "p10",
+     "v": -127.9346
+    }
+   ]
+  },
+  {
+   "id": "txe92_1",
+   "type": "extrude",
+   "name": "Transfer floor piece 1: captive M4 nut pocket + slot (Nut pocket (cutter) (rect 2))",
+   "sketch": "txs91_1",
+   "distance": 3.6,
+   "flip": true,
+   "mode": "cut"
+  },
+  {
+   "id": "txc94",
+   "type": "cylinder",
+   "name": "Transfer floor piece 1: M4 clearance hole",
+   "position": [
+    -90.41,
+    192.5,
+    -128.89
+   ],
+   "direction": [
+    0,
+    -1,
+    0
+   ],
+   "r": 2.2,
+   "h": 14.1,
+   "mode": "cut"
+  },
+  {
+   "id": "txs96_0",
+   "type": "sketch",
+   "name": "Nut pocket (cutter) profile (polygon 1)",
+   "plane": "XZ",
+   "offset": -184.45,
+   "geom": [
+    {
+     "id": "p1",
+     "t": "point",
+     "x": -86.2372,
+     "y": -127.7719
+    },
+    {
+     "id": "p4",
+     "t": "point",
+     "x": -89.2919,
+     "y": -124.7172
+    },
+    {
+     "id": "p7",
+     "t": "point",
+     "x": -93.4647,
+     "y": -125.8353
+    },
+    {
+     "id": "p10",
+     "t": "point",
+     "x": -94.5828,
+     "y": -130.0081
+    },
+    {
+     "id": "p13",
+     "t": "point",
+     "x": -91.5281,
+     "y": -133.0628
+    },
+    {
+     "id": "p16",
+     "t": "point",
+     "x": -87.3553,
+     "y": -131.9447
+    },
+    {
+     "id": "l19",
+     "t": "line",
+     "a": "p1",
+     "b": "p4"
+    },
+    {
+     "id": "l20",
+     "t": "line",
+     "a": "p4",
+     "b": "p7"
+    },
+    {
+     "id": "l21",
+     "t": "line",
+     "a": "p7",
+     "b": "p10"
+    },
+    {
+     "id": "l22",
+     "t": "line",
+     "a": "p10",
+     "b": "p13"
+    },
+    {
+     "id": "l23",
+     "t": "line",
+     "a": "p13",
+     "b": "p16"
+    },
+    {
+     "id": "l24",
+     "t": "line",
+     "a": "p16",
+     "b": "p1"
+    }
+   ],
+   "cons": [
+    {
+     "id": "d2",
+     "t": "dim",
+     "k": "x",
+     "a": "p1",
+     "v": -86.2372
+    },
+    {
+     "id": "d3",
+     "t": "dim",
+     "k": "y",
+     "a": "p1",
+     "v": -127.7719
+    },
+    {
+     "id": "d5",
+     "t": "dim",
+     "k": "x",
+     "a": "p4",
+     "v": -89.2919
+    },
+    {
+     "id": "d6",
+     "t": "dim",
+     "k": "y",
+     "a": "p4",
+     "v": -124.7172
+    },
+    {
+     "id": "d8",
+     "t": "dim",
+     "k": "x",
+     "a": "p7",
+     "v": -93.4647
+    },
+    {
+     "id": "d9",
+     "t": "dim",
+     "k": "y",
+     "a": "p7",
+     "v": -125.8353
+    },
+    {
+     "id": "d11",
+     "t": "dim",
+     "k": "x",
+     "a": "p10",
+     "v": -94.5828
+    },
+    {
+     "id": "d12",
+     "t": "dim",
+     "k": "y",
+     "a": "p10",
+     "v": -130.0081
+    },
+    {
+     "id": "d14",
+     "t": "dim",
+     "k": "x",
+     "a": "p13",
+     "v": -91.5281
+    },
+    {
+     "id": "d15",
+     "t": "dim",
+     "k": "y",
+     "a": "p13",
+     "v": -133.0628
+    },
+    {
+     "id": "d17",
+     "t": "dim",
+     "k": "x",
+     "a": "p16",
+     "v": -87.3553
+    },
+    {
+     "id": "d18",
+     "t": "dim",
+     "k": "y",
+     "a": "p16",
+     "v": -131.9447
+    }
+   ]
+  },
+  {
+   "id": "txe97_0",
+   "type": "extrude",
+   "name": "Transfer floor piece 1: captive M4 nut pocket + slot (Nut pocket (cutter) (polygon 1))",
+   "sketch": "txs96_0",
+   "distance": 3.6,
+   "flip": false,
+   "mode": "cut"
+  },
+  {
+   "id": "txs96_1",
+   "type": "sketch",
+   "name": "Nut pocket (cutter) profile (rect 2)",
+   "plane": "XZ",
+   "offset": -184.45,
+   "geom": [
+    {
+     "id": "p1",
+     "t": "point",
+     "x": -93.9804,
+     "y": -129.8499
+    },
+    {
+     "id": "p4",
+     "t": "point",
+     "x": -92.4275,
+     "y": -135.6454
+    },
+    {
+     "id": "p7",
+     "t": "point",
+     "x": -85.2796,
+     "y": -133.7301
+    },
+    {
+     "id": "p10",
+     "t": "point",
+     "x": -86.8325,
+     "y": -127.9346
+    },
+    {
+     "id": "l13",
+     "t": "line",
+     "a": "p1",
+     "b": "p4"
+    },
+    {
+     "id": "l14",
+     "t": "line",
+     "a": "p4",
+     "b": "p7"
+    },
+    {
+     "id": "l15",
+     "t": "line",
+     "a": "p7",
+     "b": "p10"
+    },
+    {
+     "id": "l16",
+     "t": "line",
+     "a": "p10",
+     "b": "p1"
+    }
+   ],
+   "cons": [
+    {
+     "id": "d2",
+     "t": "dim",
+     "k": "x",
+     "a": "p1",
+     "v": -93.9804
+    },
+    {
+     "id": "d3",
+     "t": "dim",
+     "k": "y",
+     "a": "p1",
+     "v": -129.8499
+    },
+    {
+     "id": "d5",
+     "t": "dim",
+     "k": "x",
+     "a": "p4",
+     "v": -92.4275
+    },
+    {
+     "id": "d6",
+     "t": "dim",
+     "k": "y",
+     "a": "p4",
+     "v": -135.6454
+    },
+    {
+     "id": "d8",
+     "t": "dim",
+     "k": "x",
+     "a": "p7",
+     "v": -85.2796
+    },
+    {
+     "id": "d9",
+     "t": "dim",
+     "k": "y",
+     "a": "p7",
+     "v": -133.7301
+    },
+    {
+     "id": "d11",
+     "t": "dim",
+     "k": "x",
+     "a": "p10",
+     "v": -86.8325
+    },
+    {
+     "id": "d12",
+     "t": "dim",
+     "k": "y",
+     "a": "p10",
+     "v": -127.9346
+    }
+   ]
+  },
+  {
+   "id": "txe97_1",
+   "type": "extrude",
+   "name": "Transfer floor piece 1: captive M4 nut pocket + slot (Nut pocket (cutter) (rect 2))",
+   "sketch": "txs96_1",
+   "distance": 3.6,
+   "flip": false,
+   "mode": "cut"
+  },
+  {
+   "id": "txc99",
+   "type": "cylinder",
+   "name": "Transfer floor piece 1: M4 clearance hole",
+   "position": [
+    -80.75,
+    105.5,
+    -126.3
+   ],
+   "direction": [
+    0,
+    1,
+    0
+   ],
+   "r": 2.2,
+   "h": 14.1,
+   "mode": "cut"
+  },
+  {
+   "id": "txs101_0",
+   "type": "sketch",
+   "name": "Nut pocket (cutter) profile (polygon 1)",
+   "plane": "XZ",
+   "offset": -113.55,
+   "geom": [
+    {
+     "id": "p1",
+     "t": "point",
+     "x": -76.5772,
+     "y": -125.1819
+    },
+    {
+     "id": "p4",
+     "t": "point",
+     "x": -79.6319,
+     "y": -122.1272
+    },
+    {
+     "id": "p7",
+     "t": "point",
+     "x": -83.8047,
+     "y": -123.2453
+    },
+    {
+     "id": "p10",
+     "t": "point",
+     "x": -84.9228,
+     "y": -127.4181
+    },
+    {
+     "id": "p13",
+     "t": "point",
+     "x": -81.8681,
+     "y": -130.4728
+    },
+    {
+     "id": "p16",
+     "t": "point",
+     "x": -77.6953,
+     "y": -129.3547
+    },
+    {
+     "id": "l19",
+     "t": "line",
+     "a": "p1",
+     "b": "p4"
+    },
+    {
+     "id": "l20",
+     "t": "line",
+     "a": "p4",
+     "b": "p7"
+    },
+    {
+     "id": "l21",
+     "t": "line",
+     "a": "p7",
+     "b": "p10"
+    },
+    {
+     "id": "l22",
+     "t": "line",
+     "a": "p10",
+     "b": "p13"
+    },
+    {
+     "id": "l23",
+     "t": "line",
+     "a": "p13",
+     "b": "p16"
+    },
+    {
+     "id": "l24",
+     "t": "line",
+     "a": "p16",
+     "b": "p1"
+    }
+   ],
+   "cons": [
+    {
+     "id": "d2",
+     "t": "dim",
+     "k": "x",
+     "a": "p1",
+     "v": -76.5772
+    },
+    {
+     "id": "d3",
+     "t": "dim",
+     "k": "y",
+     "a": "p1",
+     "v": -125.1819
+    },
+    {
+     "id": "d5",
+     "t": "dim",
+     "k": "x",
+     "a": "p4",
+     "v": -79.6319
+    },
+    {
+     "id": "d6",
+     "t": "dim",
+     "k": "y",
+     "a": "p4",
+     "v": -122.1272
+    },
+    {
+     "id": "d8",
+     "t": "dim",
+     "k": "x",
+     "a": "p7",
+     "v": -83.8047
+    },
+    {
+     "id": "d9",
+     "t": "dim",
+     "k": "y",
+     "a": "p7",
+     "v": -123.2453
+    },
+    {
+     "id": "d11",
+     "t": "dim",
+     "k": "x",
+     "a": "p10",
+     "v": -84.9228
+    },
+    {
+     "id": "d12",
+     "t": "dim",
+     "k": "y",
+     "a": "p10",
+     "v": -127.4181
+    },
+    {
+     "id": "d14",
+     "t": "dim",
+     "k": "x",
+     "a": "p13",
+     "v": -81.8681
+    },
+    {
+     "id": "d15",
+     "t": "dim",
+     "k": "y",
+     "a": "p13",
+     "v": -130.4728
+    },
+    {
+     "id": "d17",
+     "t": "dim",
+     "k": "x",
+     "a": "p16",
+     "v": -77.6953
+    },
+    {
+     "id": "d18",
+     "t": "dim",
+     "k": "y",
+     "a": "p16",
+     "v": -129.3547
+    }
+   ]
+  },
+  {
+   "id": "txe102_0",
+   "type": "extrude",
+   "name": "Transfer floor piece 1: captive M4 nut pocket + slot (Nut pocket (cutter) (polygon 1))",
+   "sketch": "txs101_0",
+   "distance": 3.6,
+   "flip": true,
+   "mode": "cut"
+  },
+  {
+   "id": "txs101_1",
+   "type": "sketch",
+   "name": "Nut pocket (cutter) profile (rect 2)",
+   "plane": "XZ",
+   "offset": -113.55,
+   "geom": [
+    {
+     "id": "p1",
+     "t": "point",
+     "x": -84.3204,
+     "y": -127.2599
+    },
+    {
+     "id": "p4",
+     "t": "point",
+     "x": -82.7675,
+     "y": -133.0554
+    },
+    {
+     "id": "p7",
+     "t": "point",
+     "x": -75.6196,
+     "y": -131.1401
+    },
+    {
+     "id": "p10",
+     "t": "point",
+     "x": -77.1725,
+     "y": -125.3446
+    },
+    {
+     "id": "l13",
+     "t": "line",
+     "a": "p1",
+     "b": "p4"
+    },
+    {
+     "id": "l14",
+     "t": "line",
+     "a": "p4",
+     "b": "p7"
+    },
+    {
+     "id": "l15",
+     "t": "line",
+     "a": "p7",
+     "b": "p10"
+    },
+    {
+     "id": "l16",
+     "t": "line",
+     "a": "p10",
+     "b": "p1"
+    }
+   ],
+   "cons": [
+    {
+     "id": "d2",
+     "t": "dim",
+     "k": "x",
+     "a": "p1",
+     "v": -84.3204
+    },
+    {
+     "id": "d3",
+     "t": "dim",
+     "k": "y",
+     "a": "p1",
+     "v": -127.2599
+    },
+    {
+     "id": "d5",
+     "t": "dim",
+     "k": "x",
+     "a": "p4",
+     "v": -82.7675
+    },
+    {
+     "id": "d6",
+     "t": "dim",
+     "k": "y",
+     "a": "p4",
+     "v": -133.0554
+    },
+    {
+     "id": "d8",
+     "t": "dim",
+     "k": "x",
+     "a": "p7",
+     "v": -75.6196
+    },
+    {
+     "id": "d9",
+     "t": "dim",
+     "k": "y",
+     "a": "p7",
+     "v": -131.1401
+    },
+    {
+     "id": "d11",
+     "t": "dim",
+     "k": "x",
+     "a": "p10",
+     "v": -77.1725
+    },
+    {
+     "id": "d12",
+     "t": "dim",
+     "k": "y",
+     "a": "p10",
+     "v": -125.3446
+    }
+   ]
+  },
+  {
+   "id": "txe102_1",
+   "type": "extrude",
+   "name": "Transfer floor piece 1: captive M4 nut pocket + slot (Nut pocket (cutter) (rect 2))",
+   "sketch": "txs101_1",
+   "distance": 3.6,
+   "flip": true,
+   "mode": "cut"
+  },
+  {
+   "id": "txc104",
+   "type": "cylinder",
+   "name": "Transfer floor piece 1: M4 clearance hole",
+   "position": [
+    -80.75,
+    192.5,
+    -126.3
+   ],
+   "direction": [
+    0,
+    -1,
+    0
+   ],
+   "r": 2.2,
+   "h": 14.1,
+   "mode": "cut"
+  },
+  {
+   "id": "txs106_0",
+   "type": "sketch",
+   "name": "Nut pocket (cutter) profile (polygon 1)",
+   "plane": "XZ",
+   "offset": -184.45,
+   "geom": [
+    {
+     "id": "p1",
+     "t": "point",
+     "x": -76.5772,
+     "y": -125.1819
+    },
+    {
+     "id": "p4",
+     "t": "point",
+     "x": -79.6319,
+     "y": -122.1272
+    },
+    {
+     "id": "p7",
+     "t": "point",
+     "x": -83.8047,
+     "y": -123.2453
+    },
+    {
+     "id": "p10",
+     "t": "point",
+     "x": -84.9228,
+     "y": -127.4181
+    },
+    {
+     "id": "p13",
+     "t": "point",
+     "x": -81.8681,
+     "y": -130.4728
+    },
+    {
+     "id": "p16",
+     "t": "point",
+     "x": -77.6953,
+     "y": -129.3547
+    },
+    {
+     "id": "l19",
+     "t": "line",
+     "a": "p1",
+     "b": "p4"
+    },
+    {
+     "id": "l20",
+     "t": "line",
+     "a": "p4",
+     "b": "p7"
+    },
+    {
+     "id": "l21",
+     "t": "line",
+     "a": "p7",
+     "b": "p10"
+    },
+    {
+     "id": "l22",
+     "t": "line",
+     "a": "p10",
+     "b": "p13"
+    },
+    {
+     "id": "l23",
+     "t": "line",
+     "a": "p13",
+     "b": "p16"
+    },
+    {
+     "id": "l24",
+     "t": "line",
+     "a": "p16",
+     "b": "p1"
+    }
+   ],
+   "cons": [
+    {
+     "id": "d2",
+     "t": "dim",
+     "k": "x",
+     "a": "p1",
+     "v": -76.5772
+    },
+    {
+     "id": "d3",
+     "t": "dim",
+     "k": "y",
+     "a": "p1",
+     "v": -125.1819
+    },
+    {
+     "id": "d5",
+     "t": "dim",
+     "k": "x",
+     "a": "p4",
+     "v": -79.6319
+    },
+    {
+     "id": "d6",
+     "t": "dim",
+     "k": "y",
+     "a": "p4",
+     "v": -122.1272
+    },
+    {
+     "id": "d8",
+     "t": "dim",
+     "k": "x",
+     "a": "p7",
+     "v": -83.8047
+    },
+    {
+     "id": "d9",
+     "t": "dim",
+     "k": "y",
+     "a": "p7",
+     "v": -123.2453
+    },
+    {
+     "id": "d11",
+     "t": "dim",
+     "k": "x",
+     "a": "p10",
+     "v": -84.9228
+    },
+    {
+     "id": "d12",
+     "t": "dim",
+     "k": "y",
+     "a": "p10",
+     "v": -127.4181
+    },
+    {
+     "id": "d14",
+     "t": "dim",
+     "k": "x",
+     "a": "p13",
+     "v": -81.8681
+    },
+    {
+     "id": "d15",
+     "t": "dim",
+     "k": "y",
+     "a": "p13",
+     "v": -130.4728
+    },
+    {
+     "id": "d17",
+     "t": "dim",
+     "k": "x",
+     "a": "p16",
+     "v": -77.6953
+    },
+    {
+     "id": "d18",
+     "t": "dim",
+     "k": "y",
+     "a": "p16",
+     "v": -129.3547
+    }
+   ]
+  },
+  {
+   "id": "txe107_0",
+   "type": "extrude",
+   "name": "Transfer floor piece 1: captive M4 nut pocket + slot (Nut pocket (cutter) (polygon 1))",
+   "sketch": "txs106_0",
+   "distance": 3.6,
+   "flip": false,
+   "mode": "cut"
+  },
+  {
+   "id": "txs106_1",
+   "type": "sketch",
+   "name": "Nut pocket (cutter) profile (rect 2)",
+   "plane": "XZ",
+   "offset": -184.45,
+   "geom": [
+    {
+     "id": "p1",
+     "t": "point",
+     "x": -84.3204,
+     "y": -127.2599
+    },
+    {
+     "id": "p4",
+     "t": "point",
+     "x": -82.7675,
+     "y": -133.0554
+    },
+    {
+     "id": "p7",
+     "t": "point",
+     "x": -75.6196,
+     "y": -131.1401
+    },
+    {
+     "id": "p10",
+     "t": "point",
+     "x": -77.1725,
+     "y": -125.3446
+    },
+    {
+     "id": "l13",
+     "t": "line",
+     "a": "p1",
+     "b": "p4"
+    },
+    {
+     "id": "l14",
+     "t": "line",
+     "a": "p4",
+     "b": "p7"
+    },
+    {
+     "id": "l15",
+     "t": "line",
+     "a": "p7",
+     "b": "p10"
+    },
+    {
+     "id": "l16",
+     "t": "line",
+     "a": "p10",
+     "b": "p1"
+    }
+   ],
+   "cons": [
+    {
+     "id": "d2",
+     "t": "dim",
+     "k": "x",
+     "a": "p1",
+     "v": -84.3204
+    },
+    {
+     "id": "d3",
+     "t": "dim",
+     "k": "y",
+     "a": "p1",
+     "v": -127.2599
+    },
+    {
+     "id": "d5",
+     "t": "dim",
+     "k": "x",
+     "a": "p4",
+     "v": -82.7675
+    },
+    {
+     "id": "d6",
+     "t": "dim",
+     "k": "y",
+     "a": "p4",
+     "v": -133.0554
+    },
+    {
+     "id": "d8",
+     "t": "dim",
+     "k": "x",
+     "a": "p7",
+     "v": -75.6196
+    },
+    {
+     "id": "d9",
+     "t": "dim",
+     "k": "y",
+     "a": "p7",
+     "v": -131.1401
+    },
+    {
+     "id": "d11",
+     "t": "dim",
+     "k": "x",
+     "a": "p10",
+     "v": -77.1725
+    },
+    {
+     "id": "d12",
+     "t": "dim",
+     "k": "y",
+     "a": "p10",
+     "v": -125.3446
+    }
+   ]
+  },
+  {
+   "id": "txe107_1",
+   "type": "extrude",
+   "name": "Transfer floor piece 1: captive M4 nut pocket + slot (Nut pocket (cutter) (rect 2))",
+   "sketch": "txs106_1",
+   "distance": 3.6,
+   "flip": false,
+   "mode": "cut"
+  }
+ ],
+ "description": "Transfer floor piece 1 (3D-printed PETG)",
+ "onshape": {
+  "did": "cd4c75647dc7c4138d4378e7",
+  "wvm": "w",
+  "wid": "c09b9927832b89622ec98f08",
+  "eid": "0748108bd7c9a723e7d26800",
+  "varIds": {}
+ }
+}

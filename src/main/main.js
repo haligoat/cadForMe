@@ -5,6 +5,7 @@ import { OnshapeClient } from "../onshape/client.js";
 import * as onshape from "../onshape/sync.js";
 import * as odoc from "../onshape/document.js";
 import * as keystore from "../onshape/keystore.js";
+import { McpConnection, McpOnshapeClient, mcpServerConfig } from "../onshape/mcp.js";
 import { PROVIDERS, complete, extractPart } from "../../dist/ai-providers.mjs"; // bundled with its SDK dependencies by scripts/build.mjs
 import fs from "node:fs";
 import path from "node:path";
@@ -46,7 +47,12 @@ function setOnshapeKeys(k) {
   fs.rmSync(userFile("onshape-keys.bin"), { force: true });
   if (k) keystore.saveOnshapeKeys(k); else keystore.clearOnshapeKeys();
 }
-const osClient = () => { const k = getOnshapeKeys(); if (!k) throw new Error("Connect your Onshape API keys first"); return new OnshapeClient(k); };
+let mcpClient = null;   // through the Onshape MCP server when .mcp.json lists one ("onshape"); API keys otherwise (CADFORME_ONSHAPE=keys forces them)
+const useMcp = () => process.env.CADFORME_ONSHAPE !== "keys" && (process.env.CADFORME_ONSHAPE === "mcp" || !!mcpServerConfig(ROOT));
+const osClient = () => {
+  if (useMcp()) { const k = getOnshapeKeys(); return (mcpClient ??= new McpOnshapeClient(new McpConnection(mcpServerConfig(ROOT)), { fallback: k ? new OnshapeClient(k) : null })); }
+  const k = getOnshapeKeys(); if (!k) throw new Error("Connect your Onshape API keys first"); return new OnshapeClient(k);
+};
 
 // ---------- AI (Claude Code CLI) ----------
 let aiProc = null;
@@ -337,7 +343,7 @@ const handlers = {
 
   "release:list": async () => odoc.listReleases(need(), osClient()),
   "release:make": async (_e, name) => odoc.createRelease(need(), osClient(), name),
-  "onshape:status": () => { const k = getOnshapeKeys(); return { hasKeys: !!k, baseUrl: k?.baseUrl ?? "https://cad.onshape.com" }; },
+  "onshape:status": () => { const k = getOnshapeKeys(); return { hasKeys: !!k || useMcp(), viaMcp: useMcp(), baseUrl: k?.baseUrl ?? "https://cad.onshape.com" }; },
   "onshape:setKeys": async (_e, k) => {
     if (!k) { setOnshapeKeys(null); return { hasKeys: false }; }
     const keys = { accessKey: String(k.accessKey ?? "").trim(), secretKey: String(k.secretKey ?? "").trim(), baseUrl: String(k.baseUrl || "https://cad.onshape.com").trim() };
@@ -547,6 +553,6 @@ app.whenReady().then(() => {
   app.on("activate", () => { if (!BrowserWindow.getAllWindows().length) createWindow(); });
 });
 app.on("open-file", (e, p) => { e.preventDefault(); if (app.isReady() && win) openInApp(p); else pendingOpen = resolveOpen(p); });
-app.on("window-all-closed", () => app.quit());
+app.on("window-all-closed", () => { mcpClient?.close(); app.quit(); });
 
 

@@ -173,7 +173,11 @@ for c in classes:
     rep = c["rep"]; com = np.array(rows[rep]["com"])
     # part geometry centred on its centre of mass, so each Part Studio has it at the origin
     T0 = gp_Trsf(); T0.SetTranslation(gp_Vec(*(-com)))
-    shape = BRepBuilderAPI_Transform(solids[rep], T0, True).Shape()   # baked in: a located shape would become a reference label
+    # bake every placement into the geometry: a shape that still carries a location (bodies that came from a nested
+    # assembly) is written as a nested product that Onshape places differently from OpenCascade
+    base = solids[rep]; T0.Multiply(base.Location().Transformation())
+    shape = BRepBuilderAPI_Transform(base.Located(TopLoc_Location()), T0, True).Shape()
+    assert shape.Location().IsIdentity()
     c["label"] = st.AddShape(shape, False)
     setname(c["label"], c["name"])
     if c["colour"]: ct.SetColor(c["label"], colour(c["colour"]), XCAFDoc_ColorType.XCAFDoc_ColorSurf)
@@ -197,6 +201,8 @@ Interface_Static.SetCVal_s("write.step.product.name", "Robot")
 w = STEPCAFControl_Writer(); w.SetNameMode(True); w.SetColorMode(True)
 w.Transfer(doc, STEPControl_AsIs)
 w.Write(OUT)
+json.dump([{"part": c["name"], "solid": i, "name": info[i][1], "group": info[i][0], "rotation": [[float(v) for v in row] for row in R], "position": rows[i]["com"]}
+           for c in classes for i, R in c["members"]], open(f"{D}/placements.json", "w"))   # where every copy goes (for fixing placements later)
 json.dump([{"name": c["name"], "count": len(c["members"]), "colour": c["colour"], "vol": rows[c["rep"]]["vol"],
             "groups": sorted({str(info[i][0]) for i, _ in c["members"]})} for c in classes], open(f"{D}/parts.json", "w"), indent=1)
 print(f"wrote {OUT} {time.time()-t0:.0f}s", flush=True)

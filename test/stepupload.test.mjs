@@ -70,3 +70,18 @@ test("version links are refused and failed translations are reported", async () 
   const c = fakeClient(); c.getTranslation = async () => ({ requestState: "FAILED", failureReason: "bad file" });
   await assert.rejects(importStepAssembly(dir, c, URL_, f, { pollMs: 0 }), /couldn't translate.*bad file/);
 });
+
+import { OnshapeClient, OnshapeError } from "../src/onshape/client.js";
+test("a long Onshape rate limit is reported with how long to wait, not retried", async () => {
+  let calls = 0;
+  const f = async () => { calls++; return { status: 429, ok: false, headers: new Map([["retry-after", "74757"]]), text: async () => JSON.stringify({ message: "Too many requests." }) }; };
+  const c = new OnshapeClient({ accessKey: "a", secretKey: "b", fetch: f });
+  await assert.rejects(c.req("GET", "/partstudios/x"), (e) => e instanceof OnshapeError && e.status === 429 && e.retryAfter === 74757 && /21 hours/.test(e.message));
+  assert.equal(calls, 1, "no pointless retries");
+});
+test("a short rate limit is waited out and retried", async () => {
+  let calls = 0;
+  const f = async () => (++calls < 2 ? { status: 429, ok: false, headers: new Map([["retry-after", "0"]]), text: async () => "{}" } : { status: 200, ok: true, headers: new Map(), text: async () => "{\"ok\":true}" });
+  const c = new OnshapeClient({ accessKey: "a", secretKey: "b", fetch: f });
+  assert.deepEqual(await c.req("GET", "/x"), { ok: true }); assert.equal(calls, 2);
+});

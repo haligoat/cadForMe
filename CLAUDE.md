@@ -5,6 +5,8 @@ CAD driven by text and pictures. You (the model) design parts by calling the `ca
 ## First thing
 Use the MCP tools from `.mcp.json` (server `cadforme`) if you have them. If not, use the CLI from this folder: `node bin/cadforme.mjs <command>`.
 The first run installs its own dependencies automatically (needs Node 20+ and internet once). Nothing else to install.
+If anything fails, run `node bin/cadforme.mjs doctor`: it checks the setup and says how to fix each problem.
+The user has a menu of their own (`./cadforme` in a terminal); mention it when they ask how to do something by hand.
 
 ## Projects
 All work is saved in `projects/`, one folder per project (`projects/<name>/parts/`, `exports/`, optional `image-references/`). Tools work on the current project unless given `project`.
@@ -12,8 +14,12 @@ All work is saved in `projects/`, one folder per project (`projects/<name>/parts
 - An Onshape import goes into its own project named after the document and becomes current.
 - Exported STEP files go in the project's `exports/`.
 
-## Importing an Onshape document (the user gives keys + a link)
-1. The user pastes an Onshape API access key and secret key and a document link. Call `onshape_connect` with them exactly as given (CLI: `node bin/cadforme.mjs connect <access> <secret>`). It verifies them and saves them in `apikeys.json` at the repo root (owner-only, gitignored; a pre-commit check blocks any commit containing keys). Never repeat the keys back, and never write them into any other file. They can also be set as `ONSHAPE_ACCESS_KEY` / `ONSHAPE_SECRET_KEY`.
+## Onshape connection
+Changes to Onshape documents go through the **Onshape MCP server** (`onshape` in `.mcp.json`, `@gpambrozio/onshape-mcp`): nothing is saved in this repo and no API keys are pasted into chat. The first request opens a browser sign-in. cadForMe still does the modelling (parts -> sketches, extrudes, booleans...) and builds the Onshape features itself; `onshape_push`, `onshape_pull`, `onshape_import`, `release` and the CLI send them through that server automatically. If you have its `onshape_*` tools connected you can also use them directly to look at or change a document (create a version first with `onshape_create_version` before restructuring), but write parts with `write_part` and send them with `onshape_push` rather than rebuilding them by hand.
+Fallback without the server: API keys (`onshape_connect`, below). `CADFORME_ONSHAPE=keys|mcp` forces one. File uploads (STEP) aren't offered by MCP servers: they need saved keys, or the user imports the file in the Onshape web app. Onshape limits API calls per account (a 402 or 429 means wait or ask Onshape support): batch work, don't poll, and don't re-read things you don't need.
+
+## Importing an Onshape document (the user gives a link; keys only if there is no MCP server)
+1. With the MCP server nothing to do here. Without it, the user pastes an Onshape API access key and secret key and a document link: call `onshape_connect` with them exactly as given (CLI: `node bin/cadforme.mjs connect <access> <secret>`). It verifies them and saves them in `apikeys.json` at the repo root (owner-only, gitignored; a pre-commit check blocks any commit containing keys). Never repeat the keys back, and never write them into any other file. They can also be set as `ONSHAPE_ACCESS_KEY` / `ONSHAPE_SECRET_KEY`.
 2. Call `onshape_import` with the link. It creates `projects/<document name>/`. Every Part Studio becomes an editable part with all its sketches, constraints, dimensions, variables, planes, extrudes, fillets, chamfers and shells; Assemblies come in as geometry. Features cadForMe can't edit stay as untouched placeholders; tell the user which ones the import report lists.
 3. Edit parts (below), then `onshape_push` to send changes back as native features, `onshape_pull` to bring Onshape edits in.
 4. `release` makes a named Onshape version with a summary of what changed since the last release; `releases` lists them. That is how changes are tracked here.

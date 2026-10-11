@@ -2,7 +2,16 @@
   "mcpServers": {
     "cadforme": {
       "command": "cadforme",
-      "args": ["mcp"]
+      "args": [
+        "mcp"
+      ]
+    },
+    "onshape": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@gpambrozio/onshape-mcp"
+      ]
     }
   }
 }

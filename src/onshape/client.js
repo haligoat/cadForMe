@@ -29,7 +29,12 @@ export class OnshapeClient {
       const res = await this.f(`${this.base}${API}${path}`, {
         method, headers: { Authorization: this.auth, Accept: "application/json;charset=UTF-8; qs=0.09", ...(body ? { "Content-Type": "application/json" } : {}) }, body: body ? JSON.stringify(body) : undefined,
       });
-      if (res.status === 429 && attempt < tries) { await new Promise((r) => setTimeout(r, 1500 * attempt)); continue; }
+      if (res.status === 429) {
+        const wait = Number(res.headers?.get?.("retry-after") ?? 0);
+        // a short wait is a burst limit: try again. A long one (hours) is Onshape's daily allowance for this kind of call: say so
+        if (wait > 60) { const e = new OnshapeError(`Onshape has paused this kind of request for ${wait >= 5400 ? `${Math.round(wait / 3600)} hours` : `${Math.ceil(wait / 60)} minutes`} (its rate limit for your account). Try again then; other kinds of request still work`, 429); e.retryAfter = wait; throw e; }
+        if (attempt < tries) { await new Promise((r) => setTimeout(r, Math.max(1500 * attempt, wait * 1000))); continue; }
+      }
       const text = await res.text();
       let json = null; try { json = text ? JSON.parse(text) : null; } catch { /* not json */ }
       if (res.ok) return json ?? {};
