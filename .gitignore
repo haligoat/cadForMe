@@ -11,3 +11,10 @@ __pycache__/
 views/
 # the current project is per machine
 projects/.current
+# Onshape API keys (and anything like them) stay on this machine; scripts/hooks/pre-commit also refuses to commit them
+apikeys.json
+onshape.json
+*.keys.json
+# exported STEP files can be huge (GitHub refuses >100 MB); Onshape holds the design
+projects/*/exports/*.step
+projects/*/exports/**/*.step

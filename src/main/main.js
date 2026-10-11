@@ -4,6 +4,8 @@ import { spawn, execFileSync } from "node:child_process";
 import { OnshapeClient } from "../onshape/client.js";
 import * as onshape from "../onshape/sync.js";
 import * as odoc from "../onshape/document.js";
+import * as keystore from "../onshape/keystore.js";
+import { McpConnection, McpOnshapeClient, mcpServerConfig } from "../onshape/mcp.js";
 import { PROVIDERS, complete, extractPart } from "../../dist/ai-providers.mjs"; // bundled with its SDK dependencies by scripts/build.mjs
 import fs from "node:fs";
 import path from "node:path";
@@ -28,19 +30,29 @@ const readJSON = (f, d) => { try { return JSON.parse(fs.readFileSync(f, "utf8"))
 const writeJSON = (f, v) => { fs.mkdirSync(path.dirname(f), { recursive: true }); fs.writeFileSync(f, JSON.stringify(v, null, 2)); };
 const settings = () => readJSON(userFile("settings.json"), { author: { name: "", email: "" }, recent: [] });
 
-// Onshape API keys (Keychain-encrypted, like the GitHub token)
+// Onshape API keys: apikeys.json in this repo, shared with the terminal and MCP server (src/onshape/keystore.js).
+// Keys saved by older versions in the Keychain-encrypted onshape-keys.bin are moved there once.
 function getOnshapeKeys() {
-  try { const k = JSON.parse(fs.readFileSync(path.join(process.env.CADFORME_HOME ?? path.join(app.getPath("home"), ".config", "cadforme"), "onshape.json"), "utf8")); if (k.accessKey && k.secretKey) return k; } catch { /* not connected through the terminal */ }
-  try { const f = userFile("onshape-keys.bin"); if (!fs.existsSync(f) || !safeStorage.isEncryptionAvailable()) return null; return JSON.parse(safeStorage.decryptString(fs.readFileSync(f))); } catch { return null; }
+  const k = keystore.loadOnshapeKeys();
+  if (k) return k;
+  const f = userFile("onshape-keys.bin");
+  try {
+    if (!fs.existsSync(f) || !safeStorage.isEncryptionAvailable()) return null;
+    const old = JSON.parse(safeStorage.decryptString(fs.readFileSync(f)));
+    keystore.saveOnshapeKeys(old); fs.rmSync(f, { force: true });
+    return keystore.loadOnshapeKeys();
+  } catch { return null; }
 }
 function setOnshapeKeys(k) {
-  const f = userFile("onshape-keys.bin");
-  if (!k) { fs.rmSync(f, { force: true }); return; }
-  if (!safeStorage.isEncryptionAvailable()) throw new Error("macOS Keychain encryption isn't available, so the keys can't be stored safely");
-  fs.mkdirSync(path.dirname(f), { recursive: true });
-  fs.writeFileSync(f, safeStorage.encryptString(JSON.stringify(k)), { mode: 0o600 });
+  fs.rmSync(userFile("onshape-keys.bin"), { force: true });
+  if (k) keystore.saveOnshapeKeys(k); else keystore.clearOnshapeKeys();
 }
-const osClient = () => { const k = getOnshapeKeys(); if (!k) throw new Error("Connect your Onshape API keys first"); return new OnshapeClient(k); };
+let mcpClient = null;   // through the Onshape MCP server when .mcp.json lists one ("onshape"); API keys otherwise (CADFORME_ONSHAPE=keys forces them)
+const useMcp = () => process.env.CADFORME_ONSHAPE !== "keys" && (process.env.CADFORME_ONSHAPE === "mcp" || !!mcpServerConfig(ROOT));
+const osClient = () => {
+  if (useMcp()) { const k = getOnshapeKeys(); return (mcpClient ??= new McpOnshapeClient(new McpConnection(mcpServerConfig(ROOT)), { fallback: k ? new OnshapeClient(k) : null })); }
+  const k = getOnshapeKeys(); if (!k) throw new Error("Connect your Onshape API keys first"); return new OnshapeClient(k);
+};
 
 // ---------- AI (Claude Code CLI) ----------
 let aiProc = null;
@@ -331,7 +343,7 @@ const handlers = {
 
   "release:list": async () => odoc.listReleases(need(), osClient()),
   "release:make": async (_e, name) => odoc.createRelease(need(), osClient(), name),
-  "onshape:status": () => { const k = getOnshapeKeys(); return { hasKeys: !!k, baseUrl: k?.baseUrl ?? "https://cad.onshape.com" }; },
+  "onshape:status": () => { const k = getOnshapeKeys(); return { hasKeys: !!k || useMcp(), viaMcp: useMcp(), baseUrl: k?.baseUrl ?? "https://cad.onshape.com" }; },
   "onshape:setKeys": async (_e, k) => {
     if (!k) { setOnshapeKeys(null); return { hasKeys: false }; }
     const keys = { accessKey: String(k.accessKey ?? "").trim(), secretKey: String(k.secretKey ?? "").trim(), baseUrl: String(k.baseUrl || "https://cad.onshape.com").trim() };
@@ -340,7 +352,6 @@ const handlers = {
     if (!keys.accessKey) throw new Error("The access key is missing");
     const who = await new OnshapeClient(keys).req("GET", "/users/sessioninfo"); // verifies the keys before saving
     setOnshapeKeys(keys);
-    try { const f = path.join(process.env.CADFORME_HOME ?? path.join(app.getPath("home"), ".config", "cadforme"), "onshape.json"); fs.mkdirSync(path.dirname(f), { recursive: true, mode: 0o700 }); fs.writeFileSync(f, JSON.stringify(keys), { mode: 0o600 }); } catch { /* the window still has them */ }
     return { hasKeys: true, user: who?.name ?? who?.email ?? "" };
   },
   "onshape:info": (_e, rel) => { const i = onshape.linkInfo(need(), rel); return i.linked ? { ...i, url: onshape.onshapeUrl(i, getOnshapeKeys()?.baseUrl) } : i; },
@@ -542,6 +553,6 @@ app.whenReady().then(() => {
   app.on("activate", () => { if (!BrowserWindow.getAllWindows().length) createWindow(); });
 });
 app.on("open-file", (e, p) => { e.preventDefault(); if (app.isReady() && win) openInApp(p); else pendingOpen = resolveOpen(p); });
-app.on("window-all-closed", () => app.quit());
+app.on("window-all-closed", () => { mcpClient?.close(); app.quit(); });
 
 

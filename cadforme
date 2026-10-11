@@ -1,0 +1,3 @@
+#!/bin/sh
+# cadForMe: run from this folder (./cadforme) for the menu; ./cadforme help lists every command.
+exec node "$(dirname "$0")/bin/cadforme.mjs" "$@"

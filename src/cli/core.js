@@ -10,10 +10,11 @@ import { fileURLToPath } from "node:url";
 import { DEFAULT_RULES, drcKey, drcSteps } from "../kernel/drcinfo.js";
 import { importName, hasAutoName, conventionalName } from "../kernel/stepnames.js";
 import { formatPart, parsePart } from "../kernel/format.js";
-import os from "node:os";
 import { OnshapeClient, parseDocumentUrl } from "../onshape/client.js";
 import * as onshape from "../onshape/sync.js";
 import * as odoc from "../onshape/document.js";
+import * as keystore from "../onshape/keystore.js";
+import { McpConnection, McpOnshapeClient, mcpServerConfig } from "../onshape/mcp.js";
 
 export const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
 // Every project is a folder in projects/ (parts/, exports/, optional image-references/). The one in use is remembered in
@@ -112,6 +113,15 @@ export function ensureDeps() {
   if (fs.existsSync(path.join(ROOT, "node_modules", "replicad-opencascadejs"))) return;
   process.stderr.write("cadForMe: first run, installing dependencies (about a minute)...\n");
   execFileSync("npm", ["install", "--no-audit", "--no-fund"], { cwd: ROOT, stdio: ["ignore", process.stderr, process.stderr] });
+}
+
+/** Switch on the pre-commit check that keeps API keys out of git (git hooks don't come with a clone). */
+export function ensureHooks() {
+  try {
+    if (!fs.existsSync(path.join(ROOT, ".git"))) return;
+    let cur = ""; try { cur = execFileSync("git", ["config", "core.hooksPath"], { cwd: ROOT, stdio: ["ignore", "pipe", "ignore"] }).toString().trim(); } catch { /* unset */ }
+    if (cur !== "scripts/hooks") execFileSync("git", ["config", "core.hooksPath", "scripts/hooks"], { cwd: ROOT, stdio: "ignore" });
+  } catch { /* no git: nothing to protect */ }
 }
 
 let kernel = null;
@@ -255,32 +265,69 @@ export function openGui(dir, { part, detach = false } = {}) {
 }
 
 // ---------- Onshape (keys, import, push, pull, releases) ----------
-// Keys live outside the repo, in ~/.config/cadforme/onshape.json (owner-only file), or in the ONSHAPE_ACCESS_KEY /
-// ONSHAPE_SECRET_KEY environment variables. The window reads the same file, so connecting once covers everything.
-export const keysFile = () => path.join(process.env.CADFORME_HOME ?? path.join(os.homedir(), ".config", "cadforme"), "onshape.json");
-
-export function loadKeys() {
-  if (process.env.ONSHAPE_ACCESS_KEY && process.env.ONSHAPE_SECRET_KEY) return { accessKey: process.env.ONSHAPE_ACCESS_KEY, secretKey: process.env.ONSHAPE_SECRET_KEY, baseUrl: process.env.ONSHAPE_URL || "https://cad.onshape.com" };
-  try { const k = JSON.parse(fs.readFileSync(keysFile(), "utf8")); return k.accessKey && k.secretKey ? k : null; } catch { return null; }
-}
+// Keys live in apikeys.json at the repo root (owner-only, gitignored, blocked by the pre-commit check), or in the
+// ONSHAPE_ACCESS_KEY / ONSHAPE_SECRET_KEY environment variables. The window reads the same file (src/onshape/keystore.js).
+export { keysFile } from "../onshape/keystore.js";
+export const loadKeys = keystore.loadOnshapeKeys;
 
 /** Check the keys with Onshape, then save them. Returns the account name (never the keys). */
 export async function connectOnshape({ accessKey, secretKey, baseUrl }) {
   const keys = { accessKey: String(accessKey ?? "").trim(), secretKey: String(secretKey ?? "").trim(), baseUrl: String(baseUrl || "https://cad.onshape.com").trim() };
   if (!keys.accessKey || !keys.secretKey) throw new Error("Both the access key and the secret key are needed. Onshape shows the secret only once when you create the API key; if it wasn't saved, create a new key (dev-portal.onshape.com -> API keys)");
   const who = await new OnshapeClient(keys).req("GET", "/users/sessioninfo");   // rejects wrong keys before anything is saved
-  fs.mkdirSync(path.dirname(keysFile()), { recursive: true, mode: 0o700 });
-  fs.writeFileSync(keysFile(), JSON.stringify(keys), { mode: 0o600 });
-  return { user: who?.name ?? who?.email ?? "", saved: keysFile() };
+  return { user: who?.name ?? who?.email ?? "", saved: keystore.saveOnshapeKeys(keys) };
 }
-export const disconnectOnshape = () => fs.rmSync(keysFile(), { force: true });
+export const disconnectOnshape = keystore.clearOnshapeKeys;
+/**
+ * The Onshape connection. Through the Onshape MCP server when .mcp.json lists one ("onshape"), so no keys are needed here
+ * and cadForMe only sends its modelling to the document; otherwise the saved API keys. CADFORME_ONSHAPE=keys|mcp forces one.
+ */
+let mcpClient = null;
+export function onshapeMode() {
+  const want = process.env.CADFORME_ONSHAPE;
+  if (want === "keys" || want === "mcp") return want;
+  return mcpServerConfig() ? "mcp" : "keys";
+}
 export function osClient() {
   const k = loadKeys();
-  if (!k) throw new Error("Onshape isn't connected. Give me the API access key and secret key (onshape_connect), or set ONSHAPE_ACCESS_KEY and ONSHAPE_SECRET_KEY");
+  if (onshapeMode() === "mcp") {
+    const cfg = mcpServerConfig();
+    if (!cfg) throw new Error("No Onshape MCP server is set up. Add an \"onshape\" server to .mcp.json (see README), or use API keys (cadforme connect)");
+    return (mcpClient ??= new McpOnshapeClient(new McpConnection(cfg), { fallback: k ? new OnshapeClient(k) : null }));
+  }
+  if (!k) throw new Error("Onshape isn't connected. Set up the Onshape MCP server (README), or give me the API access key and secret key (onshape_connect), or set ONSHAPE_ACCESS_KEY and ONSHAPE_SECRET_KEY");
   return new OnshapeClient(k);
 }
+/** Sign in through the Onshape MCP server (opens a browser). method: "api_key" (paste a key pair; the server keeps it) or "oauth". */
+export async function onshapeLogin({ method = "api_key", onProgress = () => {} } = {}) {
+  const c = osClient();
+  if (!c.viaMcp) throw new Error("Signing in is done by the Onshape MCP server; there isn't one set up. Use cadforme connect for API keys");
+  const body = (r) => r.json?.result ?? r.json ?? {};
+  let r = await c.conn.call("onshape_login", { method, wait_seconds: 5 });
+  if (r.isError || r.json?.ok === false) throw new Error(String(r.json?.error ?? r.text));
+  const url = body(r).open_this_url;
+  onProgress(`Finish the sign-in in your browser${url ? `. If no window opened, go to ${url}` : ""}`);
+  for (let i = 0; i < 12; i++) {   // up to ~6 minutes
+    r = await c.conn.call("onshape_login_status", { wait_seconds: 30 });
+    if (r.isError || r.json?.ok === false) throw new Error(String(r.json?.error ?? r.text));
+    if (String(body(r).status).toLowerCase() !== "pending") break;
+    onProgress("Waiting for you to finish in the browser…");
+  }
+  const st = await c.conn.call("onshape_auth_status", { verify: false });   // only done when the server really holds a credential
+  if (!body(st).configured) throw new Error("The sign-in wasn't finished (no key was saved). Run cadforme login again and paste the key pair in the browser page");
+  return body(st);
+}
+/** Stop the MCP server process (command-line runs call this when they finish). */
+export function closeOnshape() { mcpClient?.close(); mcpClient = null; }
 
 export const importOnshape = (dir, url, opts) => odoc.importDocument(dir, osClient(), url, opts);
+export const uploadStepAssembly = (dir, file, url, opts) => odoc.importStepAssembly(dir, osClient(), url, path.resolve(dir, file), opts);
+export function uploadReport(r) {
+  const kinds = {}; for (const t of r.tabs) kinds[t.type] = (kinds[t.type] ?? 0) + 1;
+  return [`Imported ${r.file}: ${Object.entries(kinds).map(([k, n]) => `${n} ${k.toLowerCase()}`).join(", ")}`, r.url,
+    ...(r.renamed.length ? [`Renamed: ${r.renamed.map((x) => `${x.from} -> ${x.to}`).join(", ")}`] : []),
+    ...(r.folder ? [r.folder.placed ? `${r.folder.placed} tabs placed in folder "${r.folder.name}"` : `Onshape didn't put the tabs in folder "${r.folder.name}"; drag them in from the tab manager (the API can't move tabs)`] : [])].join("\n");
+}
 /** Import an Onshape document into its own project, projects/<document name>, and make that project current. */
 export async function importOnshapeProject(url, opts) {
   const client = osClient();

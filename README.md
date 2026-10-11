@@ -5,15 +5,37 @@ want, pointing at photos or sketches in `image-references/`. Every part you make
 Onshape as real sketches and extrudes you can double-click and edit there. No git: Onshape is the source of truth, and
 releases (named Onshape versions) track changes.
 
-## Start
+## Start (needs Node 20+, internet the first time)
 ```
-npm install
-ln -s "$PWD/bin/cadforme.mjs" ~/.local/bin/cadforme   # once: the `cadforme` command (or `npm link` if your npm prefix is writable)
-cadforme new bracket   # makes projects/bracket/ (every project is a folder in projects/)
-cadforme               # opens the window on the current project
+git clone https://github.com/haligoat/cadForMe && cd cadForMe
+./cadforme          # the menu: projects, parts, design check, Onshape, big STEP files, 3D window
+./cadforme doctor   # is everything set up? (says how to fix anything that isn't)
 ```
-`cadforme projects` lists projects (* = current), `cadforme use <name>` switches, `cadforme open <part>` opens a part,
-`--project <name|folder>` works on another project once. An Onshape import gets its own project named after the document. `npm test` runs the tests.
+The first run installs everything it needs by itself. Then either:
+- **use the menu**: arrow keys (or the letter shown) and Enter, Esc goes back, q quits; or
+- **talk to an AI agent**: open this folder in Claude Code, Codex, Gemini, ... It reads `CLAUDE.md` / `AGENTS.md` and
+  drives cadForMe for you ("make a 40 x 20 bracket with two M4 holes", "import this Onshape document: <link>").
+
+**Menu when a terminal opens here** (optional): add this line to `~/.zshrc` or `~/.bashrc`:
+```
+eval "$(/path/to/cadForMe/cadforme shell-hook)"
+```
+Opening a terminal in the folder (or `cd`-ing into it) then shows the menu once per session. `CADFORME_NO_MENU=1` turns it off.
+
+**The `cadforme` command everywhere** (optional): `ln -s "$PWD/cadforme" ~/.local/bin/cadforme`.
+
+| Command | Does |
+|---|---|
+| `cadforme` | the menu |
+| `cadforme open [part]` | the 3D window |
+| `cadforme new <name>` / `use <name>` / `projects` | start, switch, list projects (each is a folder in `projects/`) |
+| `cadforme drc [part]` | design check (unchanged parts are skipped) |
+| `cadforme connect <access> <secret>` / `import <link>` | Onshape keys / import a whole document as a new project |
+| `cadforme push <part>` / `pull <part>` / `release [name]` | Onshape sync and releases |
+| `cadforme step-assembly <file>` / `upload <file> <link>` | big flat STEP -> assembly -> Onshape |
+| `cadforme help` | every command and option |
+
+`--project <name|folder>` works on another project once. `npm test` runs the tests (CI runs them on every push).
 
 ## Change things with text and images
 - The **AI** tab: type the change ("make the wall 6 mm and add two M4 holes 20 mm apart"). Claude Code (or a Claude, Gemini or
@@ -22,6 +44,14 @@ cadforme               # opens the window on the current project
   thumbnails; click one or type `@name` to use it. "The reference image" uses all of them. The AI sees the actual pictures.
 - The AI models the way you would in Onshape: dimensioned sketches + extrudes, cuts for holes, shapes on the same plane in one
   sketch, and **at most 3-5 variables** per part (only sizes you'd really change). Everything else is a sketch dimension.
+
+## Big STEP file to an Onshape assembly
+```
+cadforme step-assembly robot.step                 # 590 MB flat export -> 137 MB assembly, 184 parts placed 1,134 times
+cadforme upload exports/robot-assembly.step <document link> [--folder "Imports"]
+```
+Identical bodies become one part used many times, `Group: part` names become subassemblies, names and colours are kept,
+and every body is checked against the original. Onshape makes one Assembly per subassembly and a Part Studio with the parts.
 
 ## Design check (DRC)
 The **DRC** button (top bar), the palette ("Design check"), and every AI edit run it. Per part it checks: build errors, loose
@@ -33,10 +63,21 @@ Each part's result is saved with a fingerprint of the part, every file it pulls 
 (`<project>/.cadforme/drc.json`), so **only parts that changed are checked again**. An assembly checks just how its parts fit,
 not each part again.
 
+## Onshape through an MCP server (no API keys in this repo)
+`.mcp.json` lists an **onshape** MCP server ([`@gpambrozio/onshape-mcp`](https://github.com/gpambrozio/onshape-mcp), MIT, started with
+`npx -y`). cadForMe keeps doing the modelling (your parts become sketches, extrudes, booleans... exactly as before) and sends the
+result to the document through that server, so `push`, `pull`, `import`, `release` and the window's Onshape button work without
+saved keys. The first request opens a browser sign-in; the server keeps the login in your OS keychain. It is third-party code
+with access to your Onshape account: read it before you trust it. Onshape still limits API calls per account (an MCP server
+makes the same calls), so a 402/429 means wait or ask Onshape support.
+- Fallback: `cadforme connect <access> <secret>` (API keys). `CADFORME_ONSHAPE=keys|mcp` forces one; `cadforme doctor` shows which is active.
+- Any server with an `onshape_request` tool works: set `CADFORME_ONSHAPE_MCP="<command and args>"`.
+- STEP uploads (`cadforme upload`) need saved keys; MCP servers don't offer file upload. Import the file in the Onshape web app instead.
+
 ## Import a whole Onshape document
 Give any agent (Claude, Codex, Gemini, ...) your Onshape **API access key + secret key** and the **document link**, or run:
 ```
-cadforme connect <access key> <secret key>      # checked with Onshape, saved to ~/.config/cadforme/onshape.json (not in the repo)
+cadforme connect <access key> <secret key>      # checked with Onshape, saved to apikeys.json (gitignored)
 cadforme import <document link>
 ```
 Every Part Studio becomes an editable part with all its sketches, constraints, dimensions, variables, planes, extrudes,
@@ -68,6 +109,8 @@ cadforme drc [part...] [--force] [--json]
 cadforme names <part> [--write] [--all]
 cadforme connect <access> <secret> | import <link> | push <part> [--preview] | pull <part>
 cadforme release [name] | releases
+cadforme step-assembly <file.step> | upload <file.step> <link> [--folder name]
+cadforme doctor | shell-hook
 cadforme mcp
 ```
 `cadforme mcp` is an MCP server with tools to list/read/write parts, see the image references, run the design check, name
@@ -78,23 +121,15 @@ app add this to `~/Library/Application Support/Claude/claude_desktop_config.json
 ```
 The keys saved by `cadforme connect` (or the agent's `onshape_connect`) are the same ones the window uses.
 
-## Reference (cadSlop)
-
-Parametric CAD for Mac where an AI can edit parts as plain text.
-
-## Run
+## Development
 ```
-npm install
-npm start          # build + launch
-npm test           # geometry, merge, and sync tests
+npm start          # build + launch the 3D window
+npm test           # all tests (CI runs them on Ubuntu and macOS, Node 20 and 22)
 npm run package    # release/cadForMe-darwin-*/cadForMe.app
 ```
-
-## cadForMe folder, File menu, menu-bar app
-- Projects live in `~/cadForMe`. The File menu has New Project, Open… (folder or part file), Open Recent and the cadForMe Folder list.
-- `cadForMe Menu` is a native Swift menu-bar app (`menubar/CadSlopMenu.swift`, build with `scripts/build-menubar.sh` →
-  `release/cadForMe Menu.app`): the cube icon in the Mac menu bar lists every project in `~/cadForMe` and its parts, recent
-  projects, Open File or Folder…, and New Project…, and opens them in cadForMe.
+- Projects live in `projects/` in this folder; the File menu of the window has New Project, Open… (folder or part file),
+  Open Recent and the Projects list.
+- `menubar/` is the old cadSlop menu-bar app; it still lists `~/cadSlop` and isn't updated for cadForMe yet.
 
 ## How it works
 - **Geometry**: OpenCascade (via replicad, WebAssembly) in a worker. A part is `parts/<name>.part.json`:
@@ -112,7 +147,7 @@ npm run package    # release/cadForMe-darwin-*/cadForMe.app
   Claude Code CLI (Read/Edit/Write/Glob/Grep only, no shell or web) on the open part file, rebuilds, and if the model has
   errors asks the AI to fix them (up to 2 tries). Then it can send the result to Onshape. ⌘Z undoes the AI edit.
   Needs Claude Code installed and signed in (`claude` once in a terminal).
-- **Onshape button**: connect API keys (stored in the macOS Keychain), import a Part Studio into a part file, send a part to a
+- **Onshape button**: connect API keys (saved in `apikeys.json`, shared with the terminal and agents), import a Part Studio into a part file, send a part to a
   new Onshape document (or an empty Part Studio), pull and push.
 - The last-synced Onshape state is stored in `onshape/<part>.base.json` in the project. Pull is a CAD-aware
   3-way merge (conflicts open the Mine/Theirs screen); push is refused if Onshape changed since your last sync ("pull first").

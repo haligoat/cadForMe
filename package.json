@@ -8,7 +8,10 @@
     "build": "node scripts/build.mjs",
     "start": "node scripts/build.mjs && electron .",
     "package": "node scripts/build.mjs && node scripts/package.mjs",
-    "cadforme": "node bin/cadforme.mjs"
+    "cadforme": "node bin/cadforme.mjs",
+    "prepare": "git config core.hooksPath scripts/hooks || true",
+    "ui": "node bin/cadforme.mjs ui",
+    "doctor": "node bin/cadforme.mjs doctor"
   },
   "keywords": [],
   "author": "",
@@ -28,5 +31,8 @@
   },
   "bin": {
     "cadforme": "bin/cadforme.mjs"
+  },
+  "engines": {
+    "node": ">=20"
   }
 }

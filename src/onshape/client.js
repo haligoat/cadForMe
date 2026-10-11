@@ -29,7 +29,12 @@ export class OnshapeClient {
       const res = await this.f(`${this.base}${API}${path}`, {
         method, headers: { Authorization: this.auth, Accept: "application/json;charset=UTF-8; qs=0.09", ...(body ? { "Content-Type": "application/json" } : {}) }, body: body ? JSON.stringify(body) : undefined,
       });
-      if (res.status === 429 && attempt < tries) { await new Promise((r) => setTimeout(r, 1500 * attempt)); continue; }
+      if (res.status === 429) {
+        const wait = Number(res.headers?.get?.("retry-after") ?? 0);
+        // a short wait is a burst limit: try again. A long one (hours) is Onshape's daily allowance for this kind of call: say so
+        if (wait > 60) { const e = new OnshapeError(`Onshape has paused this kind of request for ${wait >= 5400 ? `${Math.round(wait / 3600)} hours` : `${Math.ceil(wait / 60)} minutes`} (its rate limit for your account). Try again then; other kinds of request still work`, 429); e.retryAfter = wait; throw e; }
+        if (attempt < tries) { await new Promise((r) => setTimeout(r, Math.max(1500 * attempt, wait * 1000))); continue; }
+      }
       const text = await res.text();
       let json = null; try { json = text ? JSON.parse(text) : null; } catch { /* not json */ }
       if (res.ok) return json ?? {};
@@ -68,11 +73,12 @@ export class OnshapeClient {
   insertPartStudio(asmRef, ps) { return this.req("POST", `${this.asm(asmRef)}/instances`, { documentId: ps.did, elementId: ps.eid, isWholePartStudio: true, includePartTypes: ["PARTS"] }); }
   deleteInstance(asmRef, nodeId) { return this.req("DELETE", `${this.asm(asmRef)}/instance/nodeid/${encodeURIComponent(nodeId)}`); }
   /** Upload a CAD file (STEP etc.) into the document the way Onshape's Import does, translated into Part Studio / Assembly tabs. */
-  async translateFile(did, wid, { name, bytes, flattenAssemblies = false }) {
+  async translateFile(did, wid, { name, bytes, flattenAssemblies = false, options = {} }) {
     const form = new FormData();
     form.append("file", new Blob([bytes]), name);
     form.append("encodedFilename", name); form.append("translate", "true"); form.append("formatName", "STEP");
     form.append("flattenAssemblies", String(flattenAssemblies)); form.append("yAxisIsUp", "false"); form.append("allowFaultyParts", "true");
+    for (const [k, v] of Object.entries(options)) form.append(k, String(v));   // e.g. locationGroupId (a tab folder), importAppearances
     const res = await this.f(`${this.base}${API}/blobelements/d/${did}/w/${wid}`, { method: "POST", headers: { Authorization: this.auth, Accept: "application/json;charset=UTF-8; qs=0.09" }, body: form });
     const text = await res.text();
     if (!res.ok) throw new OnshapeError(`Onshape couldn't take the file (${res.status}): ${text.slice(0, 200)}`, res.status);

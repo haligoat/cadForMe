@@ -1,0 +1,705 @@
+{
+ "name": "Transfer motor plate",
+ "description": "Transfer motor plate (3D-printed PETG, minimal mount)",
+ "variables": {},
+ "features": [
+  {
+   "id": "txs291_0",
+   "type": "sketch",
+   "name": "Transfer motor plate (3D-printed PETG, minimal mount) profile (outline)",
+   "plane": "XZ",
+   "offset": -62.6,
+   "geom": [
+    {
+     "id": "p1",
+     "t": "point",
+     "x": -80.76,
+     "y": 2.09
+    },
+    {
+     "id": "p4",
+     "t": "point",
+     "x": -53.91,
+     "y": -49.41
+    },
+    {
+     "id": "p7",
+     "t": "point",
+     "x": -43.21,
+     "y": -49.28
+    },
+    {
+     "id": "p10",
+     "t": "point",
+     "x": -17.21,
+     "y": 3.6
+    },
+    {
+     "id": "p13",
+     "t": "point",
+     "x": -22.75,
+     "y": 12.25
+    },
+    {
+     "id": "p16",
+     "t": "point",
+     "x": -75.59,
+     "y": 10.86
+    },
+    {
+     "id": "p19",
+     "t": "point",
+     "x": -80.76,
+     "y": 2.09
+    },
+    {
+     "id": "l22",
+     "t": "line",
+     "a": "p1",
+     "b": "p4"
+    },
+    {
+     "id": "l23",
+     "t": "line",
+     "a": "p4",
+     "b": "p7"
+    },
+    {
+     "id": "l24",
+     "t": "line",
+     "a": "p7",
+     "b": "p10"
+    },
+    {
+     "id": "l25",
+     "t": "line",
+     "a": "p10",
+     "b": "p13"
+    },
+    {
+     "id": "l26",
+     "t": "line",
+     "a": "p13",
+     "b": "p16"
+    },
+    {
+     "id": "l27",
+     "t": "line",
+     "a": "p16",
+     "b": "p19"
+    },
+    {
+     "id": "l28",
+     "t": "line",
+     "a": "p19",
+     "b": "p1"
+    }
+   ],
+   "cons": [
+    {
+     "id": "d2",
+     "t": "dim",
+     "k": "x",
+     "a": "p1",
+     "v": -80.76
+    },
+    {
+     "id": "d3",
+     "t": "dim",
+     "k": "y",
+     "a": "p1",
+     "v": 2.09
+    },
+    {
+     "id": "d5",
+     "t": "dim",
+     "k": "x",
+     "a": "p4",
+     "v": -53.91
+    },
+    {
+     "id": "d6",
+     "t": "dim",
+     "k": "y",
+     "a": "p4",
+     "v": -49.41
+    },
+    {
+     "id": "d8",
+     "t": "dim",
+     "k": "x",
+     "a": "p7",
+     "v": -43.21
+    },
+    {
+     "id": "d9",
+     "t": "dim",
+     "k": "y",
+     "a": "p7",
+     "v": -49.28
+    },
+    {
+     "id": "d11",
+     "t": "dim",
+     "k": "x",
+     "a": "p10",
+     "v": -17.21
+    },
+    {
+     "id": "d12",
+     "t": "dim",
+     "k": "y",
+     "a": "p10",
+     "v": 3.6
+    },
+    {
+     "id": "d14",
+     "t": "dim",
+     "k": "x",
+     "a": "p13",
+     "v": -22.75
+    },
+    {
+     "id": "d15",
+     "t": "dim",
+     "k": "y",
+     "a": "p13",
+     "v": 12.25
+    },
+    {
+     "id": "d17",
+     "t": "dim",
+     "k": "x",
+     "a": "p16",
+     "v": -75.59
+    },
+    {
+     "id": "d18",
+     "t": "dim",
+     "k": "y",
+     "a": "p16",
+     "v": 10.86
+    },
+    {
+     "id": "d20",
+     "t": "dim",
+     "k": "x",
+     "a": "p19",
+     "v": -80.76
+    },
+    {
+     "id": "d21",
+     "t": "dim",
+     "k": "y",
+     "a": "p19",
+     "v": 2.09
+    }
+   ]
+  },
+  {
+   "id": "txe292_0",
+   "type": "extrude",
+   "name": "Transfer motor plate (3D-printed PETG, minimal mount)",
+   "sketch": "txs291_0",
+   "distance": 8,
+   "flip": true,
+   "mode": "new"
+  },
+  {
+   "id": "txs291_1",
+   "type": "sketch",
+   "name": "Transfer motor plate (3D-printed PETG, minimal mount) profile (circle 1)",
+   "plane": "XZ",
+   "offset": -62.6,
+   "geom": [
+    {
+     "id": "p1",
+     "t": "point",
+     "x": -48.59,
+     "y": -10.64
+    },
+    {
+     "id": "c2",
+     "t": "circle",
+     "c": "p1",
+     "r": 19
+    }
+   ],
+   "cons": [
+    {
+     "id": "d3",
+     "t": "dim",
+     "k": "x",
+     "a": "p1",
+     "v": -48.59
+    },
+    {
+     "id": "d4",
+     "t": "dim",
+     "k": "y",
+     "a": "p1",
+     "v": -10.64
+    },
+    {
+     "id": "d5",
+     "t": "dim",
+     "k": "diameter",
+     "a": "c2",
+     "v": 38
+    }
+   ]
+  },
+  {
+   "id": "txe292_1",
+   "type": "extrude",
+   "name": "Transfer motor plate (3D-printed PETG, minimal mount): join circle 1",
+   "sketch": "txs291_1",
+   "distance": 8,
+   "flip": true,
+   "mode": "add"
+  },
+  {
+   "id": "txs291_2",
+   "type": "sketch",
+   "name": "Transfer motor plate (3D-printed PETG, minimal mount) profile (circle 2)",
+   "plane": "XZ",
+   "offset": -62.6,
+   "geom": [
+    {
+     "id": "p1",
+     "t": "point",
+     "x": -22.59,
+     "y": 6.25
+    },
+    {
+     "id": "c2",
+     "t": "circle",
+     "c": "p1",
+     "r": 6
+    }
+   ],
+   "cons": [
+    {
+     "id": "d3",
+     "t": "dim",
+     "k": "x",
+     "a": "p1",
+     "v": -22.59
+    },
+    {
+     "id": "d4",
+     "t": "dim",
+     "k": "y",
+     "a": "p1",
+     "v": 6.25
+    },
+    {
+     "id": "d5",
+     "t": "dim",
+     "k": "diameter",
+     "a": "c2",
+     "v": 12
+    }
+   ]
+  },
+  {
+   "id": "txe292_2",
+   "type": "extrude",
+   "name": "Transfer motor plate (3D-printed PETG, minimal mount): join circle 2",
+   "sketch": "txs291_2",
+   "distance": 8,
+   "flip": true,
+   "mode": "add"
+  },
+  {
+   "id": "txs291_3",
+   "type": "sketch",
+   "name": "Transfer motor plate (3D-printed PETG, minimal mount) profile (circle 3)",
+   "plane": "XZ",
+   "offset": -62.6,
+   "geom": [
+    {
+     "id": "p1",
+     "t": "point",
+     "x": -75.44,
+     "y": 4.86
+    },
+    {
+     "id": "c2",
+     "t": "circle",
+     "c": "p1",
+     "r": 6
+    }
+   ],
+   "cons": [
+    {
+     "id": "d3",
+     "t": "dim",
+     "k": "x",
+     "a": "p1",
+     "v": -75.44
+    },
+    {
+     "id": "d4",
+     "t": "dim",
+     "k": "y",
+     "a": "p1",
+     "v": 4.86
+    },
+    {
+     "id": "d5",
+     "t": "dim",
+     "k": "diameter",
+     "a": "c2",
+     "v": 12
+    }
+   ]
+  },
+  {
+   "id": "txe292_3",
+   "type": "extrude",
+   "name": "Transfer motor plate (3D-printed PETG, minimal mount): join circle 3",
+   "sketch": "txs291_3",
+   "distance": 8,
+   "flip": true,
+   "mode": "add"
+  },
+  {
+   "id": "txs291_4",
+   "type": "sketch",
+   "name": "Transfer motor plate (3D-printed PETG, minimal mount) profile (circle 4)",
+   "plane": "XZ",
+   "offset": -62.6,
+   "geom": [
+    {
+     "id": "p1",
+     "t": "point",
+     "x": -48.59,
+     "y": -46.64
+    },
+    {
+     "id": "c2",
+     "t": "circle",
+     "c": "p1",
+     "r": 6
+    }
+   ],
+   "cons": [
+    {
+     "id": "d3",
+     "t": "dim",
+     "k": "x",
+     "a": "p1",
+     "v": -48.59
+    },
+    {
+     "id": "d4",
+     "t": "dim",
+     "k": "y",
+     "a": "p1",
+     "v": -46.64
+    },
+    {
+     "id": "d5",
+     "t": "dim",
+     "k": "diameter",
+     "a": "c2",
+     "v": 12
+    }
+   ]
+  },
+  {
+   "id": "txe292_4",
+   "type": "extrude",
+   "name": "Transfer motor plate (3D-printed PETG, minimal mount): join circle 4",
+   "sketch": "txs291_4",
+   "distance": 8,
+   "flip": true,
+   "mode": "add"
+  },
+  {
+   "id": "txs291_h",
+   "type": "sketch",
+   "name": "Transfer motor plate (3D-printed PETG, minimal mount) profile (holes)",
+   "plane": "XZ",
+   "offset": -62.6,
+   "geom": [
+    {
+     "id": "p1",
+     "t": "point",
+     "x": -48.59,
+     "y": -10.64
+    },
+    {
+     "id": "c2",
+     "t": "circle",
+     "c": "p1",
+     "r": 7.5
+    },
+    {
+     "id": "p6",
+     "t": "point",
+     "x": -40.59,
+     "y": -2.64
+    },
+    {
+     "id": "c7",
+     "t": "circle",
+     "c": "p6",
+     "r": 1.7
+    },
+    {
+     "id": "p11",
+     "t": "point",
+     "x": -56.59,
+     "y": -2.64
+    },
+    {
+     "id": "c12",
+     "t": "circle",
+     "c": "p11",
+     "r": 1.7
+    },
+    {
+     "id": "p16",
+     "t": "point",
+     "x": -40.59,
+     "y": -18.64
+    },
+    {
+     "id": "c17",
+     "t": "circle",
+     "c": "p16",
+     "r": 1.7
+    },
+    {
+     "id": "p21",
+     "t": "point",
+     "x": -56.59,
+     "y": -18.64
+    },
+    {
+     "id": "c22",
+     "t": "circle",
+     "c": "p21",
+     "r": 1.7
+    },
+    {
+     "id": "p26",
+     "t": "point",
+     "x": -22.59,
+     "y": 6.25
+    },
+    {
+     "id": "c27",
+     "t": "circle",
+     "c": "p26",
+     "r": 2.15
+    },
+    {
+     "id": "p31",
+     "t": "point",
+     "x": -75.44,
+     "y": 4.86
+    },
+    {
+     "id": "c32",
+     "t": "circle",
+     "c": "p31",
+     "r": 2.15
+    },
+    {
+     "id": "p36",
+     "t": "point",
+     "x": -48.59,
+     "y": -46.64
+    },
+    {
+     "id": "c37",
+     "t": "circle",
+     "c": "p36",
+     "r": 2.15
+    }
+   ],
+   "cons": [
+    {
+     "id": "d3",
+     "t": "dim",
+     "k": "x",
+     "a": "p1",
+     "v": -48.59
+    },
+    {
+     "id": "d4",
+     "t": "dim",
+     "k": "y",
+     "a": "p1",
+     "v": -10.64
+    },
+    {
+     "id": "d5",
+     "t": "dim",
+     "k": "diameter",
+     "a": "c2",
+     "v": 15
+    },
+    {
+     "id": "d8",
+     "t": "dim",
+     "k": "x",
+     "a": "p6",
+     "v": -40.59
+    },
+    {
+     "id": "d9",
+     "t": "dim",
+     "k": "y",
+     "a": "p6",
+     "v": -2.64
+    },
+    {
+     "id": "d10",
+     "t": "dim",
+     "k": "diameter",
+     "a": "c7",
+     "v": 3.4
+    },
+    {
+     "id": "d13",
+     "t": "dim",
+     "k": "x",
+     "a": "p11",
+     "v": -56.59
+    },
+    {
+     "id": "d14",
+     "t": "dim",
+     "k": "y",
+     "a": "p11",
+     "v": -2.64
+    },
+    {
+     "id": "d15",
+     "t": "dim",
+     "k": "diameter",
+     "a": "c12",
+     "v": 3.4
+    },
+    {
+     "id": "d18",
+     "t": "dim",
+     "k": "x",
+     "a": "p16",
+     "v": -40.59
+    },
+    {
+     "id": "d19",
+     "t": "dim",
+     "k": "y",
+     "a": "p16",
+     "v": -18.64
+    },
+    {
+     "id": "d20",
+     "t": "dim",
+     "k": "diameter",
+     "a": "c17",
+     "v": 3.4
+    },
+    {
+     "id": "d23",
+     "t": "dim",
+     "k": "x",
+     "a": "p21",
+     "v": -56.59
+    },
+    {
+     "id": "d24",
+     "t": "dim",
+     "k": "y",
+     "a": "p21",
+     "v": -18.64
+    },
+    {
+     "id": "d25",
+     "t": "dim",
+     "k": "diameter",
+     "a": "c22",
+     "v": 3.4
+    },
+    {
+     "id": "d28",
+     "t": "dim",
+     "k": "x",
+     "a": "p26",
+     "v": -22.59
+    },
+    {
+     "id": "d29",
+     "t": "dim",
+     "k": "y",
+     "a": "p26",
+     "v": 6.25
+    },
+    {
+     "id": "d30",
+     "t": "dim",
+     "k": "diameter",
+     "a": "c27",
+     "v": 4.3
+    },
+    {
+     "id": "d33",
+     "t": "dim",
+     "k": "x",
+     "a": "p31",
+     "v": -75.44
+    },
+    {
+     "id": "d34",
+     "t": "dim",
+     "k": "y",
+     "a": "p31",
+     "v": 4.86
+    },
+    {
+     "id": "d35",
+     "t": "dim",
+     "k": "diameter",
+     "a": "c32",
+     "v": 4.3
+    },
+    {
+     "id": "d38",
+     "t": "dim",
+     "k": "x",
+     "a": "p36",
+     "v": -48.59
+    },
+    {
+     "id": "d39",
+     "t": "dim",
+     "k": "y",
+     "a": "p36",
+     "v": -46.64
+    },
+    {
+     "id": "d40",
+     "t": "dim",
+     "k": "diameter",
+     "a": "c37",
+     "v": 4.3
+    }
+   ]
+  },
+  {
+   "id": "txe292_h",
+   "type": "extrude",
+   "name": "Transfer motor plate (3D-printed PETG, minimal mount): holes",
+   "sketch": "txs291_h",
+   "distance": 8,
+   "flip": true,
+   "mode": "cut"
+  }
+ ]
+}
