@@ -7,12 +7,12 @@ import { FEATURES, TOOLBAR } from "./features.js";
 import { isAssembly, instMatrix, placement, toLocal, solveMates } from "./assembly.js";
 import { renderInspector } from "./inspector.js";
 import { renderDesign } from "./panels.js";
-import { renderVc, vcBusy } from "./vcpanel.js";
+import { renderReleases } from "./releases.js";
 import { renderAi, runAi } from "./aipanel.js";
 import { openLibrary } from "./library.js";
 import { openOnshapeDialog, sendToOnshape, pullOnshape } from "./onshapedlg.js";
 import { SK, setTool, sketchHandlers, sketchKey, redraw, frameOfActive, resetSketchState, applyConstraint, toggleConstruction, deleteSelection, sketchStatus, sketchView, regionContains, mirrorSelection, offsetSelection } from "./sketch.js";
-import { cloneDialog, settingsDialog, commandPalette, promptText, connectRemote } from "./dialogs.js";
+import { settingsDialog, commandPalette, promptText } from "./dialogs.js";
 import { perpendicular, planeFrames } from "../kernel/vec.js";
 import { makeEvaluator } from "../kernel/expr.js";
 
@@ -191,14 +191,10 @@ onBuild(() => {
 
 // ---------- chrome ----------
 function topbar() {
-  const st = S.vc.status;
-  const synced = S.project?.config?.remote;
   const partName = S.part?.name || S.partPath?.replace(/^parts\//, "").replace(".part.json", "");
   return h("div", { class: "topbar" },
     h("div", { class: "brand" }, "cad", h("b", {}, "ForMe")),
     h("div", { class: "crumb" }, h("strong", {}, S.project.name), partName ? ` / ${partName}` : ""),
-    h("div", { class: "pill", style: { cursor: "pointer" }, title: "Version control", onclick: () => { S.tab = "vc"; emit(); } }, icon("branch"), st?.branch ?? "main", st?.changes.length ? h("span", { class: "badge" }, st.changes.length) : null),
-    synced ? h("div", { class: "pill", style: { cursor: "pointer" }, title: "Sync with team", onclick: () => { S.tab = "vc"; emit(); } }, icon("cloud"), `↓${st?.behind ?? 0}  ↑${st?.ahead ?? 0}`) : null,
     h("div", { class: "spacer" }),
     h("button", { class: "btn ghost", title: "Undo (⌘Z)", disabled: !S.undo.length || !!S.view, onclick: undo }, icon("undo")),
     h("button", { class: "btn ghost", title: "Redo (⇧⌘Z)", disabled: !S.redo.length || !!S.view, onclick: redo }, icon("redo")),
@@ -209,7 +205,7 @@ function topbar() {
       { label: "STL (3D printing)", run: () => exportPart("stl") },
       { label: "STEP (other CAD)", run: () => exportPart("step") },
       { label: "Drawing (SVG, dimensioned views)", run: () => exportPart("drawing") }]); } }, icon("download"), "Export ▾"),
-    h("button", { class: "btn ghost", title: "Settings (your name, GitHub)", onclick: settingsDialog }, icon("gear")));
+    h("button", { class: "btn ghost", title: "Settings", onclick: settingsDialog }, icon("gear")));
 }
 
 // Onshape's sketch toolbar replaces the part toolbar while a sketch is open.
@@ -277,7 +273,7 @@ function leftPanel() {
   const nChanges = S.vc.status?.changes.length ?? 0;
   const tabs = h("div", { class: "tabs" },
     h("button", { class: `tab ${S.tab === "design" ? "active" : ""}`, onclick: () => { S.tab = "design"; emit(); } }, "Design"),
-    h("button", { class: `tab ${S.tab === "vc" ? "active" : ""}`, onclick: () => { S.tab = "vc"; emit(); } }, "Version control ", nChanges ? h("span", { class: "badge" }, nChanges) : null),
+    h("button", { class: `tab ${S.tab === "vc" ? "active" : ""}`, onclick: () => { S.tab = "vc"; emit(); } }, "Releases"),
     h("button", { class: `tab ${S.tab === "ai" ? "active" : ""}`, onclick: () => { S.tab = "ai"; emit(); } }, "AI"));
   const body = h("div", { class: "scroll", id: "leftscroll" });
   return { tabs, body };
@@ -381,7 +377,7 @@ function statusbar() {
     h("span", { class: b.busy ? "" : errs ? "bad" : "ok" }, b.busy ? (S.part?.features?.some((f) => f.type === "import") && S.part.features.length > 60 ? "Rebuilding… large model, about 90 seconds the first time" : "Rebuilding…") : errs ? `${errs} feature${errs === 1 ? "" : "s"} with errors` : S.part ? `Built in ${b.ms} ms` : ""),
     b.stats.length ? h("span", {}, `${b.stats.length} bod${b.stats.length === 1 ? "y" : "ies"} · ${(tot / 1000).toFixed(2)} cm³`) : null,
     h("span", { class: "grow" }), S.view ? h("span", {}, "Read-only history view") : S.part ? h("span", {}, "Autosaved") : null,
-    vcBusy() ? h("span", {}, `Syncing (${vcBusy()})…`) : null);
+    null);
 }
 
 // ---------- render ----------
@@ -408,7 +404,7 @@ function render() {
   const setIf = (el, node) => { el.replaceWith(node); return node; };
   els.top = setIf(els.top, topbar()); els.tool = setIf(els.tool, toolbar()); els.status = setIf(els.status, statusbar());
   const t = leftPanel(); leftEls.tabs.replaceWith(t.tabs); leftEls.tabs = t.tabs;
-  if (!typingIn(leftEls.body)) { S.tab === "vc" ? renderVc(leftEls.body) : S.tab === "ai" ? renderAi(leftEls.body) : renderDesign(leftEls.body); }
+  if (!typingIn(leftEls.body)) { S.tab === "vc" ? renderReleases(leftEls.body) : S.tab === "ai" ? renderAi(leftEls.body) : renderDesign(leftEls.body); }
   const f = S.selection ? feature(S.selection) : null;
   app.classList.toggle("no-right", false);
   if (!typingIn(els.right) || !f) renderInspector(els.right); else renderInspector(els.right);
@@ -422,26 +418,11 @@ document.addEventListener("focusout", () => setTimeout(() => { if (S.project && 
 async function openFolder(dir) {
   try {
     let info = await cad.invoke("project:open", dir);
-    if (info.needsInit) {
-      let sample = false;
-      const ok = await modal({ title: "Start a cadForMe project here?", body: h("div", {}, h("div", { class: "note", style: { marginBottom: "10px", userSelect: "text" } }, dir),
-        h("label", { class: "check" }, h("input", { type: "checkbox", checked: false, onchange: (e) => { sample = e.target.checked; } }), "Include an example part (Bracket)")),
-        actions: [{ label: "Cancel" }, { label: "Create project", primary: true, value: true }] });
-      if (!ok) return;
-      info = await cad.invoke("project:init", dir, { sample });
-    }
     resetSketchState(); lastPartForFit = null; els = null;
     await setProject(info);
   } catch (e) { toast(e.message, "err"); }
 }
 async function newOrOpen() { const dir = await cad.invoke("project:pick"); if (dir) openFolder(dir); }
-async function doClone() {
-  const spec = await cloneDialog(); if (!spec) return;
-  const dir = await cad.invoke("project:pick"); if (!dir) return;
-  try { toast("Cloning…"); const info = await cad.invoke("project:clone", { spec, dir }); lastPartForFit = null; els = null; await setProject(info); toast("Cloned", "ok"); }
-  catch (e) { toast(e.message, "err"); }
-}
-
 function renderWelcome() {
   els = null; vp = null;
   app.className = "";
@@ -464,9 +445,8 @@ function commands() {
     { name: "Onshape…", run: openOnshapeDialog }, { name: "Send part to Onshape", run: () => S.partPath && sendToOnshape(S.partPath).catch((e) => toast(e.message, "err")) }, { name: "Pull part from Onshape", run: () => S.partPath && pullOnshape(S.partPath).catch((e) => toast(e.message, "err")) }, { name: "Go to AI", run: () => { S.tab = "ai"; emit(); } },
     { name: "Design check (DRC): this part", run: () => S.partPath && runDrcFor([S.partPath]) }, { name: "Design check (DRC): all parts (skips unchanged)", run: async () => runDrcFor(await cad.invoke("fs:list")) },
     { name: "Standard parts library…", run: openLibrary }, { name: "Measure", run: () => { S.measure = { pts: [], kinds: [] }; emit(); } }, { name: "Section view", run: () => { S.section = { axis: "z", pos: 0, flip: false }; emit(); } }, { name: "Toggle planes", run: () => { S.showPlanes = !S.showPlanes; emit(); } },
-    { name: "Go to Design", run: () => { S.tab = "design"; emit(); } }, { name: "Go to Version control", run: () => { S.tab = "vc"; emit(); } },
-    { name: "Connect to GitHub…", run: async () => { const s = await connectRemote(S.project.config?.remote); if (s) { S.project = { ...S.project, ...(await cad.invoke("vcs:setRemote", s)) }; emit(); } } },
-    { name: "Open project…", run: newOrOpen }, { name: "Clone from team…", run: doClone }, { name: "Reveal project in Finder", run: () => cad.invoke("fs:reveal") }, { name: "Settings", run: settingsDialog });
+    { name: "Go to Design", run: () => { S.tab = "design"; emit(); } }, { name: "Go to Releases", run: () => { S.tab = "vc"; emit(); } },
+    { name: "Open project…", run: newOrOpen }, { name: "Reveal project in Finder", run: () => cad.invoke("fs:reveal") }, { name: "Settings", run: settingsDialog });
   return c;
 }
 async function openPalette() { if (!S.project) return; const cmd = await commandPalette(commands()); cmd?.run(); }

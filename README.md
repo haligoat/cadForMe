@@ -2,16 +2,18 @@
 
 CAD you drive with words and pictures. Open it from a terminal, look at the model in 3D, and change it by typing what you
 want, pointing at photos or sketches in `image-references/`. Every part you make gets a design check (DRC), and parts go to
-Onshape as real sketches and extrudes you can double-click and edit there. Built on cadSlop (parametric CAD with git-style
-version control).
+Onshape as real sketches and extrudes you can double-click and edit there. No git: Onshape is the source of truth, and
+releases (named Onshape versions) track changes.
 
 ## Start
 ```
 npm install
 ln -s "$PWD/bin/cadforme.mjs" ~/.local/bin/cadforme   # once: the `cadforme` command (or `npm link` if your npm prefix is writable)
-cadforme            # opens the window on designs/ (this repo's project)
+cadforme new bracket   # makes projects/bracket/ (every project is a folder in projects/)
+cadforme               # opens the window on the current project
 ```
-`cadforme open <part>` opens a part, `cadforme --project <folder>` another project. `npm test` runs the tests.
+`cadforme projects` lists projects (* = current), `cadforme use <name>` switches, `cadforme open <part>` opens a part,
+`--project <name|folder>` works on another project once. An Onshape import gets its own project named after the document. `npm test` runs the tests.
 
 ## Change things with text and images
 - The **AI** tab: type the change ("make the wall 6 mm and add two M4 holes 20 mm apart"). Claude Code (or a Claude, Gemini or
@@ -31,7 +33,23 @@ Each part's result is saved with a fingerprint of the part, every file it pulls 
 (`<project>/.cadforme/drc.json`), so **only parts that changed are checked again**. An assembly checks just how its parts fit,
 not each part again.
 
-## Onshape
+## Import a whole Onshape document
+Give any agent (Claude, Codex, Gemini, ...) your Onshape **API access key + secret key** and the **document link**, or run:
+```
+cadforme connect <access key> <secret key>      # checked with Onshape, saved to ~/.config/cadforme/onshape.json (not in the repo)
+cadforme import <document link>
+```
+Every Part Studio becomes an editable part with all its sketches, constraints, dimensions, variables, planes, extrudes,
+fillets, chamfers and shells; Assemblies come in as geometry. Onshape features cadForMe can't edit yet (lofts, sweeps,
+patterns, ...) are kept as untouched placeholders and listed, so a push never damages them. Keys can also come from
+`ONSHAPE_ACCESS_KEY` / `ONSHAPE_SECRET_KEY`. Create keys at dev-portal.onshape.com; the secret is shown once.
+
+## Releases (instead of git)
+`cadforme release [name]` (or the **Releases** tab) saves a named Onshape version of the document, described by what changed here
+since the previous release (parts, features and variables added, removed or edited). `cadforme releases` lists them. Open or
+restore one in Onshape. Push first so Onshape has the latest.
+
+## Onshape push/pull
 Push sends a part to its linked Part Studio as native features. Boxes and cylinders are turned into a sketch + extrude first
 (same geometry; the part file is rewritten to match), a cutter that's subtracted right away becomes a cut, cuts on the same plane
 share one sketch, and a sketch offset becomes the extrude's start offset, so there's no construction plane per part. Booleans,
@@ -48,7 +66,8 @@ its job keeps that: "Transfer shaft 1 - goBILDA 2106-4008-1040 REX shaft 104mm".
 cadforme parts | refs
 cadforme drc [part...] [--force] [--json]
 cadforme names <part> [--write] [--all]
-cadforme push <part> [--preview] | pull <part>
+cadforme connect <access> <secret> | import <link> | push <part> [--preview] | pull <part>
+cadforme release [name] | releases
 cadforme mcp
 ```
 `cadforme mcp` is an MCP server with tools to list/read/write parts, see the image references, run the design check, name
@@ -57,12 +76,11 @@ app add this to `~/Library/Application Support/Claude/claude_desktop_config.json
 ```json
 { "mcpServers": { "cadforme": { "command": "/usr/local/bin/node", "args": ["<repo>/bin/cadforme.mjs", "mcp"] } } }
 ```
-Push and pull use the Onshape keys saved in the app (Onshape button -> Connect), so connect once in the window first.
+The keys saved by `cadforme connect` (or the agent's `onshape_connect`) are the same ones the window uses.
 
 ## Reference (cadSlop)
 
-Parametric CAD for Mac with version control built in (commit, branch, push, pull, merge),
-so a team can work on the same designs and an AI can edit them as plain text.
+Parametric CAD for Mac where an AI can edit parts as plain text.
 
 ## Run
 ```
@@ -82,26 +100,21 @@ npm run package    # release/cadForMe-darwin-*/cadForMe.app
 - **Geometry**: OpenCascade (via replicad, WebAssembly) in a worker. A part is `parts/<name>.part.json`:
   `variables` (numbers/expressions) + an ordered `features` list (sketch, extrude, revolve, fillet,
   chamfer, shell, hole, patterns, mirror, primitives, booleans, transform).
-- **Version control** (`src/vcs`): a git-like, content-addressed store in `.cadslop/`. Commits, branches,
-  fast-forward and 3-way merge. Part files merge **per variable / feature / field**, so two people editing
-  different features never conflict; same-field conflicts open a pick-mine/theirs screen.
-- **Team sync**: a GitHub repo (via a token kept in the macOS Keychain) or a shared folder is the remote.
-  Push uses compare-and-swap, so you can't overwrite a teammate's push: pull first.
+
 - **AI**: because parts are readable JSON (one feature per line), tell any AI to edit the file; the app reloads live.
 
 ## Onshape + AI ("vibe CAD")
 - **AI providers**: pick Claude Code (installed CLI), a Claude API key (default model `claude-opus-5-5`), a Google Gemini key,
   or an OpenAI key in the AI tab; the model name is editable. Keys are stored per person in the macOS Keychain and are never
   written into the project or pushed, so every teammate uses their own. API providers return the updated part file, which is
-  validated before it's written (Onshape link fields are protected). The Version control tab has an **✨ AI** button that writes
-  the commit message from the CAD diff.
+  validated before it's written (Onshape link fields are protected).
 - **AI tab**: type an instruction ("make the base 10 mm thicker, add a 6 mm hole in the centre"). cadForMe runs your
   Claude Code CLI (Read/Edit/Write/Glob/Grep only, no shell or web) on the open part file, rebuilds, and if the model has
-  errors asks the AI to fix them (up to 2 tries). Then it can commit and send the result to Onshape. ⌘Z undoes the AI edit.
+  errors asks the AI to fix them (up to 2 tries). Then it can send the result to Onshape. ⌘Z undoes the AI edit.
   Needs Claude Code installed and signed in (`claude` once in a terminal).
 - **Onshape button**: connect API keys (stored in the macOS Keychain), import a Part Studio into a part file, send a part to a
   new Onshape document (or an empty Part Studio), pull and push.
-- Onshape acts like a remote: the last-synced state is stored in `onshape/<part>.base.json` in the repo. Pull is a CAD-aware
+- The last-synced Onshape state is stored in `onshape/<part>.base.json` in the project. Pull is a CAD-aware
   3-way merge (conflicts open the Mine/Theirs screen); push is refused if Onshape changed since your last sync ("pull first").
 - Mapped both ways: variables (as Onshape length/angle variables), offset construction planes, constrained sketches on the
   Top/Front/Right planes or on construction planes (geometry, constraints, dimensions; X/Y position dimensions become Fix),

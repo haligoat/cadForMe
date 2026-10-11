@@ -316,17 +316,9 @@ export function select(id) { S.selection = id; S.pick = null; S.sketchEdit = nul
 export function setRollback(i) { S.rollback = i; rebuild(); emit(); }
 
 // ---------- version control ----------
-export async function refreshVcs() {
-  if (!S.project) return;
-  try { S.vc.status = await window.cad.invoke("vcs:status"); S.vc.branches = await window.cad.invoke("vcs:branches"); S.vc.working = await window.cad.invoke("vcs:workingDiff"); }
-  catch (e) { toast(e.message, "err"); }
-  emit();
-}
-export async function refreshLog() {
-  if (!S.project) return;
-  try { S.vc.log = await window.cad.invoke("vcs:log"); } catch (e) { toast(e.message, "err"); }
-  emit();
-}
+// (no git here: Onshape versions are the history; see releases.js)
+export async function refreshVcs() {}
+export async function refreshLog() {}
 export const scheduleVcs = debounce(() => { refreshVcs(); }, 500);
 
 /** Show an older commit's version of the open part, read-only, with the current work ghosted on top. */

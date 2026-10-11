@@ -18,7 +18,7 @@ function partsSection() {
       { label: "New Assembly", run: async () => { const n = await promptText("New Assembly", "Name", "Assembly", "Create"); if (n) createPart(n, { assembly: true }); } }]); } }, icon("plus"))),
     h("div", { class: "body" }, S.project.parts.length ? S.project.parts.map((rel) => h("div", { class: `row ${rel === S.partPath ? "sel" : ""}`, onclick: () => rel !== S.partPath && loadPart(rel) },
       icon(S.kinds?.[rel] === "assembly" ? "assembly" : "cube"), h("span", { class: "name", title: rel }, rel === S.partPath && S.part?.name ? S.part.name : rel.replace(/^parts\//, "").replace(".part.json", "").replace(/[-_]+/g, " ")),
-      h("span", { class: "acts" }, h("button", { class: "iconbtn", title: "Delete part", onclick: async (e) => { e.stopPropagation(); if (await confirmBox("Delete part?", `${rel} will be removed from the working folder. You can restore it from version history if it was committed.`, "Delete", true)) deletePart(rel); } }, icon("trash"))))) : h("div", { class: "empty" }, "Nothing yet. Click + to make a Part Studio or an Assembly.")));
+      h("span", { class: "acts" }, h("button", { class: "iconbtn", title: "Delete part", onclick: async (e) => { e.stopPropagation(); if (await confirmBox("Delete part?", `${rel} will be removed from the working folder.`, "Delete", true)) deletePart(rel); } }, icon("trash"))))) : h("div", { class: "empty" }, "Nothing yet. Click + to make a Part Studio or an Assembly.")));
 }
 
 function originSection() {
