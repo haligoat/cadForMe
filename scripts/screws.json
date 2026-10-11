@@ -1,0 +1,1359 @@
+[
+ {
+  "name": "Intake motor mount",
+  "x": -142.89,
+  "z": 53.3,
+  "face": 358.2,
+  "dir": -1,
+  "nutAt": 326.1,
+  "captive": true
+ },
+ {
+  "name": "Intake motor mount",
+  "x": -142.99,
+  "z": 22.2,
+  "face": 358.2,
+  "dir": -1,
+  "nutAt": 326.1,
+  "captive": true
+ },
+ {
+  "name": "Intake motor mount",
+  "x": -173.99,
+  "z": 53.4,
+  "face": 358.2,
+  "dir": -1,
+  "nutAt": 326.1,
+  "captive": true
+ },
+ {
+  "name": "Bearing plate screw (transfer plate B)",
+  "x": -129.01,
+  "z": -27.32,
+  "face": 97.6,
+  "dir": 1,
+  "nutAt": 105.6,
+  "captive": false
+ },
+ {
+  "name": "Bearing plate screw (transfer plate B)",
+  "x": -120.73,
+  "z": -58.23,
+  "face": 97.6,
+  "dir": 1,
+  "nutAt": 105.6,
+  "captive": false
+ },
+ {
+  "name": "Bearing plate screw (transfer plate B)",
+  "x": -121.29,
+  "z": -25.25,
+  "face": 97.6,
+  "dir": 1,
+  "nutAt": 105.6,
+  "captive": false
+ },
+ {
+  "name": "Bearing plate screw (transfer plate B)",
+  "x": -113,
+  "z": -56.16,
+  "face": 97.6,
+  "dir": 1,
+  "nutAt": 105.6,
+  "captive": false
+ },
+ {
+  "name": "Bearing plate screw (transfer plate B)",
+  "x": -113.56,
+  "z": -23.18,
+  "face": 97.6,
+  "dir": 1,
+  "nutAt": 105.6,
+  "captive": false
+ },
+ {
+  "name": "Bearing plate screw (transfer plate B)",
+  "x": -105.28,
+  "z": -54.09,
+  "face": 97.6,
+  "dir": 1,
+  "nutAt": 105.6,
+  "captive": false
+ },
+ {
+  "name": "Bearing plate screw (transfer plate B)",
+  "x": -96.79,
+  "z": -8.48,
+  "face": 97.6,
+  "dir": 1,
+  "nutAt": 105.6,
+  "captive": false
+ },
+ {
+  "name": "Bearing plate screw (transfer plate B)",
+  "x": -88.51,
+  "z": -39.39,
+  "face": 97.6,
+  "dir": 1,
+  "nutAt": 105.6,
+  "captive": false
+ },
+ {
+  "name": "Bearing plate screw (transfer plate B)",
+  "x": -89.06,
+  "z": -6.41,
+  "face": 97.6,
+  "dir": 1,
+  "nutAt": 105.6,
+  "captive": false
+ },
+ {
+  "name": "Bearing plate screw (transfer plate B)",
+  "x": -80.78,
+  "z": -37.32,
+  "face": 97.6,
+  "dir": 1,
+  "nutAt": 105.6,
+  "captive": false
+ },
+ {
+  "name": "Bearing plate screw (transfer plate B)",
+  "x": -81.34,
+  "z": -4.34,
+  "face": 97.6,
+  "dir": 1,
+  "nutAt": 105.6,
+  "captive": false
+ },
+ {
+  "name": "Bearing plate screw (transfer plate B)",
+  "x": -73.05,
+  "z": -35.25,
+  "face": 97.6,
+  "dir": 1,
+  "nutAt": 105.6,
+  "captive": false
+ },
+ {
+  "name": "Bearing plate screw (transfer plate B)",
+  "x": -21.87,
+  "z": -2.17,
+  "face": 97.6,
+  "dir": 1,
+  "nutAt": 105.6,
+  "captive": false
+ },
+ {
+  "name": "Bearing plate screw (transfer plate B)",
+  "x": -13.59,
+  "z": -33.08,
+  "face": 97.6,
+  "dir": 1,
+  "nutAt": 105.6,
+  "captive": false
+ },
+ {
+  "name": "Bearing plate screw (transfer plate B)",
+  "x": -14.14,
+  "z": -0.1,
+  "face": 97.6,
+  "dir": 1,
+  "nutAt": 105.6,
+  "captive": false
+ },
+ {
+  "name": "Bearing plate screw (transfer plate B)",
+  "x": -5.86,
+  "z": -31.01,
+  "face": 97.6,
+  "dir": 1,
+  "nutAt": 105.6,
+  "captive": false
+ },
+ {
+  "name": "Bearing plate screw (transfer plate B)",
+  "x": 1.87,
+  "z": -28.94,
+  "face": 97.6,
+  "dir": 1,
+  "nutAt": 105.6,
+  "captive": false
+ },
+ {
+  "name": "Bearing plate screw (transfer plate B)",
+  "x": 14.8,
+  "z": -19.49,
+  "face": 110.6,
+  "dir": -1,
+  "nutAt": 102.6,
+  "captive": false
+ },
+ {
+  "name": "Bearing plate screw (transfer plate B)",
+  "x": 2.51,
+  "z": 11.12,
+  "face": 110.6,
+  "dir": -1,
+  "nutAt": 102.6,
+  "captive": false
+ },
+ {
+  "name": "Bearing plate screw (transfer plate B)",
+  "x": 21.28,
+  "z": -14.8,
+  "face": 110.6,
+  "dir": -1,
+  "nutAt": 102.6,
+  "captive": false
+ },
+ {
+  "name": "Bearing plate screw (transfer plate B)",
+  "x": 27.76,
+  "z": -10.1,
+  "face": 110.6,
+  "dir": -1,
+  "nutAt": 102.6,
+  "captive": false
+ },
+ {
+  "name": "Bearing plate screw (transfer plate B)",
+  "x": 40.98,
+  "z": -0.8,
+  "face": 97.6,
+  "dir": 1,
+  "nutAt": 105.6,
+  "captive": false
+ },
+ {
+  "name": "Bearing plate screw (transfer plate B)",
+  "x": 17.9,
+  "z": 22.76,
+  "face": 97.6,
+  "dir": 1,
+  "nutAt": 105.6,
+  "captive": false
+ },
+ {
+  "name": "Bearing plate screw (transfer plate B)",
+  "x": 45.17,
+  "z": 6.02,
+  "face": 97.6,
+  "dir": 1,
+  "nutAt": 105.6,
+  "captive": false
+ },
+ {
+  "name": "Bearing plate screw (transfer plate B)",
+  "x": 49.36,
+  "z": 12.84,
+  "face": 97.6,
+  "dir": 1,
+  "nutAt": 105.6,
+  "captive": false
+ },
+ {
+  "name": "Bearing plate screw (transfer plate B)",
+  "x": 51.4,
+  "z": 27.82,
+  "face": 110.6,
+  "dir": -1,
+  "nutAt": 102.6,
+  "captive": false
+ },
+ {
+  "name": "Bearing plate screw (transfer plate B)",
+  "x": 21.22,
+  "z": 41.14,
+  "face": 110.6,
+  "dir": -1,
+  "nutAt": 102.6,
+  "captive": false
+ },
+ {
+  "name": "Bearing plate screw (transfer plate B)",
+  "x": 52.75,
+  "z": 35.71,
+  "face": 110.6,
+  "dir": -1,
+  "nutAt": 102.6,
+  "captive": false
+ },
+ {
+  "name": "Bearing plate screw (transfer plate B)",
+  "x": 22.58,
+  "z": 49.02,
+  "face": 110.6,
+  "dir": -1,
+  "nutAt": 102.6,
+  "captive": false
+ },
+ {
+  "name": "Bearing plate screw (transfer plate B)",
+  "x": 54.11,
+  "z": 43.59,
+  "face": 110.6,
+  "dir": -1,
+  "nutAt": 102.6,
+  "captive": false
+ },
+ {
+  "name": "Bearing plate screw (transfer plate B)",
+  "x": 157.9,
+  "z": 49.8,
+  "face": 97.6,
+  "dir": 1,
+  "nutAt": 105.6,
+  "captive": true
+ },
+ {
+  "name": "Bearing plate screw (transfer plate B)",
+  "x": 125.9,
+  "z": 49.8,
+  "face": 97.6,
+  "dir": 1,
+  "nutAt": 105.6,
+  "captive": true
+ },
+ {
+  "name": "Bearing plate screw (transfer plate B)",
+  "x": 157.9,
+  "z": 41.8,
+  "face": 97.6,
+  "dir": 1,
+  "nutAt": 105.6,
+  "captive": true
+ },
+ {
+  "name": "Bearing plate screw (transfer plate B)",
+  "x": 125.9,
+  "z": 41.8,
+  "face": 97.6,
+  "dir": 1,
+  "nutAt": 105.6,
+  "captive": true
+ },
+ {
+  "name": "Bearing plate screw (transfer plate B)",
+  "x": 157.9,
+  "z": 33.8,
+  "face": 97.6,
+  "dir": 1,
+  "nutAt": 105.6,
+  "captive": true
+ },
+ {
+  "name": "Bearing plate screw (transfer plate B)",
+  "x": 125.9,
+  "z": 33.8,
+  "face": 97.6,
+  "dir": 1,
+  "nutAt": 105.6,
+  "captive": true
+ },
+ {
+  "name": "Bearing plate screw (transfer plate A)",
+  "x": -129.01,
+  "z": -27.32,
+  "face": 200.4,
+  "dir": -1,
+  "nutAt": 192.4,
+  "captive": false
+ },
+ {
+  "name": "Bearing plate screw (transfer plate A)",
+  "x": -120.73,
+  "z": -58.23,
+  "face": 200.4,
+  "dir": -1,
+  "nutAt": 192.4,
+  "captive": false
+ },
+ {
+  "name": "Bearing plate screw (transfer plate A)",
+  "x": -121.29,
+  "z": -25.25,
+  "face": 200.4,
+  "dir": -1,
+  "nutAt": 192.4,
+  "captive": false
+ },
+ {
+  "name": "Bearing plate screw (transfer plate A)",
+  "x": -113,
+  "z": -56.16,
+  "face": 200.4,
+  "dir": -1,
+  "nutAt": 192.4,
+  "captive": false
+ },
+ {
+  "name": "Bearing plate screw (transfer plate A)",
+  "x": -113.56,
+  "z": -23.18,
+  "face": 200.4,
+  "dir": -1,
+  "nutAt": 192.4,
+  "captive": false
+ },
+ {
+  "name": "Bearing plate screw (transfer plate A)",
+  "x": -105.28,
+  "z": -54.09,
+  "face": 200.4,
+  "dir": -1,
+  "nutAt": 192.4,
+  "captive": false
+ },
+ {
+  "name": "Bearing plate screw (transfer plate A)",
+  "x": -96.79,
+  "z": -8.48,
+  "face": 200.4,
+  "dir": -1,
+  "nutAt": 192.4,
+  "captive": false
+ },
+ {
+  "name": "Bearing plate screw (transfer plate A)",
+  "x": -88.51,
+  "z": -39.39,
+  "face": 200.4,
+  "dir": -1,
+  "nutAt": 192.4,
+  "captive": false
+ },
+ {
+  "name": "Bearing plate screw (transfer plate A)",
+  "x": -89.06,
+  "z": -6.41,
+  "face": 200.4,
+  "dir": -1,
+  "nutAt": 192.4,
+  "captive": false
+ },
+ {
+  "name": "Bearing plate screw (transfer plate A)",
+  "x": -80.78,
+  "z": -37.32,
+  "face": 200.4,
+  "dir": -1,
+  "nutAt": 192.4,
+  "captive": false
+ },
+ {
+  "name": "Bearing plate screw (transfer plate A)",
+  "x": -81.34,
+  "z": -4.34,
+  "face": 200.4,
+  "dir": -1,
+  "nutAt": 192.4,
+  "captive": false
+ },
+ {
+  "name": "Bearing plate screw (transfer plate A)",
+  "x": -73.05,
+  "z": -35.25,
+  "face": 200.4,
+  "dir": -1,
+  "nutAt": 192.4,
+  "captive": false
+ },
+ {
+  "name": "Bearing plate screw (transfer plate A)",
+  "x": -60.98,
+  "z": 4.68,
+  "face": 187.4,
+  "dir": 1,
+  "nutAt": 195.4,
+  "captive": false
+ },
+ {
+  "name": "Bearing plate screw (transfer plate A)",
+  "x": -52.69,
+  "z": -26.23,
+  "face": 187.4,
+  "dir": 1,
+  "nutAt": 195.4,
+  "captive": false
+ },
+ {
+  "name": "Bearing plate screw (transfer plate A)",
+  "x": -53.25,
+  "z": 6.75,
+  "face": 187.4,
+  "dir": 1,
+  "nutAt": 195.4,
+  "captive": false
+ },
+ {
+  "name": "Bearing plate screw (transfer plate A)",
+  "x": -44.97,
+  "z": -24.16,
+  "face": 187.4,
+  "dir": 1,
+  "nutAt": 195.4,
+  "captive": false
+ },
+ {
+  "name": "Bearing plate screw (transfer plate A)",
+  "x": -45.52,
+  "z": 8.82,
+  "face": 187.4,
+  "dir": 1,
+  "nutAt": 195.4,
+  "captive": false
+ },
+ {
+  "name": "Bearing plate screw (transfer plate A)",
+  "x": -37.24,
+  "z": -22.09,
+  "face": 187.4,
+  "dir": 1,
+  "nutAt": 195.4,
+  "captive": false
+ },
+ {
+  "name": "Bearing plate screw (transfer plate A)",
+  "x": -21.87,
+  "z": -2.17,
+  "face": 200.4,
+  "dir": -1,
+  "nutAt": 192.4,
+  "captive": false
+ },
+ {
+  "name": "Bearing plate screw (transfer plate A)",
+  "x": -13.59,
+  "z": -33.08,
+  "face": 200.4,
+  "dir": -1,
+  "nutAt": 192.4,
+  "captive": false
+ },
+ {
+  "name": "Bearing plate screw (transfer plate A)",
+  "x": -14.14,
+  "z": -0.1,
+  "face": 200.4,
+  "dir": -1,
+  "nutAt": 192.4,
+  "captive": false
+ },
+ {
+  "name": "Bearing plate screw (transfer plate A)",
+  "x": -5.86,
+  "z": -31.01,
+  "face": 200.4,
+  "dir": -1,
+  "nutAt": 192.4,
+  "captive": false
+ },
+ {
+  "name": "Bearing plate screw (transfer plate A)",
+  "x": 1.87,
+  "z": -28.94,
+  "face": 200.4,
+  "dir": -1,
+  "nutAt": 192.4,
+  "captive": false
+ },
+ {
+  "name": "Bearing plate screw (transfer plate A)",
+  "x": 14.8,
+  "z": -19.49,
+  "face": 187.4,
+  "dir": 1,
+  "nutAt": 195.4,
+  "captive": false
+ },
+ {
+  "name": "Bearing plate screw (transfer plate A)",
+  "x": 2.51,
+  "z": 11.12,
+  "face": 187.4,
+  "dir": 1,
+  "nutAt": 195.4,
+  "captive": false
+ },
+ {
+  "name": "Bearing plate screw (transfer plate A)",
+  "x": 21.28,
+  "z": -14.8,
+  "face": 187.4,
+  "dir": 1,
+  "nutAt": 195.4,
+  "captive": false
+ },
+ {
+  "name": "Bearing plate screw (transfer plate A)",
+  "x": 27.76,
+  "z": -10.1,
+  "face": 187.4,
+  "dir": 1,
+  "nutAt": 195.4,
+  "captive": false
+ },
+ {
+  "name": "Bearing plate screw (transfer plate A)",
+  "x": 40.98,
+  "z": -0.8,
+  "face": 200.4,
+  "dir": -1,
+  "nutAt": 192.4,
+  "captive": false
+ },
+ {
+  "name": "Bearing plate screw (transfer plate A)",
+  "x": 17.9,
+  "z": 22.76,
+  "face": 200.4,
+  "dir": -1,
+  "nutAt": 192.4,
+  "captive": false
+ },
+ {
+  "name": "Bearing plate screw (transfer plate A)",
+  "x": 45.17,
+  "z": 6.02,
+  "face": 200.4,
+  "dir": -1,
+  "nutAt": 192.4,
+  "captive": false
+ },
+ {
+  "name": "Bearing plate screw (transfer plate A)",
+  "x": 49.36,
+  "z": 12.84,
+  "face": 200.4,
+  "dir": -1,
+  "nutAt": 192.4,
+  "captive": false
+ },
+ {
+  "name": "Bearing plate screw (transfer plate A)",
+  "x": 51.4,
+  "z": 27.82,
+  "face": 187.4,
+  "dir": 1,
+  "nutAt": 195.4,
+  "captive": false
+ },
+ {
+  "name": "Bearing plate screw (transfer plate A)",
+  "x": 21.22,
+  "z": 41.14,
+  "face": 187.4,
+  "dir": 1,
+  "nutAt": 195.4,
+  "captive": false
+ },
+ {
+  "name": "Bearing plate screw (transfer plate A)",
+  "x": 52.75,
+  "z": 35.71,
+  "face": 187.4,
+  "dir": 1,
+  "nutAt": 195.4,
+  "captive": false
+ },
+ {
+  "name": "Bearing plate screw (transfer plate A)",
+  "x": 22.58,
+  "z": 49.02,
+  "face": 187.4,
+  "dir": 1,
+  "nutAt": 195.4,
+  "captive": false
+ },
+ {
+  "name": "Bearing plate screw (transfer plate A)",
+  "x": 54.11,
+  "z": 43.59,
+  "face": 187.4,
+  "dir": 1,
+  "nutAt": 195.4,
+  "captive": false
+ },
+ {
+  "name": "Bearing plate screw (transfer plate A)",
+  "x": 157.9,
+  "z": 49.8,
+  "face": 200.4,
+  "dir": -1,
+  "nutAt": 192.4,
+  "captive": true
+ },
+ {
+  "name": "Bearing plate screw (transfer plate A)",
+  "x": 125.9,
+  "z": 49.8,
+  "face": 200.4,
+  "dir": -1,
+  "nutAt": 192.4,
+  "captive": true
+ },
+ {
+  "name": "Bearing plate screw (transfer plate A)",
+  "x": 157.9,
+  "z": 41.8,
+  "face": 200.4,
+  "dir": -1,
+  "nutAt": 192.4,
+  "captive": true
+ },
+ {
+  "name": "Bearing plate screw (transfer plate A)",
+  "x": 125.9,
+  "z": 41.8,
+  "face": 200.4,
+  "dir": -1,
+  "nutAt": 192.4,
+  "captive": true
+ },
+ {
+  "name": "Bearing plate screw (transfer plate A)",
+  "x": 157.9,
+  "z": 33.8,
+  "face": 200.4,
+  "dir": -1,
+  "nutAt": 192.4,
+  "captive": true
+ },
+ {
+  "name": "Bearing plate screw (transfer plate A)",
+  "x": 125.9,
+  "z": 33.8,
+  "face": 200.4,
+  "dir": -1,
+  "nutAt": 192.4,
+  "captive": true
+ },
+ {
+  "name": "Transfer floor piece 1",
+  "x": -90.41,
+  "z": -128.89,
+  "face": 102.6,
+  "dir": 1,
+  "nutAt": 117.1,
+  "captive": true
+ },
+ {
+  "name": "Transfer floor piece 1",
+  "x": -90.41,
+  "z": -128.89,
+  "face": 195.4,
+  "dir": -1,
+  "nutAt": 180.9,
+  "captive": true
+ },
+ {
+  "name": "Transfer floor piece 1",
+  "x": -80.75,
+  "z": -126.3,
+  "face": 102.6,
+  "dir": 1,
+  "nutAt": 117.1,
+  "captive": true
+ },
+ {
+  "name": "Transfer floor piece 1",
+  "x": -80.75,
+  "z": -126.3,
+  "face": 195.4,
+  "dir": -1,
+  "nutAt": 180.9,
+  "captive": true
+ },
+ {
+  "name": "Transfer floor piece 2",
+  "x": -32.45,
+  "z": -113.36,
+  "face": 102.6,
+  "dir": 1,
+  "nutAt": 117.1,
+  "captive": true
+ },
+ {
+  "name": "Transfer floor piece 2",
+  "x": -32.45,
+  "z": -113.36,
+  "face": 195.4,
+  "dir": -1,
+  "nutAt": 180.9,
+  "captive": true
+ },
+ {
+  "name": "Transfer floor piece 2",
+  "x": 15.12,
+  "z": -100.61,
+  "face": 102.6,
+  "dir": 1,
+  "nutAt": 117.1,
+  "captive": true
+ },
+ {
+  "name": "Transfer floor piece 2",
+  "x": 15.12,
+  "z": -100.61,
+  "face": 195.4,
+  "dir": -1,
+  "nutAt": 180.9,
+  "captive": true
+ },
+ {
+  "name": "Transfer floor piece 3",
+  "x": 84.6,
+  "z": -60.5,
+  "face": 102.6,
+  "dir": 1,
+  "nutAt": 117.1,
+  "captive": true
+ },
+ {
+  "name": "Transfer floor piece 3",
+  "x": 84.6,
+  "z": -60.5,
+  "face": 195.4,
+  "dir": -1,
+  "nutAt": 180.9,
+  "captive": true
+ },
+ {
+  "name": "Transfer floor piece 3",
+  "x": 127.65,
+  "z": 22.19,
+  "face": 102.6,
+  "dir": 1,
+  "nutAt": 117.1,
+  "captive": true
+ },
+ {
+  "name": "Transfer floor piece 3",
+  "x": 127.65,
+  "z": 22.19,
+  "face": 195.4,
+  "dir": -1,
+  "nutAt": 180.9,
+  "captive": true
+ },
+ {
+  "name": "Intake shaft support B",
+  "x": -160.03,
+  "z": -76.53,
+  "face": 110.6,
+  "dir": -1,
+  "nutAt": 96.6,
+  "captive": true
+ },
+ {
+  "name": "Intake shaft support B",
+  "x": -160.59,
+  "z": -43.55,
+  "face": 110.6,
+  "dir": -1,
+  "nutAt": 96.6,
+  "captive": true
+ },
+ {
+  "name": "Intake shaft support B",
+  "x": -152.31,
+  "z": -74.46,
+  "face": 110.6,
+  "dir": -1,
+  "nutAt": 96.6,
+  "captive": true
+ },
+ {
+  "name": "Intake shaft support B",
+  "x": -152.86,
+  "z": -41.48,
+  "face": 110.6,
+  "dir": -1,
+  "nutAt": 96.6,
+  "captive": true
+ },
+ {
+  "name": "Intake shaft support B",
+  "x": -144.58,
+  "z": -72.39,
+  "face": 110.6,
+  "dir": -1,
+  "nutAt": 96.6,
+  "captive": true
+ },
+ {
+  "name": "Intake shaft support A",
+  "x": -160.03,
+  "z": -76.53,
+  "face": 187.4,
+  "dir": 1,
+  "nutAt": 201.4,
+  "captive": true
+ },
+ {
+  "name": "Intake shaft support A",
+  "x": -160.59,
+  "z": -43.55,
+  "face": 187.4,
+  "dir": 1,
+  "nutAt": 201.4,
+  "captive": true
+ },
+ {
+  "name": "Intake shaft support A",
+  "x": -152.31,
+  "z": -74.46,
+  "face": 187.4,
+  "dir": 1,
+  "nutAt": 201.4,
+  "captive": true
+ },
+ {
+  "name": "Intake shaft support A",
+  "x": -152.86,
+  "z": -41.48,
+  "face": 187.4,
+  "dir": 1,
+  "nutAt": 201.4,
+  "captive": true
+ },
+ {
+  "name": "Intake shaft support A",
+  "x": -144.58,
+  "z": -72.39,
+  "face": 187.4,
+  "dir": 1,
+  "nutAt": 201.4,
+  "captive": true
+ },
+ {
+  "name": "Motor standoff, plate B end",
+  "x": -22.59,
+  "z": 6.25,
+  "face": 105.6,
+  "dir": -1,
+  "nutAt": 102.6,
+  "captive": true
+ },
+ {
+  "name": "Motor standoff, motor plate end",
+  "x": -22.59,
+  "z": 6.25,
+  "face": 62.599999999999994,
+  "dir": 1,
+  "nutAt": 70.6,
+  "captive": true
+ },
+ {
+  "name": "Motor standoff, plate B end",
+  "x": -75.44,
+  "z": 4.86,
+  "face": 105.6,
+  "dir": -1,
+  "nutAt": 102.6,
+  "captive": true
+ },
+ {
+  "name": "Motor standoff, motor plate end",
+  "x": -75.44,
+  "z": 4.86,
+  "face": 62.599999999999994,
+  "dir": 1,
+  "nutAt": 70.6,
+  "captive": true
+ },
+ {
+  "name": "Motor standoff, plate B end",
+  "x": -48.59,
+  "z": -46.64,
+  "face": 105.6,
+  "dir": -1,
+  "nutAt": 102.6,
+  "captive": true
+ },
+ {
+  "name": "Motor standoff, motor plate end",
+  "x": -48.59,
+  "z": -46.64,
+  "face": 62.599999999999994,
+  "dir": 1,
+  "nutAt": 70.6,
+  "captive": true
+ },
+ {
+  "name": "Bracket B, transfer plate to cross channel #8, channel screw",
+  "axis": "z",
+  "x": 79,
+  "y": 83,
+  "face": 50,
+  "dir": -1,
+  "nutAt": 43,
+  "captive": false
+ },
+ {
+  "name": "Bracket B, transfer plate to cross channel #8, channel screw",
+  "axis": "z",
+  "x": 95,
+  "y": 75,
+  "face": 50,
+  "dir": -1,
+  "nutAt": 43,
+  "captive": false
+ },
+ {
+  "name": "Bracket B, transfer plate to cross channel #8, plate screw",
+  "x": 75,
+  "z": 14,
+  "face": 105.6,
+  "dir": -1,
+  "nutAt": 97.6,
+  "captive": false
+ },
+ {
+  "name": "Bracket B, transfer plate to cross channel #8, plate screw",
+  "x": 99,
+  "z": 38,
+  "face": 105.6,
+  "dir": -1,
+  "nutAt": 97.6,
+  "captive": false
+ },
+ {
+  "name": "Bracket B, transfer plate to rear channel #22, channel screw",
+  "axis": "x",
+  "y": 74.39,
+  "z": -40,
+  "face": 154,
+  "dir": -1,
+  "nutAt": 147,
+  "captive": false
+ },
+ {
+  "name": "Bracket B, transfer plate to rear channel #22, channel screw",
+  "axis": "x",
+  "y": 90.39,
+  "z": -40,
+  "face": 154,
+  "dir": -1,
+  "nutAt": 147,
+  "captive": false
+ },
+ {
+  "name": "Bracket B, transfer plate to rear channel #22, plate screw",
+  "x": 121,
+  "z": -47,
+  "face": 105.6,
+  "dir": -1,
+  "nutAt": 97.6,
+  "captive": false
+ },
+ {
+  "name": "Bracket B, transfer plate to rear channel #22, plate screw",
+  "x": 142,
+  "z": -32,
+  "face": 105.6,
+  "dir": -1,
+  "nutAt": 97.6,
+  "captive": false
+ },
+ {
+  "name": "Bracket A, transfer plate to cross channel #8, channel screw",
+  "axis": "z",
+  "x": 79,
+  "y": 219,
+  "face": 50,
+  "dir": -1,
+  "nutAt": 43,
+  "captive": false
+ },
+ {
+  "name": "Bracket A, transfer plate to cross channel #8, channel screw",
+  "axis": "z",
+  "x": 95,
+  "y": 227,
+  "face": 50,
+  "dir": -1,
+  "nutAt": 43,
+  "captive": false
+ },
+ {
+  "name": "Bracket A, transfer plate to cross channel #8, plate screw",
+  "x": 75,
+  "z": 14,
+  "face": 192.4,
+  "dir": 1,
+  "nutAt": 200.4,
+  "captive": false
+ },
+ {
+  "name": "Bracket A, transfer plate to cross channel #8, plate screw",
+  "x": 99,
+  "z": 38,
+  "face": 192.4,
+  "dir": 1,
+  "nutAt": 200.4,
+  "captive": false
+ },
+ {
+  "name": "Bracket A, transfer plate to rear channel #22, channel screw",
+  "axis": "x",
+  "y": 210.39,
+  "z": -40,
+  "face": 154,
+  "dir": -1,
+  "nutAt": 147,
+  "captive": false
+ },
+ {
+  "name": "Bracket A, transfer plate to rear channel #22, channel screw",
+  "axis": "x",
+  "y": 226.39,
+  "z": -40,
+  "face": 154,
+  "dir": -1,
+  "nutAt": 147,
+  "captive": false
+ },
+ {
+  "name": "Bracket A, transfer plate to rear channel #22, plate screw",
+  "x": 121,
+  "z": -47,
+  "face": 192.4,
+  "dir": 1,
+  "nutAt": 200.4,
+  "captive": false
+ },
+ {
+  "name": "Bracket A, transfer plate to rear channel #22, plate screw",
+  "x": 142,
+  "z": -32,
+  "face": 192.4,
+  "dir": 1,
+  "nutAt": 200.4,
+  "captive": false
+ },
+ {
+  "name": "Funnel side B, side-plate screw",
+  "x": -177,
+  "z": -102,
+  "face": -56.8,
+  "dir": 1,
+  "nutAt": -42.3,
+  "captive": true
+ },
+ {
+  "name": "Funnel side B, side-plate screw",
+  "x": -161,
+  "z": -102,
+  "face": -56.8,
+  "dir": 1,
+  "nutAt": -42.3,
+  "captive": true
+ },
+ {
+  "name": "Funnel side B, side-plate screw",
+  "x": -169,
+  "z": -116,
+  "face": -56.8,
+  "dir": 1,
+  "nutAt": -42.3,
+  "captive": true
+ },
+ {
+  "name": "Funnel side B, transfer-plate screw",
+  "x": -128,
+  "z": -102,
+  "face": 105.6,
+  "dir": -1,
+  "nutAt": 91.1,
+  "captive": true
+ },
+ {
+  "name": "Funnel side B, transfer-plate screw",
+  "x": -104,
+  "z": -102,
+  "face": 105.6,
+  "dir": -1,
+  "nutAt": 91.1,
+  "captive": true
+ },
+ {
+  "name": "Funnel side B, transfer-plate screw",
+  "x": -116,
+  "z": -120,
+  "face": 105.6,
+  "dir": -1,
+  "nutAt": 91.1,
+  "captive": true
+ },
+ {
+  "name": "Funnel side A, side-plate screw",
+  "x": -177,
+  "z": -102,
+  "face": 358.2,
+  "dir": -1,
+  "nutAt": 343.7,
+  "captive": true
+ },
+ {
+  "name": "Funnel side A, side-plate screw",
+  "x": -161,
+  "z": -102,
+  "face": 358.2,
+  "dir": -1,
+  "nutAt": 343.7,
+  "captive": true
+ },
+ {
+  "name": "Funnel side A, side-plate screw",
+  "x": -169,
+  "z": -116,
+  "face": 358.2,
+  "dir": -1,
+  "nutAt": 343.7,
+  "captive": true
+ },
+ {
+  "name": "Funnel side A, transfer-plate screw",
+  "x": -128,
+  "z": -102,
+  "face": 192.4,
+  "dir": 1,
+  "nutAt": 206.9,
+  "captive": true
+ },
+ {
+  "name": "Funnel side A, transfer-plate screw",
+  "x": -104,
+  "z": -102,
+  "face": 192.4,
+  "dir": 1,
+  "nutAt": 206.9,
+  "captive": true
+ },
+ {
+  "name": "Funnel side A, transfer-plate screw",
+  "x": -116,
+  "z": -120,
+  "face": 192.4,
+  "dir": 1,
+  "nutAt": 206.9,
+  "captive": true
+ },
+ {
+  "name": "Shooter screw (into the shooter's insert)",
+  "axis": "z",
+  "x": 107.17,
+  "y": 187.04,
+  "face": 60.1,
+  "dir": 1,
+  "nutAt": 72.1,
+  "captive": true
+ },
+ {
+  "name": "Shooter screw (into the shooter's insert)",
+  "axis": "z",
+  "x": 58.9,
+  "y": 187.04,
+  "face": 60.1,
+  "dir": 1,
+  "nutAt": 72.1,
+  "captive": true
+ },
+ {
+  "name": "Shooter screw (into the shooter's insert)",
+  "axis": "z",
+  "x": 58.9,
+  "y": 111.04,
+  "face": 60.1,
+  "dir": 1,
+  "nutAt": 72.1,
+  "captive": true
+ },
+ {
+  "name": "Shooter screw (into the shooter's insert)",
+  "axis": "z",
+  "x": 107.17,
+  "y": 111.04,
+  "face": 60.1,
+  "dir": 1,
+  "nutAt": 72.1,
+  "captive": true
+ },
+ {
+  "name": "Bumper bracket B, side-plate screw",
+  "x": -206,
+  "z": -16,
+  "face": -56.8,
+  "dir": 1,
+  "nutAt": -42.3,
+  "captive": true
+ },
+ {
+  "name": "Bumper bracket B, side-plate screw",
+  "x": -206,
+  "z": 4,
+  "face": -56.8,
+  "dir": 1,
+  "nutAt": -42.3,
+  "captive": true
+ },
+ {
+  "name": "Bumper bracket B, web screw",
+  "axis": "x",
+  "y": -33.3,
+  "z": -14,
+  "face": -215,
+  "dir": 1,
+  "nutAt": -203.5,
+  "captive": true
+ },
+ {
+  "name": "Bumper bracket B, web screw",
+  "axis": "x",
+  "y": -33.3,
+  "z": 2,
+  "face": -215,
+  "dir": 1,
+  "nutAt": -203.5,
+  "captive": true
+ },
+ {
+  "name": "Bumper bracket A, side-plate screw",
+  "x": -206,
+  "z": -16,
+  "face": 358.2,
+  "dir": -1,
+  "nutAt": 343.7,
+  "captive": true
+ },
+ {
+  "name": "Bumper bracket A, side-plate screw",
+  "x": -206,
+  "z": 4,
+  "face": 358.2,
+  "dir": -1,
+  "nutAt": 343.7,
+  "captive": true
+ },
+ {
+  "name": "Bumper bracket A, web screw",
+  "axis": "x",
+  "y": 334.7,
+  "z": -14,
+  "face": -215,
+  "dir": 1,
+  "nutAt": -203.5,
+  "captive": true
+ },
+ {
+  "name": "Bumper bracket A, web screw",
+  "axis": "x",
+  "y": 334.7,
+  "z": 2,
+  "face": -215,
+  "dir": 1,
+  "nutAt": -203.5,
+  "captive": true
+ }
+]

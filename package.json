@@ -1,0 +1,32 @@
+{
+  "name": "cadslop",
+  "version": "0.1.0",
+  "description": "CAD you drive with text and image references: 3D view, AI edits, per-part design check, native Onshape sync",
+  "main": "src/main/main.js",
+  "scripts": {
+    "test": "node --test test/*.test.mjs",
+    "build": "node scripts/build.mjs",
+    "start": "node scripts/build.mjs && electron .",
+    "package": "node scripts/build.mjs && node scripts/package.mjs",
+    "cadforme": "node bin/cadforme.mjs"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.131.0",
+    "@salusoft89/planegcs": "^1.3.0",
+    "replicad": "^1.1.0",
+    "replicad-opencascadejs": "^1.1.0",
+    "three": "^0.186.1"
+  },
+  "devDependencies": {
+    "@electron/packager": "^20.3.0",
+    "electron": "^44.5.1",
+    "esbuild": "^0.28.2"
+  },
+  "bin": {
+    "cadforme": "bin/cadforme.mjs"
+  }
+}

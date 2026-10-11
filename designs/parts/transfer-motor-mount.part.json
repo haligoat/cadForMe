@@ -1,0 +1,27 @@
+{
+  "name": "Printed transfer motor mount",
+  "variables": {
+    "flange": 8,
+    "bore": 24,
+    "insert": 5.6
+  },
+  "features": [
+    {"id":"flsk","type":"sketch","name":"Flange (sketch)","plane":"XZ","geom":[{"id":"p1","t":"point","x":0,"y":0},{"id":"c1","t":"circle","c":"p1","r":22}],"cons":[{"id":"d1","t":"dim","k":"radius","a":"c1","v":22},{"id":"d2","t":"dim","k":"x","a":"p1","v":0},{"id":"d3","t":"dim","k":"y","a":"p1","v":0}]},
+    {"id":"fl","name":"Flange","type":"extrude","sketch":"flsk","distance":"flange","mode":"new"},
+    {"id":"tusk","type":"sketch","name":"Tube (sketch)","plane":"XZ","offset":"-(-flange)","geom":[{"id":"p1","t":"point","x":0,"y":0},{"id":"c1","t":"circle","c":"p1","r":18}],"cons":[{"id":"d1","t":"dim","k":"radius","a":"c1","v":18},{"id":"d2","t":"dim","k":"x","a":"p1","v":0},{"id":"d3","t":"dim","k":"y","a":"p1","v":0}]},
+    {"id":"tu","name":"Tube","type":"extrude","sketch":"tusk","distance":30,"mode":"new"},
+    {"id":"u1","type":"boolean","name":"Flange + tube","a":0,"b":1,"op":"union"},
+    {"id":"slsk","type":"sketch","name":"Gearbox sleeve (sketch)","plane":"XY","offset":-22.4,"geom":[{"id":"p1","t":"point","x":-22.4,"y":-55.2},{"id":"p2","t":"point","x":22.4,"y":-55.2},{"id":"p3","t":"point","x":22.4,"y":-38},{"id":"p4","t":"point","x":-22.4,"y":-38},{"id":"l1","t":"line","a":"p1","b":"p2"},{"id":"l2","t":"line","a":"p2","b":"p3"},{"id":"l3","t":"line","a":"p3","b":"p4"},{"id":"l4","t":"line","a":"p4","b":"p1"}],"cons":[{"id":"k1","t":"horizontal","a":"l1"},{"id":"k2","t":"vertical","a":"l2"},{"id":"k3","t":"horizontal","a":"l3"},{"id":"k4","t":"vertical","a":"l4"},{"id":"d1","t":"dim","k":"length","a":"l1","v":44.8},{"id":"d2","t":"dim","k":"length","a":"l2","v":17.2},{"id":"d3","t":"dim","k":"x","a":"p1","v":-22.4},{"id":"d4","t":"dim","k":"y","a":"p1","v":-55.2}]},
+    {"id":"sl","name":"Gearbox sleeve","type":"extrude","sketch":"slsk","distance":44.8,"mode":"new"},
+    {"id":"u2","type":"boolean","name":"Add sleeve","a":0,"b":1,"op":"union"},
+    {"id":"boresk","type":"sketch","name":"Bore (sketch)","plane":"XZ","offset":-1,"geom":[{"id":"p1","t":"point","x":0,"y":0},{"id":"c1","t":"circle","c":"p1","r":12}],"cons":[{"id":"d1","t":"dim","k":"radius","a":"c1","v":"bore/2"},{"id":"d2","t":"dim","k":"x","a":"p1","v":0},{"id":"d3","t":"dim","k":"y","a":"p1","v":0}]},
+    {"id":"bore","name":"Bore","type":"extrude","sketch":"boresk","distance":40,"mode":"cut"},
+    {"id":"pksk","type":"sketch","name":"Gearbox pocket (sketch)","plane":"XY","offset":-18.4,"geom":[{"id":"p1","t":"point","x":-18.4,"y":-56},{"id":"p2","t":"point","x":18.4,"y":-56},{"id":"p3","t":"point","x":18.4,"y":-38},{"id":"p4","t":"point","x":-18.4,"y":-38},{"id":"l1","t":"line","a":"p1","b":"p2"},{"id":"l2","t":"line","a":"p2","b":"p3"},{"id":"l3","t":"line","a":"p3","b":"p4"},{"id":"l4","t":"line","a":"p4","b":"p1"}],"cons":[{"id":"k1","t":"horizontal","a":"l1"},{"id":"k2","t":"vertical","a":"l2"},{"id":"k3","t":"horizontal","a":"l3"},{"id":"k4","t":"vertical","a":"l4"},{"id":"d1","t":"dim","k":"length","a":"l1","v":36.8},{"id":"d2","t":"dim","k":"length","a":"l2","v":18},{"id":"d3","t":"dim","k":"x","a":"p1","v":-18.4},{"id":"d4","t":"dim","k":"y","a":"p1","v":-56}]},
+    {"id":"pk","name":"Gearbox pocket","type":"extrude","sketch":"pksk","distance":36.8,"mode":"cut"},
+    {"id":"i1sk","type":"sketch","name":"M4 heat-set insert hole (+3 more) (sketch)","plane":"XZ","offset":-0.1,"geom":[{"id":"s1p1","t":"point","x":12.02,"y":12.02},{"id":"s1c1","t":"circle","c":"s1p1","r":2.8},{"id":"s2p1","t":"point","x":-12.02,"y":12.02},{"id":"s2c1","t":"circle","c":"s2p1","r":2.8},{"id":"s3p1","t":"point","x":12.02,"y":-12.02},{"id":"s3c1","t":"circle","c":"s3p1","r":2.8},{"id":"s4p1","t":"point","x":-12.02,"y":-12.02},{"id":"s4c1","t":"circle","c":"s4p1","r":2.8}],"cons":[{"id":"s1d1","t":"dim","k":"radius","a":"s1c1","v":"insert/2"},{"id":"s1d2","t":"dim","k":"x","a":"s1p1","v":12.02},{"id":"s1d3","t":"dim","k":"y","a":"s1p1","v":12.02},{"id":"s2d1","t":"dim","k":"radius","a":"s2c1","v":"insert/2"},{"id":"s2d2","t":"dim","k":"x","a":"s2p1","v":-12.02},{"id":"s2d3","t":"dim","k":"y","a":"s2p1","v":12.02},{"id":"s3d1","t":"dim","k":"radius","a":"s3c1","v":"insert/2"},{"id":"s3d2","t":"dim","k":"x","a":"s3p1","v":12.02},{"id":"s3d3","t":"dim","k":"y","a":"s3p1","v":-12.02},{"id":"s4d1","t":"dim","k":"radius","a":"s4c1","v":"insert/2"},{"id":"s4d2","t":"dim","k":"x","a":"s4p1","v":-12.02},{"id":"s4d3","t":"dim","k":"y","a":"s4p1","v":-12.02}]},
+    {"id":"i1","name":"M4 heat-set insert hole (+3 more)","type":"extrude","sketch":"i1sk","distance":6.1,"mode":"cut"},
+    {"id":"cbsk","type":"sketch","name":"Counterbore (sketch)","plane":"XZ","offset":34.5,"geom":[{"id":"p1","t":"point","x":0,"y":0},{"id":"c1","t":"circle","c":"p1","r":16}],"cons":[{"id":"d1","t":"dim","k":"radius","a":"c1","v":16},{"id":"d2","t":"dim","k":"x","a":"p1","v":0},{"id":"d3","t":"dim","k":"y","a":"p1","v":0}]},
+    {"id":"cb","name":"Counterbore","type":"extrude","sketch":"cbsk","distance":4,"mode":"cut"}
+  ],
+  "notes": "Holds the goBILDA 5203 transfer motor coaxial with transfer shaft 3. Frame: origin on the shaft axis at the plate's outer face, motor toward -y. Flange (8 mm) against the plate with 4 M4 heat-set inserts (Ø5.6 x 6) for screws through the plate; tube around the 4007 coupler; square sleeve slides over the gearbox front (36.8 mm square opening). Print standing on the flange, PETG or nylon, 5 walls."
+}

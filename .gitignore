@@ -1,0 +1,11 @@
+node_modules
+dist/
+release/
+.DS_Store
+__pycache__/
+*.bak
+# design-check results are per machine (they're rebuilt from the parts)
+.cadforme/
+# scratch work and screenshots kept on this Mac only
+.scratch/
+views/
