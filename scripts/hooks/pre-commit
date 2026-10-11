@@ -1,0 +1,3 @@
+#!/bin/sh
+# cadForMe: refuse commits that contain API keys (installed with git config core.hooksPath scripts/hooks).
+exec node "$(git rev-parse --show-toplevel)/scripts/check-secrets.mjs"

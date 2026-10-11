@@ -36,7 +36,7 @@ not each part again.
 ## Import a whole Onshape document
 Give any agent (Claude, Codex, Gemini, ...) your Onshape **API access key + secret key** and the **document link**, or run:
 ```
-cadforme connect <access key> <secret key>      # checked with Onshape, saved to ~/.config/cadforme/onshape.json (not in the repo)
+cadforme connect <access key> <secret key>      # checked with Onshape, saved to apikeys.json (gitignored)
 cadforme import <document link>
 ```
 Every Part Studio becomes an editable part with all its sketches, constraints, dimensions, variables, planes, extrudes,

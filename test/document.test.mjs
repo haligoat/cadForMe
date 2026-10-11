@@ -7,7 +7,7 @@ import { OnshapeClient, parseDocumentUrl } from "../src/onshape/client.js";
 import { linkNewPartStudio, pushToOnshape } from "../src/onshape/sync.js";
 import { importDocument, createRelease, listReleases } from "../src/onshape/document.js";
 import { formatPart, parsePart } from "../src/kernel/format.js";
-import { connectOnshape, loadKeys, importReport } from "../src/cli/core.js";
+import { connectOnshape, disconnectOnshape, loadKeys, importReport } from "../src/cli/core.js";
 
 const DID = "a".repeat(24), WID = "b".repeat(24), E1 = "1".repeat(24), E2 = "2".repeat(24), E3 = "3".repeat(24);
 const link = (e) => `https://cad.onshape.com/documents/${DID}/w/${WID}/e/${e}`;
@@ -49,8 +49,8 @@ test("document links parse with or without a tab", () => {
   assert.throws(() => parseDocumentUrl("https://example.com/x"), /document link/);
 });
 
-test("keys are checked with Onshape, saved outside the repo, and never returned", async () => {
-  const home = fs.mkdtempSync(path.join(os.tmpdir(), "cadforme-home-")); process.env.CADFORME_HOME = home;
+test("keys are checked with Onshape, saved to the keys file, and never returned", async () => {
+  const home = fs.mkdtempSync(path.join(os.tmpdir(), "cadforme-home-")); process.env.CADFORME_KEYS_FILE = path.join(home, "apikeys.json");
   delete process.env.ONSHAPE_ACCESS_KEY; delete process.env.ONSHAPE_SECRET_KEY;
   const real = globalThis.fetch; globalThis.fetch = fake().fetch;
   try {
@@ -59,8 +59,10 @@ test("keys are checked with Onshape, saved outside the repo, and never returned"
     const r = await connectOnshape({ accessKey: "AK123", secretKey: "SK456" });
     assert.equal(r.user, "Test User"); assert.ok(!JSON.stringify(r).includes("SK456"));
     assert.equal(loadKeys().secretKey, "SK456");
-    assert.equal(fs.statSync(path.join(home, "onshape.json")).mode & 0o077, 0, "owner-only file");
-  } finally { globalThis.fetch = real; delete process.env.CADFORME_HOME; }
+    assert.equal(fs.statSync(path.join(home, "apikeys.json")).mode & 0o077, 0, "owner-only file");
+    disconnectOnshape();
+    assert.equal(loadKeys(), null, "disconnect forgets the keys");
+  } finally { globalThis.fetch = real; delete process.env.CADFORME_KEYS_FILE; }
 });
 
 test("importing a document brings in every Part Studio and the assembly, with all features", async () => {

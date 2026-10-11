@@ -22,6 +22,7 @@ cadforme releases                 list releases
 cadforme mcp                      MCP server for Claude Code / the Claude desktop app
 Options: --project <name|folder>  work on another project`;
 
+core.ensureHooks();
 const argv = process.argv.slice(2);
 const flag = (f) => { const i = argv.indexOf(f); if (i < 0) return false; argv.splice(i, 1); return true; };
 const opt = (f) => { const i = argv.indexOf(f); if (i < 0) return undefined; const v = argv[i + 1]; argv.splice(i, 2); return v; };

@@ -8,7 +8,8 @@
     "build": "node scripts/build.mjs",
     "start": "node scripts/build.mjs && electron .",
     "package": "node scripts/build.mjs && node scripts/package.mjs",
-    "cadforme": "node bin/cadforme.mjs"
+    "cadforme": "node bin/cadforme.mjs",
+    "prepare": "git config core.hooksPath scripts/hooks || true"
   },
   "keywords": [],
   "author": "",

@@ -13,7 +13,7 @@ All work is saved in `projects/`, one folder per project (`projects/<name>/parts
 - Exported STEP files go in the project's `exports/`.
 
 ## Importing an Onshape document (the user gives keys + a link)
-1. The user pastes an Onshape API access key and secret key and a document link. Call `onshape_connect` with them exactly as given (CLI: `node bin/cadforme.mjs connect <access> <secret>`). It verifies them and saves them outside the repo (`~/.config/cadforme/onshape.json`, owner-only); never repeat the keys back, and never write them into any file in this repo. They can also be set as `ONSHAPE_ACCESS_KEY` / `ONSHAPE_SECRET_KEY`.
+1. The user pastes an Onshape API access key and secret key and a document link. Call `onshape_connect` with them exactly as given (CLI: `node bin/cadforme.mjs connect <access> <secret>`). It verifies them and saves them in `apikeys.json` at the repo root (owner-only, gitignored; a pre-commit check blocks any commit containing keys). Never repeat the keys back, and never write them into any other file. They can also be set as `ONSHAPE_ACCESS_KEY` / `ONSHAPE_SECRET_KEY`.
 2. Call `onshape_import` with the link. It creates `projects/<document name>/`. Every Part Studio becomes an editable part with all its sketches, constraints, dimensions, variables, planes, extrudes, fillets, chamfers and shells; Assemblies come in as geometry. Features cadForMe can't edit stay as untouched placeholders; tell the user which ones the import report lists.
 3. Edit parts (below), then `onshape_push` to send changes back as native features, `onshape_pull` to bring Onshape edits in.
 4. `release` makes a named Onshape version with a summary of what changed since the last release; `releases` lists them. That is how changes are tracked here.
