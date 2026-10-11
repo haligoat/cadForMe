@@ -69,8 +69,16 @@ const cacheFile = (dir) => path.join(dir, ".cadforme", "drc.json");
 const readCache = (dir) => { try { return JSON.parse(fs.readFileSync(cacheFile(dir), "utf8")); } catch { return { parts: {} }; } };
 const writeCache = (dir, c) => { fs.mkdirSync(path.dirname(cacheFile(dir)), { recursive: true }); fs.writeFileSync(cacheFile(dir), JSON.stringify(c, null, 2)); };
 
+/** First run after a clone: install the dependencies (needs only Node + internet once). Output goes to stderr. */
+export function ensureDeps() {
+  if (fs.existsSync(path.join(ROOT, "node_modules", "replicad-opencascadejs"))) return;
+  process.stderr.write("cadForMe: first run, installing dependencies (about a minute)...\n");
+  execFileSync("npm", ["install", "--no-audit", "--no-fund"], { cwd: ROOT, stdio: ["ignore", process.stderr, process.stderr] });
+}
+
 let kernel = null;
 async function loadKernel() {
+  ensureDeps();
   kernel ??= (async () => {
     const req = createRequire(path.join(ROOT, "package.json"));
     const opencascade = (await import(req.resolve("replicad-opencascadejs"))).default;
@@ -194,6 +202,7 @@ export function electronBin() { return createRequire(path.join(ROOT, "package.js
 
 /** Rebuild the app bundle when any source file is newer than it. */
 export function ensureBuilt() {
+  ensureDeps();
   const newest = (d) => { let t = 0; for (const e of fs.readdirSync(d, { withFileTypes: true })) { const p = path.join(d, e.name); t = Math.max(t, e.isDirectory() ? newest(p) : fs.statSync(p).mtimeMs); } return t; };
   let built = 0; try { built = fs.statSync(path.join(ROOT, "dist", "index.html")).mtimeMs; } catch { /* never built */ }
   if (newest(path.join(ROOT, "src")) > built) execFileSync(process.execPath, [path.join(ROOT, "scripts", "build.mjs")], { cwd: ROOT, stdio: ["ignore", "ignore", "inherit"] });
