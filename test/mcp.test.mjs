@@ -32,8 +32,10 @@ test("failures become OnshapeError with the status: 429, 402 (plan limit) and 40
   const { conn, client } = start();
   try {
     await assert.rejects(client.req("GET", "/limited"), (e) => e instanceof OnshapeError && e.status === 429);
-    await assert.rejects(client.req("GET", "/paid"), (e) => e.status === 402 && /API limit/.test(e.message));
     await assert.rejects(client.req("GET", "/missing"), (e) => e.status === 404 && /couldn't find/.test(e.message));
+    await assert.rejects(client.req("GET", "/paid"), (e) => e.status === 402 && /API limit/.test(e.message));
+    // after a 402 nothing else is sent: the allowance is used up
+    await assert.rejects(client.req("GET", "/missing"), (e) => e.status === 402);
   } finally { conn.close(); }
 });
 

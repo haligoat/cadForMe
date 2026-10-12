@@ -10,6 +10,12 @@ You make the sketches for one cadForMe part. The lead gives you the project, the
 3. Add or change only `sketch` and `plane` features. Keep every other feature, every id, `osId` field and the `onshape` object exactly as they are. Sketches go before the features that use them; use the sketch ids the plan gives.
 4. Each sketch is fully dimensioned: closed loops sharing points, horizontal/vertical/coincident constraints, one `fix` or `x`/`y` dimension to place it, every size as a `dim`. Shapes on the same plane and depth go in one sketch. Use the plan's variables in `v`; everything else is a plain number.
 5. `write_part` with the whole part. Fix any design check fail caused by your sketches (unsolved constraints, open loops) and write again.
+Lessons from past work:
+- No over-defined sketches: a duplicate or zero-length entity, or a redundant dimension, makes Onshape fail with `SKETCH_SOLVE_FAILED`. Every loop must close, or the extrude fails with `EXTRUDE_NO_SELECTED_REGION`.
+- A/B (left/right) parts are not mirror images. Draw each from its own hole positions; never copy a sketch across and mirror it unless the lead says they are identical.
+- Hole sizes follow the hardware: M3 heat-set insert 4.0 mm, M3 clearance ~3.3 mm, M4 clearance 4.3-4.4 mm. If the plan doesn't say what goes in a hole, ask the lead.
+- Plates: check which stock thickness the plan means (3 mm is not 1/8 in = 3.175 mm).
+
 6. Report: sketch ids added or changed, what each contains, sizes you assumed. Nothing else.
 
 CLI fallback if the MCP tools are missing: `node bin/cadforme.mjs` (`parts`, `drc <part>`); part files are `projects/<project>/parts/<name>.part.json`.

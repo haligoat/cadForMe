@@ -80,7 +80,7 @@ export async function pullFromOnshape(dir, client, rel, { resolutions = {} } = {
   const ours = readPart(dir, rel), link = requireLink(ours);
   const base = readBase(dir, rel);
   if (!base?.local) throw new Error("No sync history for this part. Re-import it from Onshape");
-  const fetched = await client.getFeatures(refOf(link));
+  const fetched = await client.getFeatures(refOf(link), { fresh: true });
   if (unchanged(base, fetched)) return { status: "up-to-date" };
   const theirs = importTheirs(fetched, base, idMapOf(ours), ours.name);
   const { onshape, ...oursBare } = ours;
@@ -123,7 +123,7 @@ export async function pushToOnshape(dir, client, rel, { dryRun = false } = {}) {
   const nat = nativizePart(readPart(dir, rel));
   const local = nat.part;
   const base = readBase(dir, rel) ?? { microversion: null, features: [], local: { variables: {}, features: [], varIds: {} } };
-  const fetched = await client.getFeatures(refOf(link));
+  const fetched = await client.getFeatures(refOf(link), { fresh: !dryRun });   // a real push must not miss an edit made in Onshape since the preview
   if (!unchanged(base, fetched)) throw new Error("Onshape has changes you don't have. Pull first, then push");
   const baseP = base.local, baseVarIds = base.local.varIds ?? {};
   const plan = planPush(local, baseP, link, baseVarIds);
@@ -150,7 +150,7 @@ export async function pushToOnshape(dir, client, rel, { dryRun = false } = {}) {
       applied++; continue;
     }
     const os = featureToOs(o.feature, ctx);
-    if (!os) { skippedFeatures++; continue; }
+    if (!os) { o.skipped = true; skippedFeatures++; continue; }
     if (o.op === "add") { const r = await client.addFeature(refOf(link), os); const fid = r.feature?.featureId; if (fid) { osIdOf.set(o.id, fid); byId.get(o.id).osId = fid; } note(r, o.label); }
     else { const r = await client.updateFeature(refOf(link), o.osId, os); note(r, o.label); }
     applied++;
@@ -162,8 +162,11 @@ export async function pushToOnshape(dir, client, rel, { dryRun = false } = {}) {
   }
   if (applied === 0 && skippedFeatures > 0) return { status: "nothing-sent", skipped: skippedFeatures, warnings, errors, describe };
   let named = 0;
-  if (plan.ops.some((o) => o.kind === "feature" && o.op !== "delete")) {
-    try { named = await nameOnshapeParts(client, refOf(link), local.features); } catch (e) { if (e.status !== 404) warnings.push(`Couldn't name the Onshape parts: ${e.message}`); }
+  // only parts made by features added or renamed in this push need a name (the others were named when they were added)
+  const baseName = new Map(baseP.features.map((f) => [f.id, f.name]));
+  const toName = new Set(plan.ops.filter((o) => o.kind === "feature" && !o.skipped && (o.op === "add" || (o.op === "update" && baseName.get(o.id) !== o.feature.name))).map((o) => o.id));
+  if (toName.size) {
+    try { named = await nameOnshapeParts(client, refOf(link), local.features.filter((f) => toName.has(f.id))); } catch (e) { if (e.status !== 404) warnings.push(`Couldn't name the Onshape parts: ${e.message}`); }
   }
   const after = await client.getFeatures(refOf(link));
   const saved = { ...local, features: local.features, onshape: { ...link, varIds } };
@@ -203,7 +206,7 @@ export async function pushAssembly(dir, client, rel, { name } = {}) {
   let asm = els.find((e) => e.id === link.asm && e.elementType === "ASSEMBLY") ?? els.find((e) => e.elementType === "ASSEMBLY" && e.name === asmName);
   if (!asm) {
     // Reuse an untouched default "Assembly 1"-style tab before making a new one.
-    for (const e of els.filter((x) => x.elementType === "ASSEMBLY")) {
+    for (const e of els.filter((x) => x.elementType === "ASSEMBLY").slice(0, 3)) {
       const a = await client.getAssembly({ ...link, eid: e.id });
       if (!(a.rootAssembly?.instances ?? []).length) { asm = e; break; }
     }
@@ -249,18 +252,22 @@ export async function nameOnshapeParts(client, ref, features) {
   const res = await client.evalFeatureScript(ref, script);
   const byFeature = new Map();
   for (const s of strings(res.result ?? res)) { const m = s.match(/^([^|]+)\|(.+)$/); if (m) { if (!byFeature.has(m[1])) byFeature.set(m[1], []); byFeature.get(m[1]).push(m[2]); } }
-  let count = 0;
+  // read every part's name at once (4 at a time), then rename only the ones that need it
+  const wanted = [];
   for (const f of named) {
     const pids = [...new Set(byFeature.get(f.osId) ?? [])];
-    for (const [i, pid] of pids.entries()) {
-      const want = pids.length > 1 ? `${f.name} ${i + 1}` : f.name;
-      const meta = await client.getPartMetadata(ref, pid);
-      const prop = (meta.properties ?? []).find((p) => p.name === "Name");
-      if (!prop || prop.value === want) continue;
-      if (!/^Part \d+$/.test(prop.value ?? "") && !String(prop.value).startsWith(f.name)) continue; // renamed by someone in Onshape
-      await client.setPartMetadata(ref, pid, [{ propertyId: prop.propertyId, value: want }]);
-      count++;
-    }
+    for (const [i, pid] of pids.entries()) wanted.push({ f, pid, want: pids.length > 1 ? `${f.name} ${i + 1}` : f.name });
+  }
+  const metas = new Array(wanted.length);
+  let next = 0;
+  await Promise.all(Array.from({ length: Math.min(4, wanted.length) }, async () => { for (let i = next++; i < wanted.length; i = next++) metas[i] = await client.getPartMetadata(ref, wanted[i].pid); }));
+  let count = 0;
+  for (const [i, { f, pid, want }] of wanted.entries()) {
+    const prop = (metas[i].properties ?? []).find((p) => p.name === "Name");
+    if (!prop || prop.value === want) continue;
+    if (!/^Part \d+$/.test(prop.value ?? "") && !String(prop.value).startsWith(f.name)) continue; // renamed by someone in Onshape
+    await client.setPartMetadata(ref, pid, [{ propertyId: prop.propertyId, value: want }]);
+    count++;
   }
   return count;
 }
@@ -278,7 +285,7 @@ export async function addStepToAssembly(dir, client, rel, filePath, { offset = 0
   const tr = await client.translateFile(link.did, link.wid, { name, bytes: fs.readFileSync(filePath) });
   const tid = tr.translationId ?? tr.id;
   let st = tr.translationId ? { requestState: "ACTIVE" } : tr;
-  for (let i = 0; i < 300 && !["DONE", "FAILED"].includes(st.requestState); i++) { await new Promise((r) => setTimeout(r, 2000)); st = await client.getTranslation(tid); onProgress(`Onshape is translating ${name} (${st.requestState})`); }
+  st = await client.waitTranslation(tid, st, { onState: (s) => onProgress(`Onshape is translating ${name} (${s})`) });
   if (st.requestState !== "DONE") throw new Error(`Onshape couldn't translate ${name}: ${st.failureReason ?? st.requestState}`);
   const els = await client.listElements(link.did, link.wid);
   const made = els.filter((e) => ((st.resultElementIds ?? []).includes(e.id) || !before0.has(e.id)) && !["BLOB", "BILLOFMATERIALS"].includes(e.elementType));
@@ -307,7 +314,7 @@ async function importAssemblyAsStep(dir, client, ref, name, onProgress) {
   onProgress("Asking Onshape to export the assembly as STEP");
   const tr = await client.exportStep(ref, "ASSEMBLY");
   let st = tr;
-  for (let i = 0; i < 300 && !["DONE", "FAILED"].includes(st.requestState); i++) { await new Promise((r) => setTimeout(r, 2000)); st = await client.getTranslation(tr.id); onProgress(`Onshape is exporting (${st.requestState})`); }
+  st = await client.waitTranslation(tr.id, st, { onState: (s) => onProgress(`Onshape is exporting (${s})`) });
   if (st.requestState !== "DONE" || !st.resultExternalDataIds?.length) throw new Error(`Onshape couldn't export the assembly: ${st.failureReason ?? st.requestState}`);
   const bytes = await client.downloadExternal(ref.did, st.resultExternalDataIds[0]);
   fs.mkdirSync(path.join(dir, "imports"), { recursive: true });
@@ -329,7 +336,7 @@ export async function uploadModelAsStep(dir, client, rel, filePath, { name, asse
   const tr = await client.translateFile(link.did, link.wid, { name: `${stem}.step`, bytes: fs.readFileSync(filePath) });
   const tid = tr.translationId ?? tr.id;
   let st = tr.translationId ? { requestState: "ACTIVE" } : tr;
-  for (let i = 0; i < 400 && !["DONE", "FAILED"].includes(st.requestState); i++) { await new Promise((r) => setTimeout(r, 2000)); st = await client.getTranslation(tid); onProgress(`Onshape is translating (${st.requestState})`); }
+  st = await client.waitTranslation(tid, st, { onState: (s) => onProgress(`Onshape is translating (${s})`) });
   if (st.requestState !== "DONE") throw new Error(`Onshape couldn't translate the model: ${st.failureReason ?? st.requestState}`);
   const made = (await client.listElements(link.did, link.wid)).filter((e) => !before.has(e.id) && !["BLOB", "BILLOFMATERIALS"].includes(e.elementType));
   const tabs = made.map((e) => `${e.name} (${e.elementType.toLowerCase().replace("partstudio", "part studio")})`);

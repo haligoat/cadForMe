@@ -13,4 +13,19 @@ You move cadForMe parts to and from Onshape. The lead tells you the project and 
 - Release: after a successful push, `release` with a short name for the change (e.g. "Bracket: M4 holes, 6 mm wall"). Report the release link and its change list.
 - Never edit part files yourself, and never touch `osId` fields or the `onshape` object. No git.
 
+## API calls: the account has a hard limit (about 2,500), so spend them like money
+- **Estimate first, offline.** Before any Onshape work, count the calls without calling Onshape: `nativizePart` + `planPush` against the saved base (`onshape/<part>.base.json`). Per part: 1 fresh read + 1 per feature sent + 1 FeatureScript (part names) + up to 2 per named solid + 1 final read, and +2 for a new Part Studio (create + link). Tell the lead the number and the counter in `.cadforme/api-usage.json`; if the user asked to approve first, wait.
+- **One part at a time, stop at the first problem.** Push the smallest part, check that every feature state is OK and that the body count and volume match the local `design_check`, then the next. Never send a whole batch without stopping on errors (one broken translation repeated over 10 parts once wasted ~150 calls).
+- **Diagnose with 2 calls per part, no more:** one fresh feature read (the states), then one FeatureScript call returning `getFeatureError` / `getFeatureWarning` / `getFeatureInfo` for the bad feature ids (and `evVolume` / `evBox3d` per solid body if the shape is wrong). Save every raw response to the scratchpad **before** parsing it, so a parsing mistake never means calling again.
+- **Fix locally, then re-send only what changed.** A part-file fix goes out as a normal push (only the changed features). A translator fix (`src/onshape/map.js`) doesn't change the part, so `planPush` sees nothing: send the affected features with `updateFeature`, then one read to refresh the base.
+- Don't re-read what you already have, don't poll, and report the counter before and after. A 429 with a long Retry-After or a 402 means stop and tell the lead; don't retry.
+- Common causes so far: sketch `SKETCH_SOLVE_FAILED` (over-defined geometry, duplicate or zero-length entities), `EXTRUDE_NO_SELECTED_REGION` (the sketch didn't solve or doesn't close), `BOOLEAN_UNION_NO_OP` that leaves 2 bodies (faces that only nearly touch: overlap them by ~0.1 mm).
+
+## More lessons
+- Parts that come from a STEP have no feature history in Onshape. Edits go on top as features; don't try to rebuild their history.
+- A/B parts differ in holes. Push and check each one separately; never assume a fix for A applies to B.
+- After each push compare Onshape's body count and volume to the local `design_check`. A feature state of OK alone isn't enough.
+- Releases are the change log: name them after what changed (e.g. "Control Hub and Expansion Hub mounts"), and list new and changed features. Fab exports are made from the same geometry as the release they name.
+- The MCP sign-in opens a browser on the first call. If it comes back pending, give the lead the URL and wait; don't retry in a loop.
+
 CLI fallback if the MCP tools are missing: `node bin/cadforme.mjs connect | import | pull | push [--preview] | release | releases`.

@@ -282,7 +282,7 @@ export const disconnectOnshape = keystore.clearOnshapeKeys;
  * The Onshape connection. Through the Onshape MCP server when .mcp.json lists one ("onshape"), so no keys are needed here
  * and cadForMe only sends its modelling to the document; otherwise the saved API keys. CADFORME_ONSHAPE=keys|mcp forces one.
  */
-let mcpClient = null;
+let mcpClient = null, keyClient = null;
 export function onshapeMode() {
   const want = process.env.CADFORME_ONSHAPE;
   if (want === "keys" || want === "mcp") return want;
@@ -296,7 +296,10 @@ export function osClient() {
     return (mcpClient ??= new McpOnshapeClient(new McpConnection(cfg), { fallback: k ? new OnshapeClient(k) : null }));
   }
   if (!k) throw new Error("Onshape isn't connected. Set up the Onshape MCP server (README), or give me the API access key and secret key (onshape_connect), or set ONSHAPE_ACCESS_KEY and ONSHAPE_SECRET_KEY");
-  return new OnshapeClient(k);
+  // one client per key pair, so its read cache survives between calls (a push preview then the push reuse their reads)
+  const id = `${k.accessKey}:${k.secretKey}`;
+  if (keyClient?.id !== id) keyClient = { id, client: new OnshapeClient(k) };
+  return keyClient.client;
 }
 /** Sign in through the Onshape MCP server (opens a browser). method: "api_key" (paste a key pair; the server keeps it) or "oauth". */
 export async function onshapeLogin({ method = "api_key", onProgress = () => {} } = {}) {

@@ -271,3 +271,52 @@ test("rotations of finished bodies and picks Onshape can't follow are reported, 
   assert.equal(warnings.length, 2);
   assert.ok(featureToOs({ id: "d", type: "deleteBody", body: "all" }, ctx));
 });
+
+test("repeated reads are served from cache, a write clears it, and the daily call count is kept", async () => {
+  const { OnshapeClient, apiUsage } = await import("../src/onshape/client.js");
+  process.env.CADFORME_USAGE_FILE = `${process.env.TMPDIR ?? "/tmp"}/cadforme-usage-${process.pid}.json`;
+  let n = 0;
+  const f = async () => ({ ok: true, status: 200, headers: new Map(), text: async () => JSON.stringify({ n: ++n }) });
+  const c = new OnshapeClient({ accessKey: "a", secretKey: "b", fetch: f });
+  const a = await c.req("GET", "/documents/x"), b = await Promise.all([c.req("GET", "/documents/x"), c.req("GET", "/documents/x")]);
+  assert.equal(n, 1); assert.deepEqual(b.map((x) => x.n), [1, 1]); assert.equal(a.n, 1);
+  await c.req("POST", "/documents", {});
+  assert.equal((await c.req("GET", "/documents/x")).n, 3);
+  assert.equal(apiUsage().calls, 3); assert.equal(apiUsage().cached, 2);
+});
+
+test("translation progress is never cached, and waiting backs off instead of polling every 2 s", async () => {
+  const { OnshapeClient } = await import("../src/onshape/client.js");
+  process.env.CADFORME_USAGE_FILE = `${process.env.TMPDIR ?? "/tmp"}/cadforme-usage-${process.pid}.json`;
+  let n = 0;
+  const f = async () => ({ ok: true, status: 200, headers: new Map(), text: async () => JSON.stringify({ requestState: ++n >= 3 ? "DONE" : "ACTIVE" }) });
+  const c = new OnshapeClient({ accessKey: "a", secretKey: "b", fetch: f });
+  const st = await c.waitTranslation("t1", { requestState: "ACTIVE" }, { maxMs: 10 });
+  assert.equal(st.requestState, "DONE"); assert.equal(n, 3);
+});
+
+test("a used-up allowance (402) or a long pause (429) stops later calls of that kind without sending them", async () => {
+  const { OnshapeClient } = await import("../src/onshape/client.js");
+  process.env.CADFORME_USAGE_FILE = `${process.env.TMPDIR ?? "/tmp"}/cadforme-usage-${process.pid}.json`;
+  let sent = 0;
+  const res = (status, headers = {}) => ({ ok: status < 300, status, headers: new Map(Object.entries(headers)), text: async () => "{}" });
+  const c = new OnshapeClient({ accessKey: "a", secretKey: "b", fetch: async (url) => { sent++; return url.includes("/metadata") ? res(429, { "retry-after": "7200" }) : res(200); } });
+  await assert.rejects(c.req("GET", "/metadata/d/1"), /paused/);
+  await assert.rejects(c.req("GET", "/metadata/d/2"), /paused/);
+  assert.equal(sent, 1, "the second metadata call wasn't sent");
+  await c.req("GET", "/documents/x"); assert.equal(sent, 2, "other kinds still work");
+  const d = new OnshapeClient({ accessKey: "a", secretKey: "b", fetch: async () => { sent++; return res(402); } });
+  sent = 0;
+  await assert.rejects(d.req("GET", "/documents/x")); await assert.rejects(d.req("POST", "/documents", {}));
+  assert.equal(sent, 1);
+});
+
+test("fresh reads skip the cache", async () => {
+  const { OnshapeClient } = await import("../src/onshape/client.js");
+  let n = 0;
+  const c = new OnshapeClient({ accessKey: "a", secretKey: "b", fetch: async () => ({ ok: true, status: 200, headers: new Map(), text: async () => JSON.stringify({ features: [], sourceMicroversion: String(++n) }) }) });
+  const ref = { did: "d", wid: "w", eid: "e" };
+  await c.getFeatures(ref); await c.getFeatures(ref);
+  assert.equal(n, 1);
+  assert.equal((await c.getFeatures(ref, { fresh: true })).microversion, "2");
+});
