@@ -80,7 +80,7 @@ export async function pullFromOnshape(dir, client, rel, { resolutions = {} } = {
   const ours = readPart(dir, rel), link = requireLink(ours);
   const base = readBase(dir, rel);
   if (!base?.local) throw new Error("No sync history for this part. Re-import it from Onshape");
-  const fetched = await client.getFeatures(refOf(link));
+  const fetched = await client.getFeatures(refOf(link), { fresh: true });
   if (unchanged(base, fetched)) return { status: "up-to-date" };
   const theirs = importTheirs(fetched, base, idMapOf(ours), ours.name);
   const { onshape, ...oursBare } = ours;
@@ -123,7 +123,7 @@ export async function pushToOnshape(dir, client, rel, { dryRun = false } = {}) {
   const nat = nativizePart(readPart(dir, rel));
   const local = nat.part;
   const base = readBase(dir, rel) ?? { microversion: null, features: [], local: { variables: {}, features: [], varIds: {} } };
-  const fetched = await client.getFeatures(refOf(link));
+  const fetched = await client.getFeatures(refOf(link), { fresh: !dryRun });   // a real push must not miss an edit made in Onshape since the preview
   if (!unchanged(base, fetched)) throw new Error("Onshape has changes you don't have. Pull first, then push");
   const baseP = base.local, baseVarIds = base.local.varIds ?? {};
   const plan = planPush(local, baseP, link, baseVarIds);
@@ -150,7 +150,7 @@ export async function pushToOnshape(dir, client, rel, { dryRun = false } = {}) {
       applied++; continue;
     }
     const os = featureToOs(o.feature, ctx);
-    if (!os) { skippedFeatures++; continue; }
+    if (!os) { o.skipped = true; skippedFeatures++; continue; }
     if (o.op === "add") { const r = await client.addFeature(refOf(link), os); const fid = r.feature?.featureId; if (fid) { osIdOf.set(o.id, fid); byId.get(o.id).osId = fid; } note(r, o.label); }
     else { const r = await client.updateFeature(refOf(link), o.osId, os); note(r, o.label); }
     applied++;
@@ -162,8 +162,11 @@ export async function pushToOnshape(dir, client, rel, { dryRun = false } = {}) {
   }
   if (applied === 0 && skippedFeatures > 0) return { status: "nothing-sent", skipped: skippedFeatures, warnings, errors, describe };
   let named = 0;
-  if (plan.ops.some((o) => o.kind === "feature" && o.op !== "delete")) {
-    try { named = await nameOnshapeParts(client, refOf(link), local.features); } catch (e) { if (e.status !== 404) warnings.push(`Couldn't name the Onshape parts: ${e.message}`); }
+  // only parts made by features added or renamed in this push need a name (the others were named when they were added)
+  const baseName = new Map(baseP.features.map((f) => [f.id, f.name]));
+  const toName = new Set(plan.ops.filter((o) => o.kind === "feature" && !o.skipped && (o.op === "add" || (o.op === "update" && baseName.get(o.id) !== o.feature.name))).map((o) => o.id));
+  if (toName.size) {
+    try { named = await nameOnshapeParts(client, refOf(link), local.features.filter((f) => toName.has(f.id))); } catch (e) { if (e.status !== 404) warnings.push(`Couldn't name the Onshape parts: ${e.message}`); }
   }
   const after = await client.getFeatures(refOf(link));
   const saved = { ...local, features: local.features, onshape: { ...link, varIds } };

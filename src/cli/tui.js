@@ -84,7 +84,10 @@ export function cleanPath(s) {
 export async function runTui({ stdin = process.stdin, stdout = process.stdout } = {}) {
   let view = null, onKey = null, spin = null;
   const size = () => ({ cols: stdout.columns || 80, rows: stdout.rows || 24 });
-  const status = () => {
+  // the header reads the disk (parts, keys, call count): do it at most twice a second, not on every spinner frame
+  let statusAt = 0, statusCache = null;
+  const status = () => (Date.now() - statusAt < 500 && statusCache) || (statusAt = Date.now(), statusCache = readStatus());
+  const readStatus = () => {
     const dir = core.currentProject(), parts = fs.existsSync(path.join(dir, "parts")) ? core.listParts(dir).length : 0;
     return [`project ${C.bold}${path.basename(dir)}${C.reset} ${C.dim}(${parts} part${parts === 1 ? "" : "s"})${C.reset}`,
       core.loadKeys() ? `Onshape ${C.green}connected${C.reset}` : `Onshape ${C.yellow}not connected${C.reset}`,
@@ -156,6 +159,7 @@ export async function runTui({ stdin = process.stdin, stdout = process.stdout } 
       });
       if (!pick || pick.quit) return;
       await pick.run();
+      statusAt = 0;   // the action may have switched project, added parts or made calls
     }
   };
 
