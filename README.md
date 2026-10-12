@@ -12,7 +12,10 @@ git clone https://github.com/haligoat/cadForMe && cd cadForMe
 ./cadforme doctor   # is everything set up? (says how to fix anything that isn't)
 ```
 The first run installs everything it needs by itself. Then either:
-- **use the menu**: arrow keys (or the letter shown) and Enter, Esc goes back, q quits; or
+- **use the menu**: a colourful terminal app. It opens on a welcome screen (logo + the four steps: describe it, watch it build,
+  check it, send it to Onshape), then the main menu: 3D window, Parts, Projects, Design check, Onshape, Big STEP file,
+  Image references, How to use (`?` shows the welcome again), Health check. Arrow keys (or the letter shown) and Enter, Esc goes
+  back, q quits; or
 - **talk to an AI agent**: open this folder in Claude Code, Codex, Gemini, ... It reads `CLAUDE.md` / `AGENTS.md` and
   drives cadForMe for you ("make a 40 x 20 bracket with two M4 holes", "import this Onshape document: <link>").
 
@@ -36,6 +39,11 @@ Opening a terminal in the folder (or `cd`-ing into it) then shows the menu once 
 | `cadforme help` | every command and option |
 
 `--project <name|folder>` works on another project once. `npm test` runs the tests (CI runs them on every push).
+
+## Projects and AI roles
+All work lives in `projects/<name>/` (`parts/`, `exports/`, optional `image-references/`). `CLAUDE.md` / `AGENTS.md` / `GEMINI.md`
+tell an AI agent to split a design job between roles (the agents in `.claude/agents/`): a lead who plans, `cad-sketcher`
+(sketches and planes), `cad-features` (extrudes, cuts, fillets, patterns...) and `cad-onshape` (import, pull, push, releases).
 
 ## Change things with text and images
 - The **AI** tab: type the change ("make the wall 6 mm and add two M4 holes 20 mm apart"). Claude Code (or a Claude, Gemini or
