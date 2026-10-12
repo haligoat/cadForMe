@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { render, cleanPath } from "../src/cli/tui.js";
+import { render, cleanPath, welcomeLines } from "../src/cli/tui.js";
 import { doctorChecks, doctorReport } from "../src/cli/doctor.js";
 
 const plain = (s) => s.replace(/\x1b\[[0-9;?]*[A-Za-z]/g, "");
@@ -43,4 +43,10 @@ test("doctor lists each check with a fix for the ones that fail", () => {
   for (const c of checks) if (!c.ok) assert.ok(c.fix, `${c.name} says how to fix it`);
   const r = doctorReport([{ name: "A", ok: true, detail: "fine" }, { name: "B", ok: false, detail: "missing", fix: "do X" }, { name: "C", ok: false, detail: "off", fix: "do Y", optional: true }]);
   assert.match(r, /✓ A/); assert.match(r, /✗ B[\s\S]*fix: do X/); assert.match(r, /○ C/); assert.match(r, /1 problem\(s\) to fix/);
+});
+
+test("the welcome screen shows the logo and all four steps and fits a small terminal", () => {
+  const out = plain(render({ ...base, title: "Welcome", lines: welcomeLines() }, { cols: 80, rows: 24 }));
+  for (const w of ["CAD from text and pictures", "Describe it", "Watch it build", "Check it", "Send to Onshape"]) assert.match(out, new RegExp(w));
+  assert.ok(out.split("\n").every((r) => r.length <= 80));
 });

@@ -8,6 +8,9 @@ import * as core from "./core.js";
 
 const E = "\x1b[";
 const C = { reset: `${E}0m`, dim: `${E}2m`, bold: `${E}1m`, inv: `${E}7m`, green: `${E}32m`, red: `${E}31m`, yellow: `${E}33m`, cyan: `${E}36m`, accent: `${E}38;5;208m` };
+const fg = (n) => `${E}38;5;${n}m`;
+const GRADIENT = [208, 214, 220, 156, 51, 39, 135];   // orange -> yellow -> green -> cyan -> blue -> purple
+const STEP_COLORS = [208, 220, 51, 135];
 const strip = (s) => String(s).replace(/\x1b\[[0-9;?]*[A-Za-z]/g, "");
 const fit = (s, w) => { const t = strip(s); return t.length <= w ? s + " ".repeat(w - t.length) : `${t.slice(0, Math.max(0, w - 1))}…`; };
 const SPIN = "⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏";
@@ -18,9 +21,9 @@ const SPIN = "⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏";
  */
 export function render(view, { cols = 80, rows = 24 } = {}) {
   const w = Math.max(40, cols), out = [];
-  out.push(`${C.accent}${C.bold} cadForMe ${C.reset}${C.dim} CAD from text and pictures${C.reset}`);
+  out.push(`${[...' cadForMe '].map((c, i) => `${fg(GRADIENT[i % GRADIENT.length])}${C.bold}${c}`).join("")}${C.reset}${C.dim} CAD from text and pictures${C.reset}`);
   out.push(` ${view.status.join(`${C.dim}  ·  ${C.reset}`)}`);
-  out.push(`${C.dim}${"─".repeat(w)}${C.reset}`);
+  out.push(`${[...Array(w)].map((_, i) => `${fg(GRADIENT[Math.floor(i * GRADIENT.length / w)])}─`).join("")}${C.reset}`);
   out.push(` ${C.bold}${view.title}${C.reset}${view.busy !== undefined ? ` ${C.cyan}${SPIN[view.busy % SPIN.length]}${C.reset}` : ""}`);
   out.push("");
   const room = rows - out.length - 3;
@@ -28,8 +31,8 @@ export function render(view, { cols = 80, rows = 24 } = {}) {
     const first = Math.max(0, Math.min(view.sel - Math.floor(room / 2), view.items.length - room));
     for (const [i, it] of view.items.slice(first, first + room).entries()) {
       const on = first + i === view.sel;
-      const key = it.key ? `${C.dim}${it.key}${C.reset} ` : "  ";
-      const label = it.disabled ? `${C.dim}${it.label}${C.reset}` : it.label;
+      const key = it.key ? `${C.yellow}${it.key}${C.reset} ` : "  ";
+      const label = it.disabled ? `${C.dim}${it.label}${C.reset}` : on ? it.label : `${fg(GRADIENT[(first + i) % GRADIENT.length])}${it.label}`;
       out.push(fit(`${on ? `${C.accent}❯${C.reset}` : " "} ${key}${on ? C.bold : ""}${label}${C.reset}${it.hint ? `  ${C.dim}${it.hint}${C.reset}` : ""}`, w));
     }
   }
@@ -45,6 +48,29 @@ export function render(view, { cols = 80, rows = 24 } = {}) {
   out.length = rows - 1;
   out.push(`${C.dim}${fit(` ${view.footer}`, w)}${C.reset}`);
   return out.join("\n");
+}
+
+const LOGO = [
+  "      ┌──────────┐",
+  "     ╱          ╱│      ┏━╸┏━┓╺┳┓┏━╸┏━┓┏━┓┏┳┓┏━╸",
+  "    ┌──────────┐ │      ┃  ┣━┫ ┃┃┣╸ ┃ ┃┣┳┛┃┃┃┣╸",
+  "    │  ┌──┐    │ │      ┗━╸╹ ╹╺┻┛╹  ┗━┛╹┗╸╹ ╹┗━╸",
+  "    │  └──┘    │╱       CAD from text and pictures",
+  "    └──────────┘",
+];
+const STEPS = [
+  ["1", "Describe it", "Tell your AI agent what to build, or drop photos in image-references/"],
+  ["2", "Watch it build", "Open the 3D window (w) to see the part appear as it is designed"],
+  ["3", "Check it", "Design check (d) flags sketches or features that need fixing"],
+  ["4", "Send to Onshape", "Connect (o), then push parts as native features and make releases"],
+];
+/** The welcome screen's lines: the logo and the four steps. */
+export function welcomeLines() {
+  const lines = LOGO.map((l, i) => `${fg(GRADIENT[i % GRADIENT.length])}${C.bold}${l}${C.reset}`);
+  lines.push("", `${C.bold}How it works${C.reset}`, "");
+  for (const [i, [n, head, text]] of STEPS.entries()) lines.push(`  ${fg(STEP_COLORS[i])}${C.bold}${n}${C.reset}  ${fg(STEP_COLORS[i])}${C.bold}${head}${C.reset}  ${C.dim}${text}${C.reset}`);
+  lines.push("", `${C.dim}Keys: ↑↓ move · Enter choose · Esc back · q quit · ? shows this again${C.reset}`);
+  return lines;
 }
 
 /** A dragged-in path: quotes and backslash escapes removed, ~ expanded. */
@@ -191,6 +217,7 @@ export async function runTui({ stdin = process.stdin, stdout = process.stdout } 
     await task("Upload to Onshape", async (log) => core.uploadReport(await core.uploadStepAssembly(dir(), out, url, { folder: folder || undefined, onProgress: log })));
   };
 
+  const welcome = async () => { view = { title: "Welcome", lines: welcomeLines(), footer: "press any key to continue" }; draw(); await waitKey(); };
   const refs = () => task("Image references", () => {
     const list = core.listRefs(dir());
     return `${core.refsDir(dir())}\n\n${list.length ? list.map((r) => `@${r.key}  ${r.name}  ${Math.round(r.bytes / 1024)} KB`).join("\n") : "No pictures yet. Drop photos, sketches or screenshots in that folder,\nthen mention them to your AI agent as @name."}`;
@@ -198,6 +225,7 @@ export async function runTui({ stdin = process.stdin, stdout = process.stdout } 
   const health = async () => { const { doctorReport } = await import("./doctor.js"); await task("Health check", () => doctorReport()); };
 
   try {
+    await welcome();
     await menu("What do you want to do?", () => [
       { label: "Open the 3D window", key: "w", run: () => task("Open", () => { core.openGui(dir(), { detach: true }); return "The 3D window is opening on this project."; }) },
       { label: "Parts", key: "a", hint: "open, check, push, pull", run: parts },
@@ -206,6 +234,7 @@ export async function runTui({ stdin = process.stdin, stdout = process.stdout } 
       { label: "Onshape", key: "o", hint: "connect, import, releases", run: onshapeMenu },
       { label: "Big STEP file -> Onshape assembly", key: "s", run: bigStep },
       { label: "Image references", key: "i", run: refs },
+      { label: "How to use", key: "?", hint: "the four steps", run: welcome },
       { label: "Health check", key: "h", hint: "is everything set up?", run: health },
       { label: "Quit", key: "q", quit: true },
     ], { root: true });
