@@ -78,7 +78,7 @@ export class McpOnshapeClient extends OnshapeClient {
   /** @param {McpConnection} conn  @param {{ fallback?: OnshapeClient }} opts a key-based client for the calls MCP can't make (file upload) */
   constructor(conn, { fallback = null } = {}) { super({ accessKey: "mcp", secretKey: "mcp" }); Object.assign(this, { conn, fallback, viaMcp: true }); }
 
-  async req(method, apiPath, body) {
+  async rawReq(method, apiPath, body) {
     const [p, qs] = apiPath.split("?");
     const params = qs ? Object.fromEntries(new URLSearchParams(qs)) : undefined;
     const r = await this.conn.call("onshape_request", { method, path: `${API}${p}`, ...(params ? { params } : {}), ...(body ? { body } : {}) });

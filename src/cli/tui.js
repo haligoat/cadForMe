@@ -5,6 +5,7 @@ import fs from "node:fs";
 import path from "node:path";
 import readline from "node:readline";
 import * as core from "./core.js";
+import { apiUsage } from "../onshape/client.js";
 
 const E = "\x1b[";
 const C = { reset: `${E}0m`, dim: `${E}2m`, bold: `${E}1m`, inv: `${E}7m`, green: `${E}32m`, red: `${E}31m`, yellow: `${E}33m`, cyan: `${E}36m`, accent: `${E}38;5;208m` };
@@ -86,7 +87,8 @@ export async function runTui({ stdin = process.stdin, stdout = process.stdout } 
   const status = () => {
     const dir = core.currentProject(), parts = fs.existsSync(path.join(dir, "parts")) ? core.listParts(dir).length : 0;
     return [`project ${C.bold}${path.basename(dir)}${C.reset} ${C.dim}(${parts} part${parts === 1 ? "" : "s"})${C.reset}`,
-      core.loadKeys() ? `Onshape ${C.green}connected${C.reset}` : `Onshape ${C.yellow}not connected${C.reset}`];
+      core.loadKeys() ? `Onshape ${C.green}connected${C.reset}` : `Onshape ${C.yellow}not connected${C.reset}`,
+      `${C.dim}API calls today ${apiUsage().calls}${C.reset}`];
   };
   const draw = () => { if (view) stdout.write(`${E}H${E}2J${render({ ...view, status: status() }, size())}`); };
   const restore = () => { clearInterval(spin); stdout.write(`${E}?25h${E}?1049l`); try { stdin.setRawMode(false); } catch { /* not a tty */ } stdin.pause(); };

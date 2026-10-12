@@ -271,3 +271,16 @@ test("rotations of finished bodies and picks Onshape can't follow are reported, 
   assert.equal(warnings.length, 2);
   assert.ok(featureToOs({ id: "d", type: "deleteBody", body: "all" }, ctx));
 });
+
+test("repeated reads are served from cache, a write clears it, and the daily call count is kept", async () => {
+  const { OnshapeClient, apiUsage } = await import("../src/onshape/client.js");
+  process.env.CADFORME_USAGE_FILE = `${process.env.TMPDIR ?? "/tmp"}/cadforme-usage-${process.pid}.json`;
+  let n = 0;
+  const f = async () => ({ ok: true, status: 200, headers: new Map(), text: async () => JSON.stringify({ n: ++n }) });
+  const c = new OnshapeClient({ accessKey: "a", secretKey: "b", fetch: f });
+  const a = await c.req("GET", "/documents/x"), b = await Promise.all([c.req("GET", "/documents/x"), c.req("GET", "/documents/x")]);
+  assert.equal(n, 1); assert.deepEqual(b.map((x) => x.n), [1, 1]); assert.equal(a.n, 1);
+  await c.req("POST", "/documents", {});
+  assert.equal((await c.req("GET", "/documents/x")).n, 3);
+  assert.equal(apiUsage().calls, 3); assert.equal(apiUsage().cached, 2);
+});

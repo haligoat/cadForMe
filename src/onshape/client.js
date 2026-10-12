@@ -1,5 +1,24 @@
 // Minimal Onshape REST client (API key auth over HTTPS).
+import fs from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 const API = "/api/v9";
+
+// ---- API budget: Onshape limits calls per account, so count them (per day, saved on disk), cache reads, and share
+// identical in-flight reads. A write clears the cache. CADFORME_NO_CACHE=1 turns caching off.
+const ROOT_DIR = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
+const usageFile = () => process.env.CADFORME_USAGE_FILE ?? path.join(ROOT_DIR, ".cadforme", "api-usage.json");
+const today = () => new Date().toISOString().slice(0, 10);
+export function apiUsage() {
+  try { const u = JSON.parse(fs.readFileSync(usageFile(), "utf8")); return u.day === today() ? u : { day: today(), calls: 0, cached: 0 }; }
+  catch { return { day: today(), calls: 0, cached: 0 }; }
+}
+function bump(field) {
+  const u = apiUsage(); u[field] = (u[field] ?? 0) + 1;
+  try { fs.mkdirSync(path.dirname(usageFile()), { recursive: true }); fs.writeFileSync(usageFile(), JSON.stringify(u)); } catch { /* counting is best effort */ }
+}
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+const CACHE_MS = 30_000;
 
 export function parseOnshapeUrl(link) {
   const m = String(link).match(/documents\/([0-9a-f]{24})\/([wvm])\/([0-9a-f]{24})\/e\/([0-9a-f]{24})/i);
@@ -24,7 +43,31 @@ export class OnshapeClient {
     Object.assign(this, { base: u.origin, f, auth: `Basic ${Buffer.from(`${accessKey}:${secretKey}`).toString("base64")}` });
   }
 
-  async req(method, path, body, { tries = 3 } = {}) {
+  /** Every call goes through here: cached reads, shared in-flight reads, retries on network/5xx failures, usage counting. */
+  req(method, apiPath, body, opts) {
+    this.cache ??= new Map();
+    if (method !== "GET") { this.cache.clear(); return this.counted(method, apiPath, body, opts); }
+    const hit = this.cache.get(apiPath);
+    if (hit && (hit.pending || Date.now() - hit.at < CACHE_MS) && !process.env.CADFORME_NO_CACHE) { bump("cached"); return hit.pending ?? Promise.resolve(structuredClone(hit.value)); }
+    const pending = this.counted(method, apiPath, body, opts).then(
+      (value) => { this.cache.set(apiPath, { at: Date.now(), value }); return structuredClone(value); },
+      (e) => { this.cache.delete(apiPath); throw e; });
+    this.cache.set(apiPath, { pending, at: Date.now() });
+    return pending;
+  }
+  async counted(method, apiPath, body, opts) {
+    for (let attempt = 1; ; attempt++) {
+      bump("calls");
+      try { return await this.rawReq(method, apiPath, body, opts); }
+      catch (e) {
+        const transient = e.status >= 500 || (e.status === undefined && !(e instanceof OnshapeError));
+        if (!transient || method !== "GET" || attempt >= 3) throw e;   // writes aren't repeated: they may have gone through
+        await sleep(1000 * attempt);
+      }
+    }
+  }
+
+  async rawReq(method, path, body, { tries = 3 } = {}) {
     for (let attempt = 1; ; attempt++) {
       const res = await this.f(`${this.base}${API}${path}`, {
         method, headers: { Authorization: this.auth, Accept: "application/json;charset=UTF-8; qs=0.09", ...(body ? { "Content-Type": "application/json" } : {}) }, body: body ? JSON.stringify(body) : undefined,

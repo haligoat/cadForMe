@@ -249,18 +249,22 @@ export async function nameOnshapeParts(client, ref, features) {
   const res = await client.evalFeatureScript(ref, script);
   const byFeature = new Map();
   for (const s of strings(res.result ?? res)) { const m = s.match(/^([^|]+)\|(.+)$/); if (m) { if (!byFeature.has(m[1])) byFeature.set(m[1], []); byFeature.get(m[1]).push(m[2]); } }
-  let count = 0;
+  // read every part's name at once (4 at a time), then rename only the ones that need it
+  const wanted = [];
   for (const f of named) {
     const pids = [...new Set(byFeature.get(f.osId) ?? [])];
-    for (const [i, pid] of pids.entries()) {
-      const want = pids.length > 1 ? `${f.name} ${i + 1}` : f.name;
-      const meta = await client.getPartMetadata(ref, pid);
-      const prop = (meta.properties ?? []).find((p) => p.name === "Name");
-      if (!prop || prop.value === want) continue;
-      if (!/^Part \d+$/.test(prop.value ?? "") && !String(prop.value).startsWith(f.name)) continue; // renamed by someone in Onshape
-      await client.setPartMetadata(ref, pid, [{ propertyId: prop.propertyId, value: want }]);
-      count++;
-    }
+    for (const [i, pid] of pids.entries()) wanted.push({ f, pid, want: pids.length > 1 ? `${f.name} ${i + 1}` : f.name });
+  }
+  const metas = new Array(wanted.length);
+  let next = 0;
+  await Promise.all(Array.from({ length: Math.min(4, wanted.length) }, async () => { for (let i = next++; i < wanted.length; i = next++) metas[i] = await client.getPartMetadata(ref, wanted[i].pid); }));
+  let count = 0;
+  for (const [i, { f, pid, want }] of wanted.entries()) {
+    const prop = (metas[i].properties ?? []).find((p) => p.name === "Name");
+    if (!prop || prop.value === want) continue;
+    if (!/^Part \d+$/.test(prop.value ?? "") && !String(prop.value).startsWith(f.name)) continue; // renamed by someone in Onshape
+    await client.setPartMetadata(ref, pid, [{ propertyId: prop.propertyId, value: want }]);
+    count++;
   }
   return count;
 }
