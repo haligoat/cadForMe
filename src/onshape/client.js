@@ -19,6 +19,7 @@ function bump(field) {
 }
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const CACHE_MS = 30_000;
+const LIVE = /\/translations\//;   // progress of a running job: never cached
 
 export function parseOnshapeUrl(link) {
   const m = String(link).match(/documents\/([0-9a-f]{24})\/([wvm])\/([0-9a-f]{24})\/e\/([0-9a-f]{24})/i);
@@ -46,7 +47,7 @@ export class OnshapeClient {
   /** Every call goes through here: cached reads, shared in-flight reads, retries on network/5xx failures, usage counting. */
   req(method, apiPath, body, opts) {
     this.cache ??= new Map();
-    if (method !== "GET") { this.cache.clear(); return this.counted(method, apiPath, body, opts); }
+    if (method !== "GET" || LIVE.test(apiPath)) { if (method !== "GET") this.cache.clear(); return this.counted(method, apiPath, body, opts); }
     const hit = this.cache.get(apiPath);
     if (hit && (hit.pending || Date.now() - hit.at < CACHE_MS) && !process.env.CADFORME_NO_CACHE) { bump("cached"); return hit.pending ?? Promise.resolve(structuredClone(hit.value)); }
     const pending = this.counted(method, apiPath, body, opts).then(
@@ -136,6 +137,17 @@ export class OnshapeClient {
     const res = await this.f(`${this.base}${API}/documents/d/${did}/externaldata/${id}`, { headers: { Authorization: this.auth, Accept: "application/octet-stream" } });
     if (!res.ok) throw new OnshapeError(`Onshape wouldn't hand over the exported file (${res.status})`, res.status);
     return Buffer.from(await res.arrayBuffer());
+  }
+  /** Wait for a translation. Starts at 2 s and slows to `maxMs` between checks, so a long job costs tens of calls, not hundreds. */
+  async waitTranslation(id, first = { requestState: "ACTIVE" }, { maxMs = 15000, limitMs = 2 * 3600e3, onState = () => {} } = {}) {
+    let st = first;
+    for (let wait = 2000, t0 = Date.now(); !["DONE", "FAILED"].includes(st.requestState); wait = Math.min(maxMs, Math.round(wait * 1.5))) {
+      if (Date.now() - t0 > limitMs) throw new OnshapeError("Onshape is still working on it; check the document later");
+      await sleep(wait);
+      st = await this.getTranslation(id);
+      onState(st.requestState);
+    }
+    return st;
   }
   getTranslation(id) { return this.req("GET", `/translations/${id}`); }
   insertAssembly(asmRef, src) { return this.req("POST", `${this.asm(asmRef)}/instances`, { documentId: src.did, elementId: src.eid, isAssembly: true }); }

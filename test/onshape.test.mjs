@@ -284,3 +284,13 @@ test("repeated reads are served from cache, a write clears it, and the daily cal
   assert.equal((await c.req("GET", "/documents/x")).n, 3);
   assert.equal(apiUsage().calls, 3); assert.equal(apiUsage().cached, 2);
 });
+
+test("translation progress is never cached, and waiting backs off instead of polling every 2 s", async () => {
+  const { OnshapeClient } = await import("../src/onshape/client.js");
+  process.env.CADFORME_USAGE_FILE = `${process.env.TMPDIR ?? "/tmp"}/cadforme-usage-${process.pid}.json`;
+  let n = 0;
+  const f = async () => ({ ok: true, status: 200, headers: new Map(), text: async () => JSON.stringify({ requestState: ++n >= 3 ? "DONE" : "ACTIVE" }) });
+  const c = new OnshapeClient({ accessKey: "a", secretKey: "b", fetch: f });
+  const st = await c.waitTranslation("t1", { requestState: "ACTIVE" }, { maxMs: 10 });
+  assert.equal(st.requestState, "DONE"); assert.equal(n, 3);
+});

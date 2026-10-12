@@ -203,7 +203,7 @@ export async function pushAssembly(dir, client, rel, { name } = {}) {
   let asm = els.find((e) => e.id === link.asm && e.elementType === "ASSEMBLY") ?? els.find((e) => e.elementType === "ASSEMBLY" && e.name === asmName);
   if (!asm) {
     // Reuse an untouched default "Assembly 1"-style tab before making a new one.
-    for (const e of els.filter((x) => x.elementType === "ASSEMBLY")) {
+    for (const e of els.filter((x) => x.elementType === "ASSEMBLY").slice(0, 3)) {
       const a = await client.getAssembly({ ...link, eid: e.id });
       if (!(a.rootAssembly?.instances ?? []).length) { asm = e; break; }
     }
@@ -282,7 +282,7 @@ export async function addStepToAssembly(dir, client, rel, filePath, { offset = 0
   const tr = await client.translateFile(link.did, link.wid, { name, bytes: fs.readFileSync(filePath) });
   const tid = tr.translationId ?? tr.id;
   let st = tr.translationId ? { requestState: "ACTIVE" } : tr;
-  for (let i = 0; i < 300 && !["DONE", "FAILED"].includes(st.requestState); i++) { await new Promise((r) => setTimeout(r, 2000)); st = await client.getTranslation(tid); onProgress(`Onshape is translating ${name} (${st.requestState})`); }
+  st = await client.waitTranslation(tid, st, { onState: (s) => onProgress(`Onshape is translating ${name} (${s})`) });
   if (st.requestState !== "DONE") throw new Error(`Onshape couldn't translate ${name}: ${st.failureReason ?? st.requestState}`);
   const els = await client.listElements(link.did, link.wid);
   const made = els.filter((e) => ((st.resultElementIds ?? []).includes(e.id) || !before0.has(e.id)) && !["BLOB", "BILLOFMATERIALS"].includes(e.elementType));
@@ -311,7 +311,7 @@ async function importAssemblyAsStep(dir, client, ref, name, onProgress) {
   onProgress("Asking Onshape to export the assembly as STEP");
   const tr = await client.exportStep(ref, "ASSEMBLY");
   let st = tr;
-  for (let i = 0; i < 300 && !["DONE", "FAILED"].includes(st.requestState); i++) { await new Promise((r) => setTimeout(r, 2000)); st = await client.getTranslation(tr.id); onProgress(`Onshape is exporting (${st.requestState})`); }
+  st = await client.waitTranslation(tr.id, st, { onState: (s) => onProgress(`Onshape is exporting (${s})`) });
   if (st.requestState !== "DONE" || !st.resultExternalDataIds?.length) throw new Error(`Onshape couldn't export the assembly: ${st.failureReason ?? st.requestState}`);
   const bytes = await client.downloadExternal(ref.did, st.resultExternalDataIds[0]);
   fs.mkdirSync(path.join(dir, "imports"), { recursive: true });
@@ -333,7 +333,7 @@ export async function uploadModelAsStep(dir, client, rel, filePath, { name, asse
   const tr = await client.translateFile(link.did, link.wid, { name: `${stem}.step`, bytes: fs.readFileSync(filePath) });
   const tid = tr.translationId ?? tr.id;
   let st = tr.translationId ? { requestState: "ACTIVE" } : tr;
-  for (let i = 0; i < 400 && !["DONE", "FAILED"].includes(st.requestState); i++) { await new Promise((r) => setTimeout(r, 2000)); st = await client.getTranslation(tid); onProgress(`Onshape is translating (${st.requestState})`); }
+  st = await client.waitTranslation(tid, st, { onState: (s) => onProgress(`Onshape is translating (${s})`) });
   if (st.requestState !== "DONE") throw new Error(`Onshape couldn't translate the model: ${st.failureReason ?? st.requestState}`);
   const made = (await client.listElements(link.did, link.wid)).filter((e) => !before.has(e.id) && !["BLOB", "BILLOFMATERIALS"].includes(e.elementType));
   const tabs = made.map((e) => `${e.name} (${e.elementType.toLowerCase().replace("partstudio", "part studio")})`);
